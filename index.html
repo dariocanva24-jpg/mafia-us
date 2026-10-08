@@ -19,7 +19,7 @@
         }
         body {
             font-family: 'Fredoka', sans-serif;
-            background-color: #05080f;
+            background-color: #030712;
             color: #ffffff;
             overflow: hidden;
             width: 100vw;
@@ -34,17 +34,17 @@
         }
         .among-btn {
             transition: all 0.15s ease-in-out;
-            box-shadow: 0 4px 0 rgba(0,0,0,0.4);
+            box-shadow: 0 4px 0 rgba(0,0,0,0.5);
         }
         .among-btn:active {
             transform: translateY(3px);
-            box-shadow: 0 1px 0 rgba(0,0,0,0.4);
+            box-shadow: 0 1px 0 rgba(0,0,0,0.5);
         }
         .glow-red {
             box-shadow: 0 0 18px rgba(239, 68, 68, 0.7);
         }
         .glow-cyan {
-            box-shadow: 0 0 18px rgba(6, 182, 212, 0.7);
+            box-shadow: 0 0 18px rgba(6, 182, 212, 0.8);
         }
 
         input[type="color"]::-webkit-color-swatch-wrapper {
@@ -67,41 +67,52 @@
             border-radius: 8px;
         }
 
-        /* Joystick Styling */
+        /* Controles Táctiles y Joystick Ajustados para Pantalla Vertical */
         #joystick-zone {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 50vw;
-            height: 100vh;
-            z-index: 30;
+            bottom: 20px;
+            left: 15px;
+            width: 150px;
+            height: 150px;
+            z-index: 40;
             touch-action: none;
         }
         #joystick-base {
             position: absolute;
-            width: 120px;
-            height: 120px;
-            background: rgba(15, 23, 42, 0.65);
-            border: 3px solid rgba(56, 189, 248, 0.5);
+            width: 130px;
+            height: 130px;
+            background: rgba(15, 23, 42, 0.75);
+            border: 3px solid rgba(56, 189, 248, 0.6);
             border-radius: 9999px;
             pointer-events: none;
             display: none;
             transform: translate(-50%, -50%);
             backdrop-filter: blur(4px);
-            box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
         }
         #joystick-stick {
             position: absolute;
-            width: 50px;
-            height: 50px;
-            background: rgba(56, 189, 248, 0.85);
+            width: 55px;
+            height: 55px;
+            background: rgba(56, 189, 248, 0.9);
             border: 2px solid #ffffff;
             border-radius: 9999px;
             pointer-events: none;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+        }
+
+        #action-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 15px;
+            z-index: 40;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-end;
         }
     </style>
 </head>
@@ -145,26 +156,27 @@
         </div>
     </div>
 
-    <!-- Action Controls -->
-    <div id="action-controls" class="absolute bottom-3 right-3 flex items-center gap-2 sm:gap-3 z-30 hidden">
-        <button id="report-btn" class="among-btn hidden bg-red-600 hover:bg-red-500 text-white font-orbitron font-bold w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-red-300 shadow-xl text-[10px] sm:text-xs glow-red animate-bounce">
+    <!-- Action Controls (Siempre accesibles en vertical) -->
+    <div id="action-controls" class="hidden">
+        <button id="report-btn" class="among-btn hidden bg-red-600 hover:bg-red-500 text-white font-orbitron font-bold w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex flex-col items-center justify-center border-2 border-red-300 shadow-xl text-[10px] sm:text-xs glow-red animate-bounce">
             <i class="fa-solid fa-bullhorn text-lg sm:text-xl mb-0.5"></i>
             REPORTAR
         </button>
 
-        <button id="sabotage-btn" class="among-btn hidden bg-amber-600 hover:bg-amber-500 text-white font-orbitron font-bold w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-amber-300 shadow-lg text-[10px] sm:text-xs">
+        <button id="sabotage-btn" class="among-btn hidden bg-amber-600 hover:bg-amber-500 text-white font-orbitron font-bold w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex flex-col items-center justify-center border-2 border-amber-300 shadow-lg text-[10px] sm:text-xs">
             <i class="fa-solid fa-bolt text-lg sm:text-xl mb-0.5"></i>
             SABOTAJE
         </button>
 
-        <button id="vent-btn" class="among-btn hidden bg-slate-700 hover:bg-slate-600 text-white font-orbitron font-bold w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-slate-400 shadow-lg text-[10px] sm:text-xs">
+        <button id="vent-btn" class="among-btn hidden bg-slate-700 hover:bg-slate-600 text-white font-orbitron font-bold w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex flex-col items-center justify-center border-2 border-slate-400 shadow-lg text-[10px] sm:text-xs">
             <i class="fa-solid fa-wind text-lg sm:text-xl mb-0.5"></i>
             ESCOTILLA
         </button>
 
-        <button id="action-btn" class="among-btn bg-cyan-600 hover:bg-cyan-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-2xl flex flex-col items-center justify-center border-2 border-cyan-300 shadow-xl text-[10px] sm:text-xs md:text-sm glow-cyan">
-            <i id="action-icon" class="fa-solid fa-screwdriver-wrench text-xl sm:text-2xl mb-0.5"></i>
-            <span id="action-text">TAREA</span>
+        <!-- Botón Celeste USAR / TAREA principal -->
+        <button id="action-btn" class="among-btn bg-cyan-600 hover:bg-cyan-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-cyan-300 shadow-xl text-[10px] sm:text-xs glow-cyan">
+            <i id="action-icon" class="fa-solid fa-hand text-xl sm:text-2xl mb-0.5"></i>
+            <span id="action-text">USAR</span>
         </button>
     </div>
 
@@ -608,27 +620,27 @@
 
         const TILE_SIZE = 55;
 
-        // NUEVA ESTRUCTURA DE MAPA (INVERNADERO, CONTROL, LAB, REACTOR, ENFERMERÍA, CAFETERÍA, ARMERÍA)
+        // MAPA OPTIMIZADO CON PASILLOS AMPLIOS Y ZONAS ABIERTAS
         const SKELD_MAP_GRID = [
             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-            [1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1],
-            [1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1],
-            [1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1],
-            [1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1],
-            [1,1,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,1,1],
-            [1,1,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,1,1],
-            [1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1],
-            [1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1],
-            [1,1,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,1,1],
-            [1,1,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,1,1],
-            [1,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,1,1,0,0,1,1,1,1,1,1],
-            [1,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,1,1,0,0,1,1,1,1,1,1],
-            [1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
-            [1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
-            [1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1],
-            [1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1],
-            [1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1],
-            [1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1],
+            [1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1],
+            [1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,1,1,0,0,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,1,0,0,1],
+            [1,0,0,1,1,0,0,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,1,0,0,1],
+            [1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,1,1,1,1,0,0,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,1,1,1,1],
+            [1,1,1,1,1,0,0,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,1,1,1,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,1,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,1,1,1,1,1],
+            [1,1,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1],
             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
         ];
 
@@ -636,37 +648,37 @@
         const MAP_COLS = SKELD_MAP_GRID[0].length;
 
         const ROOM_LABELS = [
-            { name: "INVERNADERO", x: 15.0 * TILE_SIZE, y: 3.0 * TILE_SIZE },
-            { name: "SALA DE CONTROL", x: 6.5 * TILE_SIZE, y: 8.0 * TILE_SIZE },
-            { name: "LABORATORIO", x: 23.5 * TILE_SIZE, y: 8.0 * TILE_SIZE },
-            { name: "REACTOR", x: 6.5 * TILE_SIZE, y: 3.0 * TILE_SIZE },
-            { name: "ENFERMERÍA", x: 15.0 * TILE_SIZE, y: 16.5 * TILE_SIZE },
-            { name: "CAFETERÍA", x: 24.5 * TILE_SIZE, y: 16.5 * TILE_SIZE },
-            { name: "ARMERÍA", x: 4.5 * TILE_SIZE, y: 16.5 * TILE_SIZE }
+            { name: "INVERNADERO", x: 14.5 * TILE_SIZE, y: 2.5 * TILE_SIZE },
+            { name: "SALA DE CONTROL", x: 6.5 * TILE_SIZE, y: 6.0 * TILE_SIZE },
+            { name: "LABORATORIO", x: 23.5 * TILE_SIZE, y: 6.0 * TILE_SIZE },
+            { name: "REACTOR", x: 3.5 * TILE_SIZE, y: 10.0 * TILE_SIZE },
+            { name: "ENFERMERÍA", x: 14.5 * TILE_SIZE, y: 17.5 * TILE_SIZE },
+            { name: "CAFETERÍA", x: 24.5 * TILE_SIZE, y: 14.5 * TILE_SIZE },
+            { name: "ARMERÍA", x: 4.5 * TILE_SIZE, y: 14.5 * TILE_SIZE }
         ];
 
         const SKELD_VENTS = [
-            { id: 0, room: "Invernadero", x: 15.0 * TILE_SIZE, y: 4.5 * TILE_SIZE, connectTo: [1, 2] },
-            { id: 1, room: "Sala de Control", x: 6.5 * TILE_SIZE, y: 8.5 * TILE_SIZE, connectTo: [0, 2] },
-            { id: 2, room: "Laboratorio", x: 23.5 * TILE_SIZE, y: 8.5 * TILE_SIZE, connectTo: [0, 1] },
+            { id: 0, room: "Invernadero", x: 14.5 * TILE_SIZE, y: 3.5 * TILE_SIZE, connectTo: [1, 2] },
+            { id: 1, room: "Sala de Control", x: 6.5 * TILE_SIZE, y: 6.5 * TILE_SIZE, connectTo: [0, 2] },
+            { id: 2, room: "Laboratorio", x: 23.5 * TILE_SIZE, y: 6.5 * TILE_SIZE, connectTo: [0, 1] },
 
-            { id: 3, room: "Reactor", x: 6.5 * TILE_SIZE, y: 4.5 * TILE_SIZE, connectTo: [4, 5] },
-            { id: 4, room: "Armería", x: 4.5 * TILE_SIZE, y: 15.5 * TILE_SIZE, connectTo: [3, 5] },
-            { id: 5, room: "Enfermería", x: 13.5 * TILE_SIZE, y: 15.5 * TILE_SIZE, connectTo: [3, 4] },
+            { id: 3, room: "Reactor", x: 3.5 * TILE_SIZE, y: 10.5 * TILE_SIZE, connectTo: [4, 5] },
+            { id: 4, room: "Armería", x: 4.5 * TILE_SIZE, y: 14.5 * TILE_SIZE, connectTo: [3, 5] },
+            { id: 5, room: "Enfermería", x: 14.5 * TILE_SIZE, y: 16.5 * TILE_SIZE, connectTo: [3, 4] },
 
-            { id: 6, room: "Cafetería", x: 24.5 * TILE_SIZE, y: 15.5 * TILE_SIZE, connectTo: [0, 2] }
+            { id: 6, room: "Cafetería", x: 24.5 * TILE_SIZE, y: 14.5 * TILE_SIZE, connectTo: [0, 2] }
         ];
 
-        const REACTOR_SABOTAGE_POS = { x: 6.5 * TILE_SIZE, y: 3.5 * TILE_SIZE };
+        const REACTOR_SABOTAGE_POS = { x: 3.5 * TILE_SIZE, y: 10.5 * TILE_SIZE };
 
         const SKELD_TASKS = [
-            { id: 0, name: 'CABLES (Control)', x: 6.5 * TILE_SIZE, y: 7.5 * TILE_SIZE, type: 'wires', completed: false },
-            { id: 1, name: 'DESCARGA (Laboratorio)', x: 23.5 * TILE_SIZE, y: 7.5 * TILE_SIZE, type: 'download', completed: false },
-            { id: 2, name: 'CALIBRAR (Reactor)', x: 6.5 * TILE_SIZE, y: 2.5 * TILE_SIZE, type: 'reactor', completed: false },
-            { id: 3, name: 'MUESTRAMED (Enfermería)', x: 15.0 * TILE_SIZE, y: 15.5 * TILE_SIZE, type: 'download', completed: false },
-            { id: 4, name: 'REGAR (Invernadero)', x: 15.0 * TILE_SIZE, y: 2.5 * TILE_SIZE, type: 'reactor', completed: false },
-            { id: 5, name: 'MUNICIÓN (Armería)', x: 4.5 * TILE_SIZE, y: 15.5 * TILE_SIZE, type: 'wires', completed: false },
-            { id: 6, name: 'LIMPIEZA (Cafetería)', x: 24.5 * TILE_SIZE, y: 15.5 * TILE_SIZE, type: 'download', completed: false }
+            { id: 0, name: 'CABLES (Control)', x: 6.5 * TILE_SIZE, y: 5.5 * TILE_SIZE, type: 'wires', completed: false },
+            { id: 1, name: 'DESCARGA (Laboratorio)', x: 23.5 * TILE_SIZE, y: 5.5 * TILE_SIZE, type: 'download', completed: false },
+            { id: 2, name: 'CALIBRAR (Reactor)', x: 3.5 * TILE_SIZE, y: 9.5 * TILE_SIZE, type: 'reactor', completed: false },
+            { id: 3, name: 'MUESTRAMED (Enfermería)', x: 14.5 * TILE_SIZE, y: 17.5 * TILE_SIZE, type: 'download', completed: false },
+            { id: 4, name: 'REGAR (Invernadero)', x: 14.5 * TILE_SIZE, y: 2.5 * TILE_SIZE, type: 'reactor', completed: false },
+            { id: 5, name: 'MUNICIÓN (Armería)', x: 4.5 * TILE_SIZE, y: 13.5 * TILE_SIZE, type: 'wires', completed: false },
+            { id: 6, name: 'LIMPIEZA (Cafetería)', x: 24.5 * TILE_SIZE, y: 13.5 * TILE_SIZE, type: 'download', completed: false }
         ];
 
         class GameEngine {
@@ -702,24 +714,15 @@
                 const wCtx = this.wallTileCanvas.getContext('2d');
 
                 const wGrad = wCtx.createLinearGradient(0, 0, TILE_SIZE, TILE_SIZE);
-                wGrad.addColorStop(0, '#1c2638');
-                wGrad.addColorStop(0.5, '#131c2b');
-                wGrad.addColorStop(1, '#0b111b');
+                wGrad.addColorStop(0, '#111827');
+                wGrad.addColorStop(0.5, '#1f2937');
+                wGrad.addColorStop(1, '#0f172a');
                 wCtx.fillStyle = wGrad;
                 wCtx.fillRect(0, 0, TILE_SIZE, TILE_SIZE);
 
-                wCtx.fillStyle = 'rgba(255, 255, 255, 0.14)';
+                wCtx.fillStyle = 'rgba(56, 189, 248, 0.15)';
                 wCtx.fillRect(0, 0, TILE_SIZE, 3);
                 wCtx.fillRect(0, 0, 3, TILE_SIZE);
-                wCtx.fillStyle = 'rgba(0, 0, 0, 0.6)';
-                wCtx.fillRect(0, TILE_SIZE - 3, TILE_SIZE, 3);
-                wCtx.fillRect(TILE_SIZE - 3, 0, 3, TILE_SIZE);
-
-                wCtx.fillStyle = '#162030';
-                wCtx.fillRect(6, 6, TILE_SIZE - 12, TILE_SIZE - 12);
-                wCtx.strokeStyle = '#2b3c54';
-                wCtx.lineWidth = 1.5;
-                wCtx.strokeRect(6, 6, TILE_SIZE - 12, TILE_SIZE - 12);
 
                 this.floorTileCanvas = document.createElement('canvas');
                 this.floorTileCanvas.width = TILE_SIZE;
@@ -727,14 +730,14 @@
                 const fCtx = this.floorTileCanvas.getContext('2d');
 
                 const fGrad = fCtx.createRadialGradient(TILE_SIZE/2, TILE_SIZE/2, 5, TILE_SIZE/2, TILE_SIZE/2, TILE_SIZE/1.2);
-                fGrad.addColorStop(0, '#141d2b');
-                fGrad.addColorStop(1, '#0a1019');
+                fGrad.addColorStop(0, '#1e293b');
+                fGrad.addColorStop(1, '#0f172a');
                 fCtx.fillStyle = fGrad;
                 fCtx.fillRect(0, 0, TILE_SIZE, TILE_SIZE);
 
-                fCtx.strokeStyle = '#1b293c';
-                fCtx.lineWidth = 2;
-                fCtx.strokeRect(1, 1, TILE_SIZE - 2, TILE_SIZE - 2);
+                fCtx.strokeStyle = '#334155';
+                fCtx.lineWidth = 1;
+                fCtx.strokeRect(0, 0, TILE_SIZE, TILE_SIZE);
             }
 
             resizeCanvas() {
@@ -756,8 +759,8 @@
                 this.player = {
                     id: 'player',
                     name: 'Tú',
-                    x: 24.5 * TILE_SIZE,
-                    y: 16.5 * TILE_SIZE,
+                    x: 14.5 * TILE_SIZE,
+                    y: 5.5 * TILE_SIZE,
                     radius: 20,
                     speed: 4.2,
                     color: selectedColor,
@@ -774,12 +777,13 @@
                 this.bots = [];
                 const botColors = PRESET_COLORS.filter(c => c !== selectedColor);
 
+                // Puntos de Spawn seguros en zonas completamente navegables
                 if (selectedRole === 'crewmate') {
                     this.bots.push({
                         id: 'bot_impostor',
                         name: 'Rojo',
                         x: 6.5 * TILE_SIZE,
-                        y: 3.0 * TILE_SIZE,
+                        y: 6.0 * TILE_SIZE,
                         radius: 20,
                         speed: 3.2,
                         color: '#ff3b30',
@@ -788,7 +792,7 @@
                         isFacingLeft: false,
                         walkFrame: 0,
                         targetX: 6.5 * TILE_SIZE,
-                        targetY: 3.0 * TILE_SIZE,
+                        targetY: 6.0 * TILE_SIZE,
                         workingTimer: 0,
                         stuckFrames: 0,
                         unstuckTimer: 0,
@@ -797,10 +801,10 @@
                     });
 
                     const spawnLocs = [
-                        { x: 15.0 * TILE_SIZE, y: 3.0 * TILE_SIZE },
-                        { x: 6.5 * TILE_SIZE, y: 8.0 * TILE_SIZE },
-                        { x: 23.5 * TILE_SIZE, y: 8.0 * TILE_SIZE },
-                        { x: 15.0 * TILE_SIZE, y: 16.5 * TILE_SIZE }
+                        { x: 14.5 * TILE_SIZE, y: 2.5 * TILE_SIZE },
+                        { x: 23.5 * TILE_SIZE, y: 6.0 * TILE_SIZE },
+                        { x: 14.5 * TILE_SIZE, y: 17.5 * TILE_SIZE },
+                        { x: 24.5 * TILE_SIZE, y: 14.5 * TILE_SIZE }
                     ];
 
                     for (let i = 0; i < 4; i++) {
@@ -829,10 +833,10 @@
                     }
                 } else {
                     const spawnLocs = [
-                        { x: 15.0 * TILE_SIZE, y: 3.0 * TILE_SIZE },
-                        { x: 6.5 * TILE_SIZE, y: 8.0 * TILE_SIZE },
-                        { x: 23.5 * TILE_SIZE, y: 8.0 * TILE_SIZE },
-                        { x: 4.5 * TILE_SIZE, y: 16.5 * TILE_SIZE }
+                        { x: 14.5 * TILE_SIZE, y: 2.5 * TILE_SIZE },
+                        { x: 6.5 * TILE_SIZE, y: 6.0 * TILE_SIZE },
+                        { x: 23.5 * TILE_SIZE, y: 6.0 * TILE_SIZE },
+                        { x: 14.5 * TILE_SIZE, y: 17.5 * TILE_SIZE }
                     ];
 
                     for (let i = 0; i < 4; i++) {
@@ -891,11 +895,11 @@
                         }
                     }
                 }
-                return { x: 24.5 * TILE_SIZE, y: 16.5 * TILE_SIZE };
+                return { x: 14.5 * TILE_SIZE, y: 5.5 * TILE_SIZE };
             }
 
             checkCollision(newX, newY) {
-                const hitRadius = 12;
+                const hitRadius = 14;
                 const points = [
                     { x: newX - hitRadius, y: newY - hitRadius },
                     { x: newX + hitRadius, y: newY - hitRadius },
@@ -1173,6 +1177,7 @@
 
                 this.ctx.save();
                 this.ctx.translate(cameraX, cameraY);
+                this.ctx.lineJoin = 'round';
 
                 for (let r = 0; r < MAP_ROWS; r++) {
                     for (let c = 0; c < MAP_COLS; c++) {
@@ -1196,20 +1201,20 @@
                 }
 
                 ROOM_LABELS.forEach(lbl => {
-                    this.ctx.fillStyle = 'rgba(56, 254, 220, 0.18)';
+                    this.ctx.fillStyle = 'rgba(56, 189, 248, 0.22)';
                     this.ctx.font = 'bold 20px Orbitron';
                     this.ctx.textAlign = 'center';
                     this.ctx.fillText(lbl.name, lbl.x, lbl.y);
                 });
 
                 SKELD_VENTS.forEach(v => {
-                    this.ctx.fillStyle = '#475569';
+                    this.ctx.fillStyle = '#334155';
                     this.ctx.fillRect(v.x - 22, v.y - 16, 44, 32);
-                    this.ctx.strokeStyle = '#94a3b8';
+                    this.ctx.strokeStyle = '#64748b';
                     this.ctx.lineWidth = 3;
                     this.ctx.strokeRect(v.x - 22, v.y - 16, 44, 32);
                     
-                    this.ctx.strokeStyle = '#0f172a';
+                    this.ctx.strokeStyle = '#0284c7';
                     for (let i = -12; i <= 12; i += 6) {
                         this.ctx.beginPath();
                         this.ctx.moveTo(v.x + i, v.y - 12);
@@ -1283,7 +1288,7 @@
                 this.ctx.beginPath();
                 this.ctx.rect(this.player.x - this.canvas.width, this.player.y - this.canvas.height, this.canvas.width * 2, this.canvas.height * 2);
                 this.ctx.arc(this.player.x, this.player.y, viewRadius, 0, Math.PI * 2, true);
-                this.ctx.fillStyle = 'rgba(5, 8, 15, 0.88)';
+                this.ctx.fillStyle = 'rgba(3, 7, 18, 0.85)';
                 this.ctx.fill();
 
                 try {
@@ -1291,8 +1296,8 @@
                         this.player.x, this.player.y, Math.max(0, viewRadius - 35),
                         this.player.x, this.player.y, viewRadius
                     );
-                    grad.addColorStop(0, 'rgba(5, 8, 15, 0)');
-                    grad.addColorStop(1, 'rgba(5, 8, 15, 0.88)');
+                    grad.addColorStop(0, 'rgba(3, 7, 18, 0)');
+                    grad.addColorStop(1, 'rgba(3, 7, 18, 0.85)');
                     this.ctx.fillStyle = grad;
                     this.ctx.beginPath();
                     this.ctx.arc(this.player.x, this.player.y, viewRadius, 0, Math.PI * 2);
@@ -1325,7 +1330,7 @@
                         ventBtn.querySelector('span') ? ventBtn.querySelector('span').innerText = "MOVER" : ventBtn.innerText = "MOVER";
                         actionText.innerText = "SALIR";
                         actionIcon.className = "fa-solid fa-door-open text-xl sm:text-2xl mb-0.5";
-                        actionBtn.className = "among-btn bg-emerald-600 hover:bg-emerald-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-2xl flex flex-col items-center justify-center border-2 border-emerald-300 shadow-xl text-[10px] sm:text-xs md:text-sm glow-cyan";
+                        actionBtn.className = "among-btn bg-emerald-600 hover:bg-emerald-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-emerald-300 shadow-xl text-[10px] sm:text-xs glow-cyan";
                     } else {
                         ventBtn.querySelector('span') ? ventBtn.querySelector('span').innerText = "ESCOTILLA" : ventBtn.innerText = "ESCOTILLA";
                         const targetBot = this.bots.find(b => !b.isDead && Math.hypot(b.x - this.player.x, b.y - this.player.y) < 50);
@@ -1333,11 +1338,11 @@
                         if (targetBot && this.player.killCooldown <= 0) {
                             actionText.innerText = "ASESINAR";
                             actionIcon.className = "fa-solid fa-skull text-xl sm:text-2xl mb-0.5";
-                            actionBtn.className = "among-btn bg-red-600 hover:bg-red-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-2xl flex flex-col items-center justify-center border-2 border-red-300 shadow-xl text-[10px] sm:text-xs md:text-sm glow-red animate-pulse";
+                            actionBtn.className = "among-btn bg-red-600 hover:bg-red-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-red-300 shadow-xl text-[10px] sm:text-xs glow-red animate-pulse";
                         } else {
                             actionText.innerText = this.player.killCooldown > 0 ? `${Math.ceil(this.player.killCooldown)}s` : "BUSCAR";
                             actionIcon.className = "fa-solid fa-hourglass-half text-xl sm:text-2xl mb-0.5";
-                            actionBtn.className = "among-btn bg-slate-800 text-slate-400 font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-2xl flex flex-col items-center justify-center border-2 border-slate-700 text-[10px] sm:text-xs md:text-sm";
+                            actionBtn.className = "among-btn bg-slate-800 text-slate-400 font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-slate-700 text-[10px] sm:text-xs";
                         }
                     }
                 } else {
@@ -1350,15 +1355,15 @@
                     if (isNearReactorSabotage) {
                         actionText.innerText = "REPARAR";
                         actionIcon.className = "fa-solid fa-triangle-exclamation text-xl sm:text-2xl mb-0.5";
-                        actionBtn.className = "among-btn bg-red-600 hover:bg-red-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-2xl flex flex-col items-center justify-center border-2 border-red-300 shadow-xl text-[10px] sm:text-xs md:text-sm glow-red animate-pulse";
+                        actionBtn.className = "among-btn bg-red-600 hover:bg-red-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-red-300 shadow-xl text-[10px] sm:text-xs glow-red animate-pulse";
                     } else if (nearbyTask) {
                         actionText.innerText = "USAR";
                         actionIcon.className = "fa-solid fa-hand text-xl sm:text-2xl mb-0.5";
-                        actionBtn.className = "among-btn bg-cyan-600 hover:bg-cyan-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-2xl flex flex-col items-center justify-center border-2 border-cyan-300 shadow-xl text-[10px] sm:text-xs md:text-sm glow-cyan";
+                        actionBtn.className = "among-btn bg-cyan-600 hover:bg-cyan-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-cyan-300 shadow-xl text-[10px] sm:text-xs glow-cyan";
                     } else {
-                        actionText.innerText = "TAREA";
+                        actionText.innerText = "USAR";
                         actionIcon.className = "fa-solid fa-screwdriver-wrench text-xl sm:text-2xl mb-0.5";
-                        actionBtn.className = "among-btn bg-slate-800 text-slate-500 font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-2xl flex flex-col items-center justify-center border-2 border-slate-700 text-[10px] sm:text-xs md:text-sm";
+                        actionBtn.className = "among-btn bg-cyan-600/60 text-cyan-200 font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-cyan-400 text-[10px] sm:text-xs glow-cyan";
                     }
                 }
             }
@@ -1629,12 +1634,12 @@
                     } else if (aliveImpostors >= aliveCrewmates) {
                         this.triggerGameOver(false, "¡Los Impostores tienen el control de la nave!");
                     } else {
-                        this.player.x = 24.5 * TILE_SIZE;
-                        this.player.y = 16.5 * TILE_SIZE;
+                        this.player.x = 14.5 * TILE_SIZE;
+                        this.player.y = 5.5 * TILE_SIZE;
                         this.bots.forEach(b => {
                             if (!b.isDead) {
-                                b.x = 24.5 * TILE_SIZE + (Math.random() * 60 - 30);
-                                b.y = 16.5 * TILE_SIZE + (Math.random() * 60 - 30);
+                                b.x = 14.5 * TILE_SIZE + (Math.random() * 60 - 30);
+                                b.y = 5.5 * TILE_SIZE + (Math.random() * 60 - 30);
                             }
                         });
                     }
@@ -1926,7 +1931,7 @@
             impBtn.onclick = () => { selectedRole = 'impostor'; setupMenuControls(); };
         }
 
-        // --- DYNAMIC TOUCH ANALOG JOYSTICK ---
+        // --- JOYSTICK ANALÓGICO PANTALLA TÁCTIL ---
         function setupAnalogJoystick() {
             const zone = document.getElementById('joystick-zone');
             const base = document.getElementById('joystick-base');
