@@ -608,26 +608,27 @@
 
         const TILE_SIZE = 55;
 
+        // NUEVA ESTRUCTURA DE MAPA (INVERNADERO, CONTROL, LAB, REACTOR, ENFERMERÍA, CAFETERÍA, ARMERÍA)
         const SKELD_MAP_GRID = [
             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-            [1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1],
-            [1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1],
-            [1,1,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,1,1],
-            [1,1,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,1,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,0,0,1,1,0,0,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,1,0,0,1],
-            [1,0,0,1,1,0,0,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,1,0,0,1],
-            [1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,1,1,1,1,0,0,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,1,1,1,1],
-            [1,1,1,1,1,0,0,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,1,1,1,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,1,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,1,1,1,1,1],
-            [1,1,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,1,1,1,1,1],
-            [1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1],
-            [1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1],
+            [1,1,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,1,1],
+            [1,1,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,1,1],
+            [1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1],
+            [1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1],
+            [1,1,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,1,1],
+            [1,1,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,1,1],
+            [1,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,1,1,0,0,1,1,1,1,1,1],
+            [1,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,1,1,0,0,1,1,1,1,1,1],
+            [1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+            [1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+            [1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1],
+            [1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1],
+            [1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1],
+            [1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1],
             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
         ];
 
@@ -635,50 +636,37 @@
         const MAP_COLS = SKELD_MAP_GRID[0].length;
 
         const ROOM_LABELS = [
-            { name: "CAFETERÍA", x: 14.5 * TILE_SIZE, y: 3.5 * TILE_SIZE },
-            { name: "ARMERÍA", x: 23.5 * TILE_SIZE, y: 4.5 * TILE_SIZE },
-            { name: "OXÍGENO", x: 21.5 * TILE_SIZE, y: 9.5 * TILE_SIZE },
-            { name: "NAVEGACIÓN", x: 27.5 * TILE_SIZE, y: 10.0 * TILE_SIZE },
-            { name: "ESCUDOS", x: 24.5 * TILE_SIZE, y: 15.5 * TILE_SIZE },
-            { name: "COMUNICACIONES", x: 19.5 * TILE_SIZE, y: 17.5 * TILE_SIZE },
-            { name: "ALMACÉN", x: 14.5 * TILE_SIZE, y: 16.5 * TILE_SIZE },
-            { name: "ELECTRICIDAD", x: 9.5 * TILE_SIZE, y: 13.5 * TILE_SIZE },
-            { name: "MOTOR INFERIOR", x: 4.5 * TILE_SIZE, y: 16.5 * TILE_SIZE },
-            { name: "REACTOR", x: 2.5 * TILE_SIZE, y: 10.0 * TILE_SIZE },
-            { name: "MOTOR SUPERIOR", x: 4.5 * TILE_SIZE, y: 4.5 * TILE_SIZE },
-            { name: "SEGURIDAD", x: 9.5 * TILE_SIZE, y: 9.5 * TILE_SIZE },
-            { name: "MÉDICA", x: 9.5 * TILE_SIZE, y: 5.5 * TILE_SIZE },
-            { name: "ADMINISTRACIÓN", x: 20.0 * TILE_SIZE, y: 13.5 * TILE_SIZE }
+            { name: "INVERNADERO", x: 15.0 * TILE_SIZE, y: 3.0 * TILE_SIZE },
+            { name: "SALA DE CONTROL", x: 6.5 * TILE_SIZE, y: 8.0 * TILE_SIZE },
+            { name: "LABORATORIO", x: 23.5 * TILE_SIZE, y: 8.0 * TILE_SIZE },
+            { name: "REACTOR", x: 6.5 * TILE_SIZE, y: 3.0 * TILE_SIZE },
+            { name: "ENFERMERÍA", x: 15.0 * TILE_SIZE, y: 16.5 * TILE_SIZE },
+            { name: "CAFETERÍA", x: 24.5 * TILE_SIZE, y: 16.5 * TILE_SIZE },
+            { name: "ARMERÍA", x: 4.5 * TILE_SIZE, y: 16.5 * TILE_SIZE }
         ];
 
         const SKELD_VENTS = [
-            { id: 0, room: "Cafetería", x: 14.5 * TILE_SIZE, y: 5.5 * TILE_SIZE, connectTo: [1, 2] },
-            { id: 1, room: "Administración", x: 19.5 * TILE_SIZE, y: 13.5 * TILE_SIZE, connectTo: [0, 2] },
-            { id: 2, room: "Pasillo Dch", x: 23.5 * TILE_SIZE, y: 9.5 * TILE_SIZE, connectTo: [0, 1] },
+            { id: 0, room: "Invernadero", x: 15.0 * TILE_SIZE, y: 4.5 * TILE_SIZE, connectTo: [1, 2] },
+            { id: 1, room: "Sala de Control", x: 6.5 * TILE_SIZE, y: 8.5 * TILE_SIZE, connectTo: [0, 2] },
+            { id: 2, room: "Laboratorio", x: 23.5 * TILE_SIZE, y: 8.5 * TILE_SIZE, connectTo: [0, 1] },
 
-            { id: 3, room: "Reactor", x: 2.5 * TILE_SIZE, y: 9.5 * TILE_SIZE, connectTo: [4, 5] },
-            { id: 4, room: "Motor Sup", x: 4.5 * TILE_SIZE, y: 5.5 * TILE_SIZE, connectTo: [3, 5] },
-            { id: 5, room: "Motor Inf", x: 4.5 * TILE_SIZE, y: 14.5 * TILE_SIZE, connectTo: [3, 4] },
+            { id: 3, room: "Reactor", x: 6.5 * TILE_SIZE, y: 4.5 * TILE_SIZE, connectTo: [4, 5] },
+            { id: 4, room: "Armería", x: 4.5 * TILE_SIZE, y: 15.5 * TILE_SIZE, connectTo: [3, 5] },
+            { id: 5, room: "Enfermería", x: 13.5 * TILE_SIZE, y: 15.5 * TILE_SIZE, connectTo: [3, 4] },
 
-            { id: 6, room: "Médica", x: 9.5 * TILE_SIZE, y: 6.5 * TILE_SIZE, connectTo: [7, 8] },
-            { id: 7, room: "Seguridad", x: 9.5 * TILE_SIZE, y: 10.5 * TILE_SIZE, connectTo: [6, 8] },
-            { id: 8, room: "Electricidad", x: 9.5 * TILE_SIZE, y: 14.5 * TILE_SIZE, connectTo: [6, 7] },
-
-            { id: 9, room: "Armería", x: 24.5 * TILE_SIZE, y: 5.5 * TILE_SIZE, connectTo: [10, 11] },
-            { id: 10, room: "Navegación", x: 27.5 * TILE_SIZE, y: 10.5 * TILE_SIZE, connectTo: [9, 11] },
-            { id: 11, room: "Escudos", x: 25.5 * TILE_SIZE, y: 14.5 * TILE_SIZE, connectTo: [9, 10] }
+            { id: 6, room: "Cafetería", x: 24.5 * TILE_SIZE, y: 15.5 * TILE_SIZE, connectTo: [0, 2] }
         ];
 
-        const REACTOR_SABOTAGE_POS = { x: 2.5 * TILE_SIZE, y: 10.5 * TILE_SIZE };
+        const REACTOR_SABOTAGE_POS = { x: 6.5 * TILE_SIZE, y: 3.5 * TILE_SIZE };
 
         const SKELD_TASKS = [
-            { id: 0, name: 'CABLES (Electricidad)', x: 8.5 * TILE_SIZE, y: 13.5 * TILE_SIZE, type: 'wires', completed: false },
-            { id: 1, name: 'TARJETA (Admin)', x: 20.0 * TILE_SIZE, y: 13.5 * TILE_SIZE, type: 'download', completed: false },
-            { id: 2, name: 'CALIBRAR (Reactor)', x: 2.5 * TILE_SIZE, y: 10.0 * TILE_SIZE, type: 'reactor', completed: false },
-            { id: 3, name: 'DESCARGA (Navegación)', x: 27.5 * TILE_SIZE, y: 10.0 * TILE_SIZE, type: 'download', completed: false },
-            { id: 4, name: 'ESCUDOS (Escudos)', x: 21.5 * TILE_SIZE, y: 15.5 * TILE_SIZE, type: 'reactor', completed: false },
-            { id: 5, name: 'MEDBAY SCAN (Médica)', x: 9.5 * TILE_SIZE, y: 5.5 * TILE_SIZE, type: 'download', completed: false },
-            { id: 6, name: 'MOTORES (Motor Sup)', x: 4.5 * TILE_SIZE, y: 4.5 * TILE_SIZE, type: 'wires', completed: false }
+            { id: 0, name: 'CABLES (Control)', x: 6.5 * TILE_SIZE, y: 7.5 * TILE_SIZE, type: 'wires', completed: false },
+            { id: 1, name: 'DESCARGA (Laboratorio)', x: 23.5 * TILE_SIZE, y: 7.5 * TILE_SIZE, type: 'download', completed: false },
+            { id: 2, name: 'CALIBRAR (Reactor)', x: 6.5 * TILE_SIZE, y: 2.5 * TILE_SIZE, type: 'reactor', completed: false },
+            { id: 3, name: 'MUESTRAMED (Enfermería)', x: 15.0 * TILE_SIZE, y: 15.5 * TILE_SIZE, type: 'download', completed: false },
+            { id: 4, name: 'REGAR (Invernadero)', x: 15.0 * TILE_SIZE, y: 2.5 * TILE_SIZE, type: 'reactor', completed: false },
+            { id: 5, name: 'MUNICIÓN (Armería)', x: 4.5 * TILE_SIZE, y: 15.5 * TILE_SIZE, type: 'wires', completed: false },
+            { id: 6, name: 'LIMPIEZA (Cafetería)', x: 24.5 * TILE_SIZE, y: 15.5 * TILE_SIZE, type: 'download', completed: false }
         ];
 
         class GameEngine {
@@ -768,8 +756,8 @@
                 this.player = {
                     id: 'player',
                     name: 'Tú',
-                    x: 14.5 * TILE_SIZE,
-                    y: 5.5 * TILE_SIZE,
+                    x: 24.5 * TILE_SIZE,
+                    y: 16.5 * TILE_SIZE,
                     radius: 20,
                     speed: 4.2,
                     color: selectedColor,
@@ -790,8 +778,8 @@
                     this.bots.push({
                         id: 'bot_impostor',
                         name: 'Rojo',
-                        x: 2 * TILE_SIZE,
-                        y: 10 * TILE_SIZE,
+                        x: 6.5 * TILE_SIZE,
+                        y: 3.0 * TILE_SIZE,
                         radius: 20,
                         speed: 3.2,
                         color: '#ff3b30',
@@ -799,8 +787,8 @@
                         role: 'impostor',
                         isFacingLeft: false,
                         walkFrame: 0,
-                        targetX: 2 * TILE_SIZE,
-                        targetY: 10 * TILE_SIZE,
+                        targetX: 6.5 * TILE_SIZE,
+                        targetY: 3.0 * TILE_SIZE,
                         workingTimer: 0,
                         stuckFrames: 0,
                         unstuckTimer: 0,
@@ -809,10 +797,10 @@
                     });
 
                     const spawnLocs = [
-                        { x: 23 * TILE_SIZE, y: 4 * TILE_SIZE },
-                        { x: 9 * TILE_SIZE, y: 13 * TILE_SIZE },
-                        { x: 20 * TILE_SIZE, y: 13 * TILE_SIZE },
-                        { x: 10 * TILE_SIZE, y: 5 * TILE_SIZE }
+                        { x: 15.0 * TILE_SIZE, y: 3.0 * TILE_SIZE },
+                        { x: 6.5 * TILE_SIZE, y: 8.0 * TILE_SIZE },
+                        { x: 23.5 * TILE_SIZE, y: 8.0 * TILE_SIZE },
+                        { x: 15.0 * TILE_SIZE, y: 16.5 * TILE_SIZE }
                     ];
 
                     for (let i = 0; i < 4; i++) {
@@ -841,10 +829,10 @@
                     }
                 } else {
                     const spawnLocs = [
-                        { x: 10 * TILE_SIZE, y: 5 * TILE_SIZE },
-                        { x: 23 * TILE_SIZE, y: 4 * TILE_SIZE },
-                        { x: 9 * TILE_SIZE, y: 13 * TILE_SIZE },
-                        { x: 21 * TILE_SIZE, y: 15 * TILE_SIZE }
+                        { x: 15.0 * TILE_SIZE, y: 3.0 * TILE_SIZE },
+                        { x: 6.5 * TILE_SIZE, y: 8.0 * TILE_SIZE },
+                        { x: 23.5 * TILE_SIZE, y: 8.0 * TILE_SIZE },
+                        { x: 4.5 * TILE_SIZE, y: 16.5 * TILE_SIZE }
                     ];
 
                     for (let i = 0; i < 4; i++) {
@@ -903,7 +891,7 @@
                         }
                     }
                 }
-                return { x: 14.5 * TILE_SIZE, y: 5.5 * TILE_SIZE };
+                return { x: 24.5 * TILE_SIZE, y: 16.5 * TILE_SIZE };
             }
 
             checkCollision(newX, newY) {
@@ -1641,12 +1629,12 @@
                     } else if (aliveImpostors >= aliveCrewmates) {
                         this.triggerGameOver(false, "¡Los Impostores tienen el control de la nave!");
                     } else {
-                        this.player.x = 14.5 * TILE_SIZE;
-                        this.player.y = 5.5 * TILE_SIZE;
+                        this.player.x = 24.5 * TILE_SIZE;
+                        this.player.y = 16.5 * TILE_SIZE;
                         this.bots.forEach(b => {
                             if (!b.isDead) {
-                                b.x = 14.5 * TILE_SIZE + (Math.random() * 60 - 30);
-                                b.y = 5.5 * TILE_SIZE + (Math.random() * 60 - 30);
+                                b.x = 24.5 * TILE_SIZE + (Math.random() * 60 - 30);
+                                b.y = 16.5 * TILE_SIZE + (Math.random() * 60 - 30);
                             }
                         });
                     }
