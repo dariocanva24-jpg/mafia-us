@@ -19,7 +19,7 @@
         }
         body {
             font-family: 'Fredoka', sans-serif;
-            background-color: #030712;
+            background-color: #05080f;
             color: #ffffff;
             overflow: hidden;
             width: 100vw;
@@ -34,17 +34,17 @@
         }
         .among-btn {
             transition: all 0.15s ease-in-out;
-            box-shadow: 0 4px 0 rgba(0,0,0,0.5);
+            box-shadow: 0 4px 0 rgba(0,0,0,0.4);
         }
         .among-btn:active {
             transform: translateY(3px);
-            box-shadow: 0 1px 0 rgba(0,0,0,0.5);
+            box-shadow: 0 1px 0 rgba(0,0,0,0.4);
         }
         .glow-red {
             box-shadow: 0 0 18px rgba(239, 68, 68, 0.7);
         }
         .glow-cyan {
-            box-shadow: 0 0 18px rgba(6, 182, 212, 0.8);
+            box-shadow: 0 0 18px rgba(6, 182, 212, 0.7);
         }
 
         input[type="color"]::-webkit-color-swatch-wrapper {
@@ -67,52 +67,41 @@
             border-radius: 8px;
         }
 
-        /* Controles Táctiles y Joystick Ajustados para Pantalla Vertical */
+        /* Joystick Styling */
         #joystick-zone {
             position: absolute;
-            bottom: 20px;
-            left: 15px;
-            width: 150px;
-            height: 150px;
-            z-index: 40;
+            top: 0;
+            left: 0;
+            width: 50vw;
+            height: 100vh;
+            z-index: 30;
             touch-action: none;
         }
         #joystick-base {
             position: absolute;
-            width: 130px;
-            height: 130px;
-            background: rgba(15, 23, 42, 0.75);
-            border: 3px solid rgba(56, 189, 248, 0.6);
+            width: 120px;
+            height: 120px;
+            background: rgba(15, 23, 42, 0.65);
+            border: 3px solid rgba(56, 189, 248, 0.5);
             border-radius: 9999px;
             pointer-events: none;
             display: none;
             transform: translate(-50%, -50%);
             backdrop-filter: blur(4px);
-            box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
         }
         #joystick-stick {
             position: absolute;
-            width: 55px;
-            height: 55px;
-            background: rgba(56, 189, 248, 0.9);
+            width: 50px;
+            height: 50px;
+            background: rgba(56, 189, 248, 0.85);
             border: 2px solid #ffffff;
             border-radius: 9999px;
             pointer-events: none;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
-        }
-
-        #action-controls {
-            position: absolute;
-            bottom: 20px;
-            right: 15px;
-            z-index: 40;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            align-items: flex-end;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
     </style>
 </head>
@@ -128,7 +117,7 @@
             <div class="flex-1">
                 <div class="flex justify-between text-[10px] sm:text-xs font-bold mb-0.5 sm:mb-1">
                     <span class="text-cyan-300 font-orbitron hidden sm:inline">TAREAS NAVE</span>
-                    <span id="task-count-text" class="text-white font-orbitron">0 / 7</span>
+                    <span id="task-count-text" class="text-white font-orbitron">0 / 8</span>
                 </div>
                 <div class="w-full bg-slate-800 h-2 sm:h-3 rounded-full overflow-hidden border border-slate-700">
                     <div id="task-progress-fill" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-0% transition-all duration-300"></div>
@@ -156,27 +145,26 @@
         </div>
     </div>
 
-    <!-- Action Controls (Siempre accesibles en vertical) -->
-    <div id="action-controls" class="hidden">
-        <button id="report-btn" class="among-btn hidden bg-red-600 hover:bg-red-500 text-white font-orbitron font-bold w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex flex-col items-center justify-center border-2 border-red-300 shadow-xl text-[10px] sm:text-xs glow-red animate-bounce">
+    <!-- Action Controls -->
+    <div id="action-controls" class="absolute bottom-3 right-3 flex items-center gap-2 sm:gap-3 z-30 hidden">
+        <button id="report-btn" class="among-btn hidden bg-red-600 hover:bg-red-500 text-white font-orbitron font-bold w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-red-300 shadow-xl text-[10px] sm:text-xs glow-red animate-bounce">
             <i class="fa-solid fa-bullhorn text-lg sm:text-xl mb-0.5"></i>
             REPORTAR
         </button>
 
-        <button id="sabotage-btn" class="among-btn hidden bg-amber-600 hover:bg-amber-500 text-white font-orbitron font-bold w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex flex-col items-center justify-center border-2 border-amber-300 shadow-lg text-[10px] sm:text-xs">
+        <button id="sabotage-btn" class="among-btn hidden bg-amber-600 hover:bg-amber-500 text-white font-orbitron font-bold w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-amber-300 shadow-lg text-[10px] sm:text-xs">
             <i class="fa-solid fa-bolt text-lg sm:text-xl mb-0.5"></i>
             SABOTAJE
         </button>
 
-        <button id="vent-btn" class="among-btn hidden bg-slate-700 hover:bg-slate-600 text-white font-orbitron font-bold w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex flex-col items-center justify-center border-2 border-slate-400 shadow-lg text-[10px] sm:text-xs">
+        <button id="vent-btn" class="among-btn hidden bg-slate-700 hover:bg-slate-600 text-white font-orbitron font-bold w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-slate-400 shadow-lg text-[10px] sm:text-xs">
             <i class="fa-solid fa-wind text-lg sm:text-xl mb-0.5"></i>
             ESCOTILLA
         </button>
 
-        <!-- Botón Celeste USAR / TAREA principal -->
-        <button id="action-btn" class="among-btn bg-cyan-600 hover:bg-cyan-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-cyan-300 shadow-xl text-[10px] sm:text-xs glow-cyan">
-            <i id="action-icon" class="fa-solid fa-hand text-xl sm:text-2xl mb-0.5"></i>
-            <span id="action-text">USAR</span>
+        <button id="action-btn" class="among-btn bg-cyan-600 hover:bg-cyan-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-2xl flex flex-col items-center justify-center border-2 border-cyan-300 shadow-xl text-[10px] sm:text-xs md:text-sm glow-cyan">
+            <i id="action-icon" class="fa-solid fa-screwdriver-wrench text-xl sm:text-2xl mb-0.5"></i>
+            <span id="action-text">TAREA</span>
         </button>
     </div>
 
@@ -187,7 +175,7 @@
             <div class="flex flex-col items-center justify-center w-full md:w-1/2">
                 <div class="text-center mb-2 sm:mb-3">
                     <h1 class="font-orbitron font-black text-2xl sm:text-3xl text-cyan-400 tracking-wider mb-0.5 drop-shadow-md">MAFIA US</h1>
-                    <p class="font-orbitron text-[10px] font-bold text-red-500 tracking-widest uppercase">Modo Persecución & Votación</p>
+                    <p class="font-orbitron text-[10px] font-bold text-red-500 tracking-widest uppercase">The Skeld + MIRA HQ</p>
                 </div>
 
                 <div class="relative w-24 h-24 sm:w-28 sm:h-28 mb-2 sm:mb-3 bg-slate-800/90 rounded-2xl border-2 border-slate-700 flex items-center justify-center">
@@ -620,65 +608,60 @@
 
         const TILE_SIZE = 55;
 
-        // MAPA OPTIMIZADO CON PASILLOS AMPLIOS Y ZONAS ABIERTAS
-        const SKELD_MAP_GRID = [
-            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-            [1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1],
-            [1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1],
-            [1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1],
-            [1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,0,0,1,1,0,0,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,1,0,0,1],
-            [1,0,0,1,1,0,0,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,1,0,0,1],
-            [1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,1,1,1,1,0,0,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,1,1,1,1],
-            [1,1,1,1,1,0,0,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,1,1,1,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,1,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,1,1,1,1,1],
-            [1,1,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,1,1,1,1,1],
-            [1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1],
-            [1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1],
-            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        // MAPA COMBINADO COMPLETO (THE SKELD + MIRA HQ)
+        const SKELD_MIRA_MAP_GRID = [
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,1,1],
+            [1,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,1,1],
+            [1,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,1,1,1,1,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,1,1,1,0,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,1,1,1,0,0,0,1],
+            [1,1,1,0,0,0,0,1,1,0,0,1,1,1,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,1,1,0,0,0,0,1,1,0,0,1,1,1,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,1,1,1,0,0,1,1,0,0,1,1,1,1,1,0,0,0,1],
+            [1,1,1,0,0,0,0,0,0,0,0,1,1,1,0,0,1,1,1,0,0,1,1,0,0,1,1,1,1,1,0,0,0,1],
+            [1,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,1,1,1,1,1,1,1,1],
+            [1,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1],
+            [1,1,1,1,1,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,1,0,0,0,1,1,1,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,1,0,0,0,1,1,1,1],
+            [1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,1,1,0,0,1,1,1,1],
+            [1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,1,1,0,0,1,1,1,1],
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,1,1,1,1],
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,1,1,1,1],
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
         ];
 
-        const MAP_ROWS = SKELD_MAP_GRID.length;
-        const MAP_COLS = SKELD_MAP_GRID[0].length;
-
-        const ROOM_LABELS = [
-            { name: "INVERNADERO", x: 14.5 * TILE_SIZE, y: 2.5 * TILE_SIZE },
-            { name: "SALA DE CONTROL", x: 6.5 * TILE_SIZE, y: 6.0 * TILE_SIZE },
-            { name: "LABORATORIO", x: 23.5 * TILE_SIZE, y: 6.0 * TILE_SIZE },
-            { name: "REACTOR", x: 3.5 * TILE_SIZE, y: 10.0 * TILE_SIZE },
-            { name: "ENFERMERÍA", x: 14.5 * TILE_SIZE, y: 17.5 * TILE_SIZE },
-            { name: "CAFETERÍA", x: 24.5 * TILE_SIZE, y: 14.5 * TILE_SIZE },
-            { name: "ARMERÍA", x: 4.5 * TILE_SIZE, y: 14.5 * TILE_SIZE }
-        ];
+        const MAP_ROWS = SKELD_MIRA_MAP_GRID.length;
+        const MAP_COLS = SKELD_MIRA_MAP_GRID[0].length;
 
         const SKELD_VENTS = [
-            { id: 0, room: "Invernadero", x: 14.5 * TILE_SIZE, y: 3.5 * TILE_SIZE, connectTo: [1, 2] },
-            { id: 1, room: "Sala de Control", x: 6.5 * TILE_SIZE, y: 6.5 * TILE_SIZE, connectTo: [0, 2] },
-            { id: 2, room: "Laboratorio", x: 23.5 * TILE_SIZE, y: 6.5 * TILE_SIZE, connectTo: [0, 1] },
-
-            { id: 3, room: "Reactor", x: 3.5 * TILE_SIZE, y: 10.5 * TILE_SIZE, connectTo: [4, 5] },
-            { id: 4, room: "Armería", x: 4.5 * TILE_SIZE, y: 14.5 * TILE_SIZE, connectTo: [3, 5] },
-            { id: 5, room: "Enfermería", x: 14.5 * TILE_SIZE, y: 16.5 * TILE_SIZE, connectTo: [3, 4] },
-
-            { id: 6, room: "Cafetería", x: 24.5 * TILE_SIZE, y: 14.5 * TILE_SIZE, connectTo: [0, 2] }
+            { id: 0, x: 15.5 * TILE_SIZE, y: 3.5 * TILE_SIZE, connectTo: [1, 2] },
+            { id: 1, x: 10.5 * TILE_SIZE, y: 5.5 * TILE_SIZE, connectTo: [0, 2] },
+            { id: 2, x: 26.5 * TILE_SIZE, y: 3.5 * TILE_SIZE, connectTo: [0, 1] },
+            { id: 3, x: 4.5 * TILE_SIZE, y: 9.5 * TILE_SIZE, connectTo: [4, 5] },
+            { id: 4, x: 4.5 * TILE_SIZE, y: 18.5 * TILE_SIZE, connectTo: [3, 5] },
+            { id: 5, x: 10.5 * TILE_SIZE, y: 19.5 * TILE_SIZE, connectTo: [3, 4] },
+            { id: 6, x: 31.5 * TILE_SIZE, y: 6.5 * TILE_SIZE, connectTo: [2, 0] }
         ];
 
-        const REACTOR_SABOTAGE_POS = { x: 3.5 * TILE_SIZE, y: 10.5 * TILE_SIZE };
+        const REACTOR_SABOTAGE_POS = { x: 4.5 * TILE_SIZE, y: 9.5 * TILE_SIZE };
 
         const SKELD_TASKS = [
-            { id: 0, name: 'CABLES (Control)', x: 6.5 * TILE_SIZE, y: 5.5 * TILE_SIZE, type: 'wires', completed: false },
-            { id: 1, name: 'DESCARGA (Laboratorio)', x: 23.5 * TILE_SIZE, y: 5.5 * TILE_SIZE, type: 'download', completed: false },
-            { id: 2, name: 'CALIBRAR (Reactor)', x: 3.5 * TILE_SIZE, y: 9.5 * TILE_SIZE, type: 'reactor', completed: false },
-            { id: 3, name: 'MUESTRAMED (Enfermería)', x: 14.5 * TILE_SIZE, y: 17.5 * TILE_SIZE, type: 'download', completed: false },
-            { id: 4, name: 'REGAR (Invernadero)', x: 14.5 * TILE_SIZE, y: 2.5 * TILE_SIZE, type: 'reactor', completed: false },
-            { id: 5, name: 'MUNICIÓN (Armería)', x: 4.5 * TILE_SIZE, y: 13.5 * TILE_SIZE, type: 'wires', completed: false },
-            { id: 6, name: 'LIMPIEZA (Cafetería)', x: 24.5 * TILE_SIZE, y: 13.5 * TILE_SIZE, type: 'download', completed: false }
+            { id: 0, name: 'CABLES', x: 10.5 * TILE_SIZE, y: 5.5 * TILE_SIZE, type: 'wires', completed: false },
+            { id: 1, name: 'DESCARGA', x: 26.5 * TILE_SIZE, y: 3.5 * TILE_SIZE, type: 'download', completed: false },
+            { id: 2, name: 'CALIBRAR', x: 4.5 * TILE_SIZE, y: 9.5 * TILE_SIZE, type: 'reactor', completed: false },
+            { id: 3, name: 'MUESTRAMED', x: 10.5 * TILE_SIZE, y: 3.5 * TILE_SIZE, type: 'download', completed: false },
+            { id: 4, name: 'REGAR', x: 31.5 * TILE_SIZE, y: 19.5 * TILE_SIZE, type: 'reactor', completed: false },
+            { id: 5, name: 'MUNICIÓN', x: 19.5 * TILE_SIZE, y: 8.5 * TILE_SIZE, type: 'wires', completed: false },
+            { id: 6, name: 'LIMPIEZA', x: 15.5 * TILE_SIZE, y: 3.5 * TILE_SIZE, type: 'download', completed: false },
+            { id: 7, name: 'ESCÁNER', x: 31.5 * TILE_SIZE, y: 9.5 * TILE_SIZE, type: 'wires', completed: false }
         ];
 
         class GameEngine {
@@ -759,8 +742,8 @@
                 this.player = {
                     id: 'player',
                     name: 'Tú',
-                    x: 14.5 * TILE_SIZE,
-                    y: 5.5 * TILE_SIZE,
+                    x: 15.5 * TILE_SIZE,
+                    y: 3.5 * TILE_SIZE,
                     radius: 20,
                     speed: 4.2,
                     color: selectedColor,
@@ -777,13 +760,20 @@
                 this.bots = [];
                 const botColors = PRESET_COLORS.filter(c => c !== selectedColor);
 
-                // Puntos de Spawn seguros en zonas completamente navegables
+                const spawnLocs = [
+                    { x: 15.5 * TILE_SIZE, y: 3.5 * TILE_SIZE },
+                    { x: 10.5 * TILE_SIZE, y: 5.5 * TILE_SIZE },
+                    { x: 26.5 * TILE_SIZE, y: 3.5 * TILE_SIZE },
+                    { x: 14.5 * TILE_SIZE, y: 10.5 * TILE_SIZE },
+                    { x: 20.5 * TILE_SIZE, y: 23.5 * TILE_SIZE }
+                ];
+
                 if (selectedRole === 'crewmate') {
                     this.bots.push({
                         id: 'bot_impostor',
                         name: 'Rojo',
-                        x: 6.5 * TILE_SIZE,
-                        y: 6.0 * TILE_SIZE,
+                        x: spawnLocs[1].x,
+                        y: spawnLocs[1].y,
                         radius: 20,
                         speed: 3.2,
                         color: '#ff3b30',
@@ -791,8 +781,8 @@
                         role: 'impostor',
                         isFacingLeft: false,
                         walkFrame: 0,
-                        targetX: 6.5 * TILE_SIZE,
-                        targetY: 6.0 * TILE_SIZE,
+                        targetX: spawnLocs[1].x,
+                        targetY: spawnLocs[1].y,
                         workingTimer: 0,
                         stuckFrames: 0,
                         unstuckTimer: 0,
@@ -800,21 +790,14 @@
                         isDead: false
                     });
 
-                    const spawnLocs = [
-                        { x: 14.5 * TILE_SIZE, y: 2.5 * TILE_SIZE },
-                        { x: 23.5 * TILE_SIZE, y: 6.0 * TILE_SIZE },
-                        { x: 14.5 * TILE_SIZE, y: 17.5 * TILE_SIZE },
-                        { x: 24.5 * TILE_SIZE, y: 14.5 * TILE_SIZE }
-                    ];
-
                     for (let i = 0; i < 4; i++) {
                         const colorHex = botColors[i % botColors.length];
                         const hatObj = HATS[(i + 1) % HATS.length];
                         this.bots.push({
                             id: `bot_crew_${i}`,
                             name: `Bot ${i + 1}`,
-                            x: spawnLocs[i].x,
-                            y: spawnLocs[i].y,
+                            x: spawnLocs[(i + 2) % spawnLocs.length].x,
+                            y: spawnLocs[(i + 2) % spawnLocs.length].y,
                             radius: 20,
                             speed: 2.8,
                             color: colorHex,
@@ -822,8 +805,8 @@
                             role: 'crewmate',
                             isFacingLeft: false,
                             walkFrame: 0,
-                            targetX: spawnLocs[i].x,
-                            targetY: spawnLocs[i].y,
+                            targetX: spawnLocs[(i + 2) % spawnLocs.length].x,
+                            targetY: spawnLocs[(i + 2) % spawnLocs.length].y,
                             isDead: false,
                             workingTimer: 0,
                             currentTask: null,
@@ -832,21 +815,14 @@
                         });
                     }
                 } else {
-                    const spawnLocs = [
-                        { x: 14.5 * TILE_SIZE, y: 2.5 * TILE_SIZE },
-                        { x: 6.5 * TILE_SIZE, y: 6.0 * TILE_SIZE },
-                        { x: 23.5 * TILE_SIZE, y: 6.0 * TILE_SIZE },
-                        { x: 14.5 * TILE_SIZE, y: 17.5 * TILE_SIZE }
-                    ];
-
                     for (let i = 0; i < 4; i++) {
                         const colorHex = botColors[i % botColors.length];
                         const hatObj = HATS[(i + 2) % HATS.length];
                         this.bots.push({
                             id: `bot_crew_${i}`,
                             name: `Bot ${i + 1}`,
-                            x: spawnLocs[i].x,
-                            y: spawnLocs[i].y,
+                            x: spawnLocs[i % spawnLocs.length].x,
+                            y: spawnLocs[i % spawnLocs.length].y,
                             radius: 20,
                             speed: 2.6,
                             color: colorHex,
@@ -854,8 +830,8 @@
                             role: 'crewmate',
                             isFacingLeft: false,
                             walkFrame: 0,
-                            targetX: spawnLocs[i].x,
-                            targetY: spawnLocs[i].y,
+                            targetX: spawnLocs[i % spawnLocs.length].x,
+                            targetY: spawnLocs[i % spawnLocs.length].y,
                             isDead: false,
                             workingTimer: 0,
                             currentTask: null,
@@ -872,7 +848,7 @@
                 const col = Math.floor(x / TILE_SIZE);
                 const row = Math.floor(y / TILE_SIZE);
                 if (row < 0 || row >= MAP_ROWS || col < 0 || col >= MAP_COLS) return true;
-                return SKELD_MAP_GRID[row][col] === 1;
+                return SKELD_MIRA_MAP_GRID[row][col] === 1;
             }
 
             getValidTarget(x, y) {
@@ -881,13 +857,13 @@
                 col = Math.max(1, Math.min(MAP_COLS - 2, col));
                 row = Math.max(1, Math.min(MAP_ROWS - 2, row));
 
-                if (SKELD_MAP_GRID[row] && SKELD_MAP_GRID[row][col] === 0) {
+                if (SKELD_MIRA_MAP_GRID[row] && SKELD_MIRA_MAP_GRID[row][col] === 0) {
                     return { x, y };
                 }
 
                 for (let dr = -1; dr <= 1; dr++) {
                     for (let dc = -1; dc <= 1; dc++) {
-                        if (SKELD_MAP_GRID[row + dr] && SKELD_MAP_GRID[row + dr][col + dc] === 0) {
+                        if (SKELD_MIRA_MAP_GRID[row + dr] && SKELD_MIRA_MAP_GRID[row + dr][col + dc] === 0) {
                             return {
                                 x: (col + dc + 0.5) * TILE_SIZE,
                                 y: (row + dr + 0.5) * TILE_SIZE
@@ -895,7 +871,7 @@
                         }
                     }
                 }
-                return { x: 14.5 * TILE_SIZE, y: 5.5 * TILE_SIZE };
+                return { x: 15.5 * TILE_SIZE, y: 3.5 * TILE_SIZE };
             }
 
             checkCollision(newX, newY) {
@@ -1019,8 +995,8 @@
                                 }
                             } else {
                                 if (!bot.targetX || Math.hypot(bot.targetX - bot.x, bot.targetY - bot.y) < 30) {
-                                    const randomRoom = ROOM_LABELS[Math.floor(Math.random() * ROOM_LABELS.length)];
-                                    const validTgt = this.getValidTarget(randomRoom.x, randomRoom.y);
+                                    const randTask = SKELD_TASKS[Math.floor(Math.random() * SKELD_TASKS.length)];
+                                    const validTgt = this.getValidTarget(randTask.x, randTask.y);
                                     bot.targetX = validTgt.x;
                                     bot.targetY = validTgt.y;
                                 }
@@ -1108,8 +1084,8 @@
                         if (!movedX && !movedY) {
                             bot.stuckFrames = (bot.stuckFrames || 0) + 1;
                             if (bot.stuckFrames > 6) {
-                                const randomRoom = ROOM_LABELS[Math.floor(Math.random() * ROOM_LABELS.length)];
-                                const validTgt = this.getValidTarget(randomRoom.x, randomRoom.y);
+                                const randTask = SKELD_TASKS[Math.floor(Math.random() * SKELD_TASKS.length)];
+                                const validTgt = this.getValidTarget(randTask.x, randTask.y);
                                 bot.targetX = validTgt.x;
                                 bot.targetY = validTgt.y;
                                 bot.stuckFrames = 0;
@@ -1184,28 +1160,21 @@
                         const x = c * TILE_SIZE;
                         const y = r * TILE_SIZE;
 
-                        if (SKELD_MAP_GRID[r][c] === 1) {
+                        if (SKELD_MIRA_MAP_GRID[r][c] === 1) {
                             this.ctx.drawImage(this.wallTileCanvas, x, y);
-                            if (r + 1 < MAP_ROWS && SKELD_MAP_GRID[r + 1][c] === 0) {
+                            if (r + 1 < MAP_ROWS && SKELD_MIRA_MAP_GRID[r + 1][c] === 0) {
                                 this.ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
                                 this.ctx.fillRect(x, y + TILE_SIZE - 6, TILE_SIZE, 6);
                             }
                         } else {
                             this.ctx.drawImage(this.floorTileCanvas, x, y);
-                            if (r > 0 && SKELD_MAP_GRID[r - 1][c] === 1) {
+                            if (r > 0 && SKELD_MIRA_MAP_GRID[r - 1][c] === 1) {
                                 this.ctx.fillStyle = 'rgba(0, 0, 0, 0.38)';
                                 this.ctx.fillRect(x, y, TILE_SIZE, 10);
                             }
                         }
                     }
                 }
-
-                ROOM_LABELS.forEach(lbl => {
-                    this.ctx.fillStyle = 'rgba(56, 189, 248, 0.22)';
-                    this.ctx.font = 'bold 20px Orbitron';
-                    this.ctx.textAlign = 'center';
-                    this.ctx.fillText(lbl.name, lbl.x, lbl.y);
-                });
 
                 SKELD_VENTS.forEach(v => {
                     this.ctx.fillStyle = '#334155';
@@ -1231,11 +1200,6 @@
                     this.ctx.strokeStyle = '#ffffff';
                     this.ctx.lineWidth = 2;
                     this.ctx.stroke();
-
-                    this.ctx.fillStyle = '#ffffff';
-                    this.ctx.font = 'bold 11px Orbitron';
-                    this.ctx.textAlign = 'center';
-                    this.ctx.fillText(t.name, t.x, t.y - 22);
                 });
 
                 this.deadBodies.forEach(body => {
@@ -1282,13 +1246,13 @@
 
             renderFogOfWar() {
                 if (!this.player) return;
-                const viewRadius = this.player.role === 'impostor' ? 300 : 220;
+                const viewRadius = this.player.role === 'impostor' ? 320 : 240;
 
                 this.ctx.save();
                 this.ctx.beginPath();
                 this.ctx.rect(this.player.x - this.canvas.width, this.player.y - this.canvas.height, this.canvas.width * 2, this.canvas.height * 2);
                 this.ctx.arc(this.player.x, this.player.y, viewRadius, 0, Math.PI * 2, true);
-                this.ctx.fillStyle = 'rgba(3, 7, 18, 0.85)';
+                this.ctx.fillStyle = 'rgba(5, 8, 15, 0.88)';
                 this.ctx.fill();
 
                 try {
@@ -1296,8 +1260,8 @@
                         this.player.x, this.player.y, Math.max(0, viewRadius - 35),
                         this.player.x, this.player.y, viewRadius
                     );
-                    grad.addColorStop(0, 'rgba(3, 7, 18, 0)');
-                    grad.addColorStop(1, 'rgba(3, 7, 18, 0.85)');
+                    grad.addColorStop(0, 'rgba(5, 8, 15, 0)');
+                    grad.addColorStop(1, 'rgba(5, 8, 15, 0.88)');
                     this.ctx.fillStyle = grad;
                     this.ctx.beginPath();
                     this.ctx.arc(this.player.x, this.player.y, viewRadius, 0, Math.PI * 2);
@@ -1330,7 +1294,7 @@
                         ventBtn.querySelector('span') ? ventBtn.querySelector('span').innerText = "MOVER" : ventBtn.innerText = "MOVER";
                         actionText.innerText = "SALIR";
                         actionIcon.className = "fa-solid fa-door-open text-xl sm:text-2xl mb-0.5";
-                        actionBtn.className = "among-btn bg-emerald-600 hover:bg-emerald-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-emerald-300 shadow-xl text-[10px] sm:text-xs glow-cyan";
+                        actionBtn.className = "among-btn bg-emerald-600 hover:bg-emerald-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-2xl flex flex-col items-center justify-center border-2 border-emerald-300 shadow-xl text-[10px] sm:text-xs md:text-sm glow-cyan";
                     } else {
                         ventBtn.querySelector('span') ? ventBtn.querySelector('span').innerText = "ESCOTILLA" : ventBtn.innerText = "ESCOTILLA";
                         const targetBot = this.bots.find(b => !b.isDead && Math.hypot(b.x - this.player.x, b.y - this.player.y) < 50);
@@ -1338,11 +1302,11 @@
                         if (targetBot && this.player.killCooldown <= 0) {
                             actionText.innerText = "ASESINAR";
                             actionIcon.className = "fa-solid fa-skull text-xl sm:text-2xl mb-0.5";
-                            actionBtn.className = "among-btn bg-red-600 hover:bg-red-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-red-300 shadow-xl text-[10px] sm:text-xs glow-red animate-pulse";
+                            actionBtn.className = "among-btn bg-red-600 hover:bg-red-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-2xl flex flex-col items-center justify-center border-2 border-red-300 shadow-xl text-[10px] sm:text-xs md:text-sm glow-red animate-pulse";
                         } else {
                             actionText.innerText = this.player.killCooldown > 0 ? `${Math.ceil(this.player.killCooldown)}s` : "BUSCAR";
                             actionIcon.className = "fa-solid fa-hourglass-half text-xl sm:text-2xl mb-0.5";
-                            actionBtn.className = "among-btn bg-slate-800 text-slate-400 font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-slate-700 text-[10px] sm:text-xs";
+                            actionBtn.className = "among-btn bg-slate-800 text-slate-400 font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-2xl flex flex-col items-center justify-center border-2 border-slate-700 text-[10px] sm:text-xs md:text-sm";
                         }
                     }
                 } else {
@@ -1355,15 +1319,15 @@
                     if (isNearReactorSabotage) {
                         actionText.innerText = "REPARAR";
                         actionIcon.className = "fa-solid fa-triangle-exclamation text-xl sm:text-2xl mb-0.5";
-                        actionBtn.className = "among-btn bg-red-600 hover:bg-red-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-red-300 shadow-xl text-[10px] sm:text-xs glow-red animate-pulse";
+                        actionBtn.className = "among-btn bg-red-600 hover:bg-red-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-2xl flex flex-col items-center justify-center border-2 border-red-300 shadow-xl text-[10px] sm:text-xs md:text-sm glow-red animate-pulse";
                     } else if (nearbyTask) {
                         actionText.innerText = "USAR";
                         actionIcon.className = "fa-solid fa-hand text-xl sm:text-2xl mb-0.5";
-                        actionBtn.className = "among-btn bg-cyan-600 hover:bg-cyan-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-cyan-300 shadow-xl text-[10px] sm:text-xs glow-cyan";
+                        actionBtn.className = "among-btn bg-cyan-600 hover:bg-cyan-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-2xl flex flex-col items-center justify-center border-2 border-cyan-300 shadow-xl text-[10px] sm:text-xs md:text-sm glow-cyan";
                     } else {
-                        actionText.innerText = "USAR";
+                        actionText.innerText = "TAREA";
                         actionIcon.className = "fa-solid fa-screwdriver-wrench text-xl sm:text-2xl mb-0.5";
-                        actionBtn.className = "among-btn bg-cyan-600/60 text-cyan-200 font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-cyan-400 text-[10px] sm:text-xs glow-cyan";
+                        actionBtn.className = "among-btn bg-slate-800 text-slate-500 font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-2xl flex flex-col items-center justify-center border-2 border-slate-700 text-[10px] sm:text-xs md:text-sm";
                     }
                 }
             }
@@ -1634,12 +1598,12 @@
                     } else if (aliveImpostors >= aliveCrewmates) {
                         this.triggerGameOver(false, "¡Los Impostores tienen el control de la nave!");
                     } else {
-                        this.player.x = 14.5 * TILE_SIZE;
-                        this.player.y = 5.5 * TILE_SIZE;
+                        this.player.x = 15.5 * TILE_SIZE;
+                        this.player.y = 3.5 * TILE_SIZE;
                         this.bots.forEach(b => {
                             if (!b.isDead) {
-                                b.x = 14.5 * TILE_SIZE + (Math.random() * 60 - 30);
-                                b.y = 5.5 * TILE_SIZE + (Math.random() * 60 - 30);
+                                b.x = 15.5 * TILE_SIZE + (Math.random() * 60 - 30);
+                                b.y = 3.5 * TILE_SIZE + (Math.random() * 60 - 30);
                             }
                         });
                     }
@@ -1931,7 +1895,7 @@
             impBtn.onclick = () => { selectedRole = 'impostor'; setupMenuControls(); };
         }
 
-        // --- JOYSTICK ANALÓGICO PANTALLA TÁCTIL ---
+        // --- DYNAMIC TOUCH ANALOG JOYSTICK ---
         function setupAnalogJoystick() {
             const zone = document.getElementById('joystick-zone');
             const base = document.getElementById('joystick-base');
