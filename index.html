@@ -128,7 +128,7 @@
             <div class="flex-1">
                 <div class="flex justify-between text-[10px] sm:text-xs font-bold mb-0.5 sm:mb-1">
                     <span class="text-cyan-300 font-orbitron hidden sm:inline">TAREAS NAVE</span>
-                    <span id="task-count-text" class="text-white font-orbitron">0 / 8</span>
+                    <span id="task-count-text" class="text-white font-orbitron">0 / 7</span>
                 </div>
                 <div class="w-full bg-slate-800 h-2 sm:h-3 rounded-full overflow-hidden border border-slate-700">
                     <div id="task-progress-fill" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-0% transition-all duration-300"></div>
@@ -187,7 +187,7 @@
             <div class="flex flex-col items-center justify-center w-full md:w-1/2">
                 <div class="text-center mb-2 sm:mb-3">
                     <h1 class="font-orbitron font-black text-2xl sm:text-3xl text-cyan-400 tracking-wider mb-0.5 drop-shadow-md">MAFIA US</h1>
-                    <p class="font-orbitron text-[10px] font-bold text-red-500 tracking-widest uppercase">The Skeld + MIRA HQ</p>
+                    <p class="font-orbitron text-[10px] font-bold text-red-500 tracking-widest uppercase">Modo Persecución & Votación</p>
                 </div>
 
                 <div class="relative w-24 h-24 sm:w-28 sm:h-28 mb-2 sm:mb-3 bg-slate-800/90 rounded-2xl border-2 border-slate-700 flex items-center justify-center">
@@ -546,3 +546,1540 @@
                 ctx.strokeStyle = '#fef08a';
                 ctx.lineWidth = 4;
                 ctx.beginPath();
+                ctx.ellipse(0, -radius * 1.05, radius * 0.4, radius * 0.12, 0, 0, Math.PI * 2);
+                ctx.stroke();
+            } else if (hat === 'military') {
+                ctx.fillStyle = '#15803d';
+                ctx.beginPath();
+                ctx.ellipse(0, -radius * 0.8, radius * 0.5, radius * 0.22, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                ctx.fillStyle = '#166534';
+                ctx.fillRect(-radius * 0.35, -radius * 0.95, radius * 0.7, radius * 0.2);
+                ctx.strokeRect(-radius * 0.35, -radius * 0.95, radius * 0.7, radius * 0.2);
+            } else if (hat === 'knight') {
+                ctx.fillStyle = '#64748b';
+                drawRoundRect(ctx, -radius * 0.45, -radius * 1.05, radius * 0.9, radius * 0.45, radius * 0.1);
+                ctx.fill();
+                ctx.stroke();
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(-radius * 0.3, -radius * 0.9, radius * 0.6, radius * 0.08);
+            } else if (hat === 'headphones') {
+                ctx.strokeStyle = '#0284c7';
+                ctx.lineWidth = 5;
+                ctx.beginPath();
+                ctx.arc(0, -radius * 0.4, radius * 0.52, Math.PI, 0);
+                ctx.stroke();
+                ctx.fillStyle = '#e11d48';
+                ctx.fillRect(-radius * 0.6, -radius * 0.5, radius * 0.18, radius * 0.35);
+                ctx.strokeRect(-radius * 0.6, -radius * 0.5, radius * 0.18, radius * 0.35);
+                ctx.fillRect(radius * 0.42, -radius * 0.5, radius * 0.18, radius * 0.35);
+                ctx.strokeRect(radius * 0.42, -radius * 0.5, radius * 0.18, radius * 0.35);
+            } else if (hat === 'tophat') {
+                ctx.fillStyle = '#1e293b';
+                ctx.fillRect(-radius * 0.5, -radius * 0.75, radius * 1.0, radius * 0.12);
+                ctx.strokeRect(-radius * 0.5, -radius * 0.75, radius * 1.0, radius * 0.12);
+                ctx.fillRect(-radius * 0.3, -radius * 1.25, radius * 0.6, radius * 0.5);
+                ctx.strokeRect(-radius * 0.3, -radius * 1.25, radius * 0.6, radius * 0.5);
+            }
+
+            ctx.restore();
+        }
+
+        function drawDeadBody(ctx, x, y, colorVal) {
+            ctx.save();
+            ctx.translate(x, y);
+
+            const palette = getColorObj(colorVal);
+
+            ctx.fillStyle = palette.body;
+            ctx.beginPath();
+            ctx.ellipse(0, 5, 18, 11, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = '#000000';
+            ctx.stroke();
+
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(-3, -12, 6, 14);
+            ctx.beginPath();
+            ctx.arc(-3, -12, 4, 0, Math.PI * 2);
+            ctx.arc(3, -12, 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        function renderPreview() {
+            const canvas = document.getElementById('previewCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCrewmateCharacter(ctx, 45, 55, 26, selectedColor, selectedHat);
+        }
+
+        const TILE_SIZE = 55;
+
+        // MAPA OPTIMIZADO CON PASILLOS AMPLIOS Y ZONAS ABIERTAS
+        const SKELD_MAP_GRID = [
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1],
+            [1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,1,1,0,0,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,1,0,0,1],
+            [1,0,0,1,1,0,0,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,1,0,0,1],
+            [1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,1,1,1,1,0,0,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,1,1,1,1],
+            [1,1,1,1,1,0,0,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,1,1,1,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,1,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,1,1,1,1,1],
+            [1,1,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ];
+
+        const MAP_ROWS = SKELD_MAP_GRID.length;
+        const MAP_COLS = SKELD_MAP_GRID[0].length;
+
+        const ROOM_LABELS = [
+            { name: "INVERNADERO", x: 14.5 * TILE_SIZE, y: 2.5 * TILE_SIZE },
+            { name: "SALA DE CONTROL", x: 6.5 * TILE_SIZE, y: 6.0 * TILE_SIZE },
+            { name: "LABORATORIO", x: 23.5 * TILE_SIZE, y: 6.0 * TILE_SIZE },
+            { name: "REACTOR", x: 3.5 * TILE_SIZE, y: 10.0 * TILE_SIZE },
+            { name: "ENFERMERÍA", x: 14.5 * TILE_SIZE, y: 17.5 * TILE_SIZE },
+            { name: "CAFETERÍA", x: 24.5 * TILE_SIZE, y: 14.5 * TILE_SIZE },
+            { name: "ARMERÍA", x: 4.5 * TILE_SIZE, y: 14.5 * TILE_SIZE }
+        ];
+
+        const SKELD_VENTS = [
+            { id: 0, room: "Invernadero", x: 14.5 * TILE_SIZE, y: 3.5 * TILE_SIZE, connectTo: [1, 2] },
+            { id: 1, room: "Sala de Control", x: 6.5 * TILE_SIZE, y: 6.5 * TILE_SIZE, connectTo: [0, 2] },
+            { id: 2, room: "Laboratorio", x: 23.5 * TILE_SIZE, y: 6.5 * TILE_SIZE, connectTo: [0, 1] },
+
+            { id: 3, room: "Reactor", x: 3.5 * TILE_SIZE, y: 10.5 * TILE_SIZE, connectTo: [4, 5] },
+            { id: 4, room: "Armería", x: 4.5 * TILE_SIZE, y: 14.5 * TILE_SIZE, connectTo: [3, 5] },
+            { id: 5, room: "Enfermería", x: 14.5 * TILE_SIZE, y: 16.5 * TILE_SIZE, connectTo: [3, 4] },
+
+            { id: 6, room: "Cafetería", x: 24.5 * TILE_SIZE, y: 14.5 * TILE_SIZE, connectTo: [0, 2] }
+        ];
+
+        const REACTOR_SABOTAGE_POS = { x: 3.5 * TILE_SIZE, y: 10.5 * TILE_SIZE };
+
+        const SKELD_TASKS = [
+            { id: 0, name: 'CABLES (Control)', x: 6.5 * TILE_SIZE, y: 5.5 * TILE_SIZE, type: 'wires', completed: false },
+            { id: 1, name: 'DESCARGA (Laboratorio)', x: 23.5 * TILE_SIZE, y: 5.5 * TILE_SIZE, type: 'download', completed: false },
+            { id: 2, name: 'CALIBRAR (Reactor)', x: 3.5 * TILE_SIZE, y: 9.5 * TILE_SIZE, type: 'reactor', completed: false },
+            { id: 3, name: 'MUESTRAMED (Enfermería)', x: 14.5 * TILE_SIZE, y: 17.5 * TILE_SIZE, type: 'download', completed: false },
+            { id: 4, name: 'REGAR (Invernadero)', x: 14.5 * TILE_SIZE, y: 2.5 * TILE_SIZE, type: 'reactor', completed: false },
+            { id: 5, name: 'MUNICIÓN (Armería)', x: 4.5 * TILE_SIZE, y: 13.5 * TILE_SIZE, type: 'wires', completed: false },
+            { id: 6, name: 'LIMPIEZA (Cafetería)', x: 24.5 * TILE_SIZE, y: 13.5 * TILE_SIZE, type: 'download', completed: false }
+        ];
+
+        class GameEngine {
+            constructor() {
+                this.canvas = document.getElementById('gameCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                
+                this.player = null;
+                this.bots = [];
+                this.deadBodies = [];
+                this.keys = {};
+                this.analogDir = { x: 0, y: 0 };
+                this.gameStarted = false;
+                
+                this.tasks = JSON.parse(JSON.stringify(SKELD_TASKS));
+                this.isSabotageActive = false;
+                this.sabotageTimer = 30;
+                this.sabotageInterval = null;
+
+                this.isGameOver = false;
+                this.isMeetingActive = false;
+                this.heartbeatTimer = 0;
+
+                this.initTextures();
+                this.resizeCanvas();
+                window.addEventListener('resize', () => this.resizeCanvas());
+            }
+
+            initTextures() {
+                this.wallTileCanvas = document.createElement('canvas');
+                this.wallTileCanvas.width = TILE_SIZE;
+                this.wallTileCanvas.height = TILE_SIZE;
+                const wCtx = this.wallTileCanvas.getContext('2d');
+
+                const wGrad = wCtx.createLinearGradient(0, 0, TILE_SIZE, TILE_SIZE);
+                wGrad.addColorStop(0, '#111827');
+                wGrad.addColorStop(0.5, '#1f2937');
+                wGrad.addColorStop(1, '#0f172a');
+                wCtx.fillStyle = wGrad;
+                wCtx.fillRect(0, 0, TILE_SIZE, TILE_SIZE);
+
+                wCtx.fillStyle = 'rgba(56, 189, 248, 0.15)';
+                wCtx.fillRect(0, 0, TILE_SIZE, 3);
+                wCtx.fillRect(0, 0, 3, TILE_SIZE);
+
+                this.floorTileCanvas = document.createElement('canvas');
+                this.floorTileCanvas.width = TILE_SIZE;
+                this.floorTileCanvas.height = TILE_SIZE;
+                const fCtx = this.floorTileCanvas.getContext('2d');
+
+                const fGrad = fCtx.createRadialGradient(TILE_SIZE/2, TILE_SIZE/2, 5, TILE_SIZE/2, TILE_SIZE/2, TILE_SIZE/1.2);
+                fGrad.addColorStop(0, '#1e293b');
+                fGrad.addColorStop(1, '#0f172a');
+                fCtx.fillStyle = fGrad;
+                fCtx.fillRect(0, 0, TILE_SIZE, TILE_SIZE);
+
+                fCtx.strokeStyle = '#334155';
+                fCtx.lineWidth = 1;
+                fCtx.strokeRect(0, 0, TILE_SIZE, TILE_SIZE);
+            }
+
+            resizeCanvas() {
+                if (this.canvas) {
+                    this.canvas.width = window.innerWidth || document.documentElement.clientWidth || 800;
+                    this.canvas.height = window.innerHeight || document.documentElement.clientHeight || 600;
+                }
+            }
+
+            init() {
+                this.isGameOver = false;
+                this.isMeetingActive = false;
+                this.gameStarted = true;
+                this.resizeCanvas();
+                this.tasks = JSON.parse(JSON.stringify(SKELD_TASKS));
+                this.isSabotageActive = false;
+                this.deadBodies = [];
+
+                this.player = {
+                    id: 'player',
+                    name: 'Tú',
+                    x: 14.5 * TILE_SIZE,
+                    y: 5.5 * TILE_SIZE,
+                    radius: 20,
+                    speed: 4.2,
+                    color: selectedColor,
+                    hat: selectedHat,
+                    role: selectedRole,
+                    isFacingLeft: false,
+                    walkFrame: 0,
+                    inVent: false,
+                    ventIdx: -1,
+                    killCooldown: 0,
+                    isDead: false
+                };
+
+                this.bots = [];
+                const botColors = PRESET_COLORS.filter(c => c !== selectedColor);
+
+                // Puntos de Spawn seguros en zonas completamente navegables
+                if (selectedRole === 'crewmate') {
+                    this.bots.push({
+                        id: 'bot_impostor',
+                        name: 'Rojo',
+                        x: 6.5 * TILE_SIZE,
+                        y: 6.0 * TILE_SIZE,
+                        radius: 20,
+                        speed: 3.2,
+                        color: '#ff3b30',
+                        hat: 'knight',
+                        role: 'impostor',
+                        isFacingLeft: false,
+                        walkFrame: 0,
+                        targetX: 6.5 * TILE_SIZE,
+                        targetY: 6.0 * TILE_SIZE,
+                        workingTimer: 0,
+                        stuckFrames: 0,
+                        unstuckTimer: 0,
+                        killCooldown: 5,
+                        isDead: false
+                    });
+
+                    const spawnLocs = [
+                        { x: 14.5 * TILE_SIZE, y: 2.5 * TILE_SIZE },
+                        { x: 23.5 * TILE_SIZE, y: 6.0 * TILE_SIZE },
+                        { x: 14.5 * TILE_SIZE, y: 17.5 * TILE_SIZE },
+                        { x: 24.5 * TILE_SIZE, y: 14.5 * TILE_SIZE }
+                    ];
+
+                    for (let i = 0; i < 4; i++) {
+                        const colorHex = botColors[i % botColors.length];
+                        const hatObj = HATS[(i + 1) % HATS.length];
+                        this.bots.push({
+                            id: `bot_crew_${i}`,
+                            name: `Bot ${i + 1}`,
+                            x: spawnLocs[i].x,
+                            y: spawnLocs[i].y,
+                            radius: 20,
+                            speed: 2.8,
+                            color: colorHex,
+                            hat: hatObj.id,
+                            role: 'crewmate',
+                            isFacingLeft: false,
+                            walkFrame: 0,
+                            targetX: spawnLocs[i].x,
+                            targetY: spawnLocs[i].y,
+                            isDead: false,
+                            workingTimer: 0,
+                            currentTask: null,
+                            isPanicking: false,
+                            panicTimer: 0
+                        });
+                    }
+                } else {
+                    const spawnLocs = [
+                        { x: 14.5 * TILE_SIZE, y: 2.5 * TILE_SIZE },
+                        { x: 6.5 * TILE_SIZE, y: 6.0 * TILE_SIZE },
+                        { x: 23.5 * TILE_SIZE, y: 6.0 * TILE_SIZE },
+                        { x: 14.5 * TILE_SIZE, y: 17.5 * TILE_SIZE }
+                    ];
+
+                    for (let i = 0; i < 4; i++) {
+                        const colorHex = botColors[i % botColors.length];
+                        const hatObj = HATS[(i + 2) % HATS.length];
+                        this.bots.push({
+                            id: `bot_crew_${i}`,
+                            name: `Bot ${i + 1}`,
+                            x: spawnLocs[i].x,
+                            y: spawnLocs[i].y,
+                            radius: 20,
+                            speed: 2.6,
+                            color: colorHex,
+                            hat: hatObj.id,
+                            role: 'crewmate',
+                            isFacingLeft: false,
+                            walkFrame: 0,
+                            targetX: spawnLocs[i].x,
+                            targetY: spawnLocs[i].y,
+                            isDead: false,
+                            workingTimer: 0,
+                            currentTask: null,
+                            isPanicking: false,
+                            panicTimer: 0
+                        });
+                    }
+                }
+
+                this.updateHUD();
+            }
+
+            isWall(x, y) {
+                const col = Math.floor(x / TILE_SIZE);
+                const row = Math.floor(y / TILE_SIZE);
+                if (row < 0 || row >= MAP_ROWS || col < 0 || col >= MAP_COLS) return true;
+                return SKELD_MAP_GRID[row][col] === 1;
+            }
+
+            getValidTarget(x, y) {
+                let col = Math.floor(x / TILE_SIZE);
+                let row = Math.floor(y / TILE_SIZE);
+                col = Math.max(1, Math.min(MAP_COLS - 2, col));
+                row = Math.max(1, Math.min(MAP_ROWS - 2, row));
+
+                if (SKELD_MAP_GRID[row] && SKELD_MAP_GRID[row][col] === 0) {
+                    return { x, y };
+                }
+
+                for (let dr = -1; dr <= 1; dr++) {
+                    for (let dc = -1; dc <= 1; dc++) {
+                        if (SKELD_MAP_GRID[row + dr] && SKELD_MAP_GRID[row + dr][col + dc] === 0) {
+                            return {
+                                x: (col + dc + 0.5) * TILE_SIZE,
+                                y: (row + dr + 0.5) * TILE_SIZE
+                            };
+                        }
+                    }
+                }
+                return { x: 14.5 * TILE_SIZE, y: 5.5 * TILE_SIZE };
+            }
+
+            checkCollision(newX, newY) {
+                const hitRadius = 14;
+                const points = [
+                    { x: newX - hitRadius, y: newY - hitRadius },
+                    { x: newX + hitRadius, y: newY - hitRadius },
+                    { x: newX - hitRadius, y: newY + hitRadius },
+                    { x: newX + hitRadius, y: newY + hitRadius }
+                ];
+                return points.some(p => this.isWall(p.x, p.y));
+            }
+
+            isWallBetween(x1, y1, x2, y2) {
+                const steps = 10;
+                for (let i = 1; i < steps; i++) {
+                    const testX = x1 + (x2 - x1) * (i / steps);
+                    const testY = y1 + (y2 - y1) * (i / steps);
+                    if (this.isWall(testX, testY)) return true;
+                }
+                return false;
+            }
+
+            update() {
+                if (!this.gameStarted || !this.player || this.isGameOver || this.isMeetingActive) return;
+
+                if (this.player.killCooldown > 0) this.player.killCooldown -= 1/60;
+
+                let dx = 0;
+                let dy = 0;
+
+                if (this.keys['KeyW'] || this.keys['ArrowUp'] || this.keys['w'] || this.keys['W']) dy -= 1;
+                if (this.keys['KeyS'] || this.keys['ArrowDown'] || this.keys['s'] || this.keys['S']) dy += 1;
+                if (this.keys['KeyA'] || this.keys['ArrowLeft'] || this.keys['a'] || this.keys['A']) dx -= 1;
+                if (this.keys['KeyD'] || this.keys['ArrowRight'] || this.keys['d'] || this.keys['D']) dx += 1;
+
+                if (this.analogDir.x !== 0 || this.analogDir.y !== 0) {
+                    dx = this.analogDir.x;
+                    dy = this.analogDir.y;
+                }
+
+                if ((dx !== 0 || dy !== 0) && !this.player.inVent && !this.player.isDead) {
+                    const len = Math.hypot(dx, dy);
+                    const normX = (dx / len) * this.player.speed;
+                    const normY = (dy / len) * this.player.speed;
+
+                    if (!this.checkCollision(this.player.x + normX, this.player.y)) {
+                        this.player.x += normX;
+                    }
+                    if (!this.checkCollision(this.player.x, this.player.y + normY)) {
+                        this.player.y += normY;
+                    }
+
+                    if (dx < 0) this.player.isFacingLeft = true;
+                    if (dx > 0) this.player.isFacingLeft = false;
+
+                    this.player.walkFrame += 0.25;
+                }
+
+                this.updateBots();
+                this.checkDeadBodyDiscovery();
+                this.checkProximity();
+                this.updateActionButtons();
+            }
+
+            updateBots() {
+                this.bots.forEach(bot => {
+                    if (bot.isDead) return;
+
+                    if (bot.role === 'impostor') {
+                        if (bot.killCooldown > 0) bot.killCooldown -= 1 / 60;
+                        if (bot.unstuckTimer > 0) bot.unstuckTimer--;
+
+                        if (bot.unstuckTimer <= 0) {
+                            let targets = [];
+
+                            if (this.player.role === 'crewmate' && !this.player.inVent && !this.player.isDead) {
+                                targets.push({
+                                    isPlayer: true,
+                                    botRef: null,
+                                    x: this.player.x,
+                                    y: this.player.y,
+                                    dist: Math.hypot(this.player.x - bot.x, this.player.y - bot.y)
+                                });
+                            }
+
+                            this.bots.forEach(b => {
+                                if (b.role === 'crewmate' && !b.isDead) {
+                                    targets.push({
+                                        isPlayer: false,
+                                        botRef: b,
+                                        x: b.x,
+                                        y: b.y,
+                                        dist: Math.hypot(b.x - bot.x, b.y - bot.y)
+                                    });
+                                }
+                            });
+
+                            targets = targets.filter(t => t.dist < 400 && (!this.isWallBetween(bot.x, bot.y, t.x, t.y) || t.dist < 100));
+                            targets.sort((a, b) => a.dist - b.dist);
+
+                            if (targets.length > 0) {
+                                const closestTarget = targets[0];
+                                const validTgt = this.getValidTarget(closestTarget.x, closestTarget.y);
+                                bot.targetX = validTgt.x;
+                                bot.targetY = validTgt.y;
+
+                                if (closestTarget.dist < 38 && bot.killCooldown <= 0) {
+                                    audio.playKillSound();
+                                    bot.killCooldown = 12;
+
+                                    if (closestTarget.isPlayer) {
+                                        this.player.isDead = true;
+                                        this.deadBodies.push({ id: 'player', x: this.player.x, y: this.player.y, color: this.player.color, name: 'Tú' });
+                                        this.triggerGameOver(false, "¡El Impostor te atrapó y te eliminó!");
+                                        return;
+                                    } else {
+                                        closestTarget.botRef.isDead = true;
+                                        this.deadBodies.push({ id: closestTarget.botRef.id, x: closestTarget.botRef.x, y: closestTarget.botRef.y, color: closestTarget.botRef.color, name: closestTarget.botRef.name });
+                                    }
+                                }
+                            } else {
+                                if (!bot.targetX || Math.hypot(bot.targetX - bot.x, bot.targetY - bot.y) < 30) {
+                                    const randomRoom = ROOM_LABELS[Math.floor(Math.random() * ROOM_LABELS.length)];
+                                    const validTgt = this.getValidTarget(randomRoom.x, randomRoom.y);
+                                    bot.targetX = validTgt.x;
+                                    bot.targetY = validTgt.y;
+                                }
+                            }
+                        }
+                    } else {
+                        const impostorRef = this.player.role === 'impostor' ? this.player : this.bots.find(b => b.role === 'impostor');
+                        const isImpostorVisible = impostorRef && (!impostorRef.inVent) && (!impostorRef.isDead) && Math.hypot(impostorRef.x - bot.x, impostorRef.y - bot.y) < 185;
+
+                        if (isImpostorVisible) {
+                            bot.isPanicking = true;
+                            bot.panicTimer = 90;
+                            
+                            const escapeAngle = Math.atan2(bot.y - impostorRef.y, bot.x - impostorRef.x);
+                            const rawTargetX = bot.x + Math.cos(escapeAngle) * 120;
+                            const rawTargetY = bot.y + Math.sin(escapeAngle) * 120;
+                            
+                            const validTgt = this.getValidTarget(rawTargetX, rawTargetY);
+                            bot.targetX = validTgt.x;
+                            bot.targetY = validTgt.y;
+                            bot.workingTimer = 0;
+                        } else if (bot.panicTimer > 0) {
+                            bot.panicTimer--;
+                            if (bot.panicTimer <= 0) bot.isPanicking = false;
+                        }
+
+                        if (this.isSabotageActive) {
+                            bot.isPanicking = false;
+                            bot.targetX = REACTOR_SABOTAGE_POS.x;
+                            bot.targetY = REACTOR_SABOTAGE_POS.y;
+
+                            if (Math.hypot(bot.x - REACTOR_SABOTAGE_POS.x, bot.y - REACTOR_SABOTAGE_POS.y) < 40) {
+                                bot.workingTimer = (bot.workingTimer || 0) + 1 / 60;
+                                if (bot.workingTimer >= 2.5) {
+                                    this.resolveSabotage("¡Un tripulante reparó la crisis del reactor!");
+                                    bot.workingTimer = 0;
+                                }
+                            } else {
+                                bot.workingTimer = 0;
+                            }
+                        } else if (!bot.isPanicking) {
+                            if (!bot.currentTask || bot.currentTask.completed) {
+                                const uncompleted = this.tasks.filter(t => !t.completed);
+                                if (uncompleted.length > 0) {
+                                    bot.currentTask = uncompleted[Math.floor(Math.random() * uncompleted.length)];
+                                    const validTgt = this.getValidTarget(bot.currentTask.x, bot.currentTask.y);
+                                    bot.targetX = validTgt.x;
+                                    bot.targetY = validTgt.y;
+                                    bot.workingTimer = 0;
+                                }
+                            }
+
+                            if (bot.currentTask && Math.hypot(bot.targetX - bot.x, bot.targetY - bot.y) < 30) {
+                                bot.workingTimer += 1 / 60;
+                                if (bot.workingTimer >= 3.0) {
+                                    this.completeTask(bot.currentTask.id);
+                                    bot.workingTimer = 0;
+                                    bot.currentTask = null;
+                                }
+                            }
+                        }
+                    }
+
+                    const currentSpeed = bot.isPanicking ? bot.speed * 1.35 : bot.speed;
+                    const bdx = bot.targetX - bot.x;
+                    const bdy = bot.targetY - bot.y;
+                    const dist = Math.hypot(bdx, bdy);
+
+                    if (dist > 3 && (!bot.workingTimer || bot.workingTimer === 0)) {
+                        const vx = (bdx / dist) * currentSpeed;
+                        const vy = (bdy / dist) * currentSpeed;
+
+                        let movedX = false;
+                        let movedY = false;
+
+                        if (!this.checkCollision(bot.x + vx, bot.y)) {
+                            bot.x += vx;
+                            movedX = true;
+                        }
+                        if (!this.checkCollision(bot.x, bot.y + vy)) {
+                            bot.y += vy;
+                            movedY = true;
+                        }
+
+                        if (!movedX && !movedY) {
+                            bot.stuckFrames = (bot.stuckFrames || 0) + 1;
+                            if (bot.stuckFrames > 6) {
+                                const randomRoom = ROOM_LABELS[Math.floor(Math.random() * ROOM_LABELS.length)];
+                                const validTgt = this.getValidTarget(randomRoom.x, randomRoom.y);
+                                bot.targetX = validTgt.x;
+                                bot.targetY = validTgt.y;
+                                bot.stuckFrames = 0;
+                                bot.unstuckTimer = 90;
+                                bot.currentTask = null;
+                            }
+                        } else {
+                            bot.stuckFrames = 0;
+                        }
+
+                        bot.isFacingLeft = bdx < 0;
+                        bot.walkFrame += 0.25;
+                    }
+                });
+            }
+
+            checkDeadBodyDiscovery() {
+                if (this.isMeetingActive) return;
+
+                this.bots.forEach(bot => {
+                    if (bot.isDead) return;
+                    this.deadBodies.forEach(body => {
+                        const dist = Math.hypot(bot.x - body.x, bot.y - body.y);
+                        if (dist < 100 && !this.isWallBetween(bot.x, bot.y, body.x, body.y)) {
+                            this.startEmergencyMeeting(bot.name, body.name);
+                        }
+                    });
+                });
+            }
+
+            checkProximity() {
+                const impostor = this.player.role === 'impostor' ? this.player : this.bots.find(b => b.role === 'impostor');
+                if (!impostor || impostor.isDead) return;
+
+                const dist = Math.hypot(this.player.x - impostor.x, this.player.y - impostor.y);
+                const proxText = document.getElementById('proximity-text');
+                const heartIcon = document.getElementById('heart-icon');
+
+                this.heartbeatTimer++;
+
+                if (dist < 160) {
+                    proxText.innerText = "¡PELIGRO!";
+                    proxText.className = "font-orbitron text-[10px] sm:text-xs font-semibold text-red-500 animate-pulse";
+                    heartIcon.className = "fa-solid fa-heart text-red-500 text-xl sm:text-2xl scale-125 transition-all";
+                    if (this.heartbeatTimer % 20 === 0) audio.playHeartbeat(2);
+                } else if (dist < 320) {
+                    proxText.innerText = "ALERTA";
+                    proxText.className = "font-orbitron text-[10px] sm:text-xs font-semibold text-amber-400";
+                    heartIcon.className = "fa-solid fa-heart text-amber-400 text-base sm:text-xl transition-all";
+                    if (this.heartbeatTimer % 45 === 0) audio.playHeartbeat(1);
+                } else {
+                    proxText.innerText = "SEGURO";
+                    proxText.className = "font-orbitron text-[10px] sm:text-xs font-semibold text-slate-300";
+                    heartIcon.className = "fa-solid fa-heart text-emerald-400 text-sm sm:text-lg transition-all";
+                }
+            }
+
+            render() {
+                if (!this.gameStarted || !this.player) return;
+
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+                const cameraX = this.canvas.width / 2 - this.player.x;
+                const cameraY = this.canvas.height / 2 - this.player.y;
+
+                this.ctx.save();
+                this.ctx.translate(cameraX, cameraY);
+                this.ctx.lineJoin = 'round';
+
+                for (let r = 0; r < MAP_ROWS; r++) {
+                    for (let c = 0; c < MAP_COLS; c++) {
+                        const x = c * TILE_SIZE;
+                        const y = r * TILE_SIZE;
+
+                        if (SKELD_MAP_GRID[r][c] === 1) {
+                            this.ctx.drawImage(this.wallTileCanvas, x, y);
+                            if (r + 1 < MAP_ROWS && SKELD_MAP_GRID[r + 1][c] === 0) {
+                                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+                                this.ctx.fillRect(x, y + TILE_SIZE - 6, TILE_SIZE, 6);
+                            }
+                        } else {
+                            this.ctx.drawImage(this.floorTileCanvas, x, y);
+                            if (r > 0 && SKELD_MAP_GRID[r - 1][c] === 1) {
+                                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.38)';
+                                this.ctx.fillRect(x, y, TILE_SIZE, 10);
+                            }
+                        }
+                    }
+                }
+
+                ROOM_LABELS.forEach(lbl => {
+                    this.ctx.fillStyle = 'rgba(56, 189, 248, 0.22)';
+                    this.ctx.font = 'bold 20px Orbitron';
+                    this.ctx.textAlign = 'center';
+                    this.ctx.fillText(lbl.name, lbl.x, lbl.y);
+                });
+
+                SKELD_VENTS.forEach(v => {
+                    this.ctx.fillStyle = '#334155';
+                    this.ctx.fillRect(v.x - 22, v.y - 16, 44, 32);
+                    this.ctx.strokeStyle = '#64748b';
+                    this.ctx.lineWidth = 3;
+                    this.ctx.strokeRect(v.x - 22, v.y - 16, 44, 32);
+                    
+                    this.ctx.strokeStyle = '#0284c7';
+                    for (let i = -12; i <= 12; i += 6) {
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(v.x + i, v.y - 12);
+                        this.ctx.lineTo(v.x + i, v.y + 12);
+                        this.ctx.stroke();
+                    }
+                });
+
+                this.tasks.forEach(t => {
+                    this.ctx.fillStyle = t.completed ? '#10b981' : '#f59e0b';
+                    this.ctx.beginPath();
+                    this.ctx.arc(t.x, t.y, 16, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    this.ctx.strokeStyle = '#ffffff';
+                    this.ctx.lineWidth = 2;
+                    this.ctx.stroke();
+
+                    this.ctx.fillStyle = '#ffffff';
+                    this.ctx.font = 'bold 11px Orbitron';
+                    this.ctx.textAlign = 'center';
+                    this.ctx.fillText(t.name, t.x, t.y - 22);
+                });
+
+                this.deadBodies.forEach(body => {
+                    drawDeadBody(this.ctx, body.x, body.y, body.color);
+                });
+
+                this.bots.forEach(bot => {
+                    if (!bot.isDead) {
+                        drawCrewmateCharacter(this.ctx, bot.x, bot.y, bot.radius, bot.color, bot.hat, bot.isFacingLeft, bot.walkFrame);
+
+                        if (bot.role === 'impostor') {
+                            this.ctx.fillStyle = '#ef4444';
+                            this.ctx.font = 'bold 12px Orbitron';
+                            this.ctx.textAlign = 'center';
+                            if (bot.killCooldown > 0) {
+                                this.ctx.fillText(`🔪 ${Math.ceil(bot.killCooldown)}s`, bot.x, bot.y - bot.radius - 18);
+                            } else {
+                                this.ctx.fillText("🔪 ¡LISTO!", bot.x, bot.y - bot.radius - 18);
+                            }
+                        } else if (bot.role === 'crewmate') {
+                            if (bot.isPanicking) {
+                                this.ctx.fillStyle = '#ef4444';
+                                this.ctx.font = 'bold 16px Orbitron';
+                                this.ctx.textAlign = 'center';
+                                this.ctx.fillText("¡!", bot.x, bot.y - bot.radius - 22);
+                            } else if (bot.workingTimer > 0) {
+                                this.ctx.fillStyle = '#38fedc';
+                                this.ctx.font = 'bold 13px Orbitron';
+                                this.ctx.textAlign = 'center';
+                                this.ctx.fillText("🔧", bot.x, bot.y - bot.radius - 20);
+                            }
+                        }
+                    }
+                });
+
+                if (!this.player.inVent && !this.player.isDead) {
+                    drawCrewmateCharacter(this.ctx, this.player.x, this.player.y, this.player.radius, this.player.color, this.player.hat, this.player.isFacingLeft, this.player.walkFrame);
+                }
+
+                this.renderFogOfWar();
+
+                this.ctx.restore();
+            }
+
+            renderFogOfWar() {
+                if (!this.player) return;
+                const viewRadius = this.player.role === 'impostor' ? 300 : 220;
+
+                this.ctx.save();
+                this.ctx.beginPath();
+                this.ctx.rect(this.player.x - this.canvas.width, this.player.y - this.canvas.height, this.canvas.width * 2, this.canvas.height * 2);
+                this.ctx.arc(this.player.x, this.player.y, viewRadius, 0, Math.PI * 2, true);
+                this.ctx.fillStyle = 'rgba(3, 7, 18, 0.85)';
+                this.ctx.fill();
+
+                try {
+                    const grad = this.ctx.createRadialGradient(
+                        this.player.x, this.player.y, Math.max(0, viewRadius - 35),
+                        this.player.x, this.player.y, viewRadius
+                    );
+                    grad.addColorStop(0, 'rgba(3, 7, 18, 0)');
+                    grad.addColorStop(1, 'rgba(3, 7, 18, 0.85)');
+                    this.ctx.fillStyle = grad;
+                    this.ctx.beginPath();
+                    this.ctx.arc(this.player.x, this.player.y, viewRadius, 0, Math.PI * 2);
+                    this.ctx.fill();
+                } catch(e) {}
+
+                this.ctx.restore();
+            }
+
+            updateActionButtons() {
+                const actionBtn = document.getElementById('action-btn');
+                const actionText = document.getElementById('action-text');
+                const actionIcon = document.getElementById('action-icon');
+                const ventBtn = document.getElementById('vent-btn');
+                const sabotageBtn = document.getElementById('sabotage-btn');
+                const reportBtn = document.getElementById('report-btn');
+
+                const nearbyBody = this.deadBodies.find(b => Math.hypot(b.x - this.player.x, b.y - this.player.y) < 70);
+                if (nearbyBody && !this.player.isDead) {
+                    reportBtn.classList.remove('hidden');
+                } else {
+                    reportBtn.classList.add('hidden');
+                }
+
+                if (this.player.role === 'impostor') {
+                    ventBtn.classList.remove('hidden');
+                    sabotageBtn.classList.remove('hidden');
+
+                    if (this.player.inVent) {
+                        ventBtn.querySelector('span') ? ventBtn.querySelector('span').innerText = "MOVER" : ventBtn.innerText = "MOVER";
+                        actionText.innerText = "SALIR";
+                        actionIcon.className = "fa-solid fa-door-open text-xl sm:text-2xl mb-0.5";
+                        actionBtn.className = "among-btn bg-emerald-600 hover:bg-emerald-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-emerald-300 shadow-xl text-[10px] sm:text-xs glow-cyan";
+                    } else {
+                        ventBtn.querySelector('span') ? ventBtn.querySelector('span').innerText = "ESCOTILLA" : ventBtn.innerText = "ESCOTILLA";
+                        const targetBot = this.bots.find(b => !b.isDead && Math.hypot(b.x - this.player.x, b.y - this.player.y) < 50);
+
+                        if (targetBot && this.player.killCooldown <= 0) {
+                            actionText.innerText = "ASESINAR";
+                            actionIcon.className = "fa-solid fa-skull text-xl sm:text-2xl mb-0.5";
+                            actionBtn.className = "among-btn bg-red-600 hover:bg-red-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-red-300 shadow-xl text-[10px] sm:text-xs glow-red animate-pulse";
+                        } else {
+                            actionText.innerText = this.player.killCooldown > 0 ? `${Math.ceil(this.player.killCooldown)}s` : "BUSCAR";
+                            actionIcon.className = "fa-solid fa-hourglass-half text-xl sm:text-2xl mb-0.5";
+                            actionBtn.className = "among-btn bg-slate-800 text-slate-400 font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-slate-700 text-[10px] sm:text-xs";
+                        }
+                    }
+                } else {
+                    ventBtn.classList.add('hidden');
+                    sabotageBtn.classList.add('hidden');
+
+                    const isNearReactorSabotage = this.isSabotageActive && Math.hypot(this.player.x - REACTOR_SABOTAGE_POS.x, this.player.y - REACTOR_SABOTAGE_POS.y) < 60;
+                    const nearbyTask = this.tasks.find(t => !t.completed && Math.hypot(t.x - this.player.x, t.y - this.player.y) < 55);
+
+                    if (isNearReactorSabotage) {
+                        actionText.innerText = "REPARAR";
+                        actionIcon.className = "fa-solid fa-triangle-exclamation text-xl sm:text-2xl mb-0.5";
+                        actionBtn.className = "among-btn bg-red-600 hover:bg-red-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-red-300 shadow-xl text-[10px] sm:text-xs glow-red animate-pulse";
+                    } else if (nearbyTask) {
+                        actionText.innerText = "USAR";
+                        actionIcon.className = "fa-solid fa-hand text-xl sm:text-2xl mb-0.5";
+                        actionBtn.className = "among-btn bg-cyan-600 hover:bg-cyan-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-cyan-300 shadow-xl text-[10px] sm:text-xs glow-cyan";
+                    } else {
+                        actionText.innerText = "USAR";
+                        actionIcon.className = "fa-solid fa-screwdriver-wrench text-xl sm:text-2xl mb-0.5";
+                        actionBtn.className = "among-btn bg-cyan-600/60 text-cyan-200 font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-cyan-400 text-[10px] sm:text-xs glow-cyan";
+                    }
+                }
+            }
+
+            handlePrimaryAction() {
+                if (this.player.role === 'impostor') {
+                    if (this.player.inVent) {
+                        this.exitVent();
+                        return;
+                    }
+
+                    const targetBot = this.bots.find(b => !b.isDead && Math.hypot(b.x - this.player.x, b.y - this.player.y) < 50);
+                    if (targetBot && this.player.killCooldown <= 0) {
+                        targetBot.isDead = true;
+                        this.deadBodies.push({ id: targetBot.id, x: targetBot.x, y: targetBot.y, color: targetBot.color, name: targetBot.name });
+                        this.player.killCooldown = 12;
+                        audio.playKillSound();
+
+                        const aliveCrew = this.bots.filter(b => b.role === 'crewmate' && !b.isDead).length;
+                        if (aliveCrew === 0) {
+                            this.triggerGameOver(true, "¡Has eliminado a toda la tripulación de la nave!");
+                        }
+                    }
+                } else {
+                    if (this.isSabotageActive && Math.hypot(this.player.x - REACTOR_SABOTAGE_POS.x, this.player.y - REACTOR_SABOTAGE_POS.y) < 60) {
+                        openMinigameModal({ id: 99, name: 'CALIBRAR REACTOR (EMERGENCIA)', type: 'reactor' });
+                        return;
+                    }
+
+                    const nearbyTask = this.tasks.find(t => !t.completed && Math.hypot(t.x - this.player.x, t.y - this.player.y) < 55);
+                    if (nearbyTask) {
+                        openMinigameModal(nearbyTask);
+                    }
+                }
+            }
+
+            reportDeadBody() {
+                const nearbyBody = this.deadBodies.find(b => Math.hypot(b.x - this.player.x, b.y - this.player.y) < 70);
+                if (nearbyBody) {
+                    this.startEmergencyMeeting('Tú', nearbyBody.name);
+                }
+            }
+
+            startEmergencyMeeting(reporterName, victimName) {
+                if (this.isMeetingActive) return;
+
+                this.isMeetingActive = true;
+                audio.playSabotageAlarm();
+
+                const meetingModal = document.getElementById('meeting-modal');
+                const title = document.getElementById('meeting-title');
+                const subtitle = document.getElementById('meeting-subtitle');
+                const votersGrid = document.getElementById('voters-grid');
+
+                title.innerText = "¡CUERPO ENCONTRADO!";
+                subtitle.innerText = `${reporterName} encontró el cuerpo de ${victimName}. ¡Debaten quién es el Impostor!`;
+                votersGrid.innerHTML = '';
+
+                meetingModal.classList.remove('hidden');
+
+                const allParticipants = [
+                    { id: 'player', name: 'Tú', color: this.player.color, isDead: this.player.isDead, role: this.player.role },
+                    ...this.bots.map(b => ({ id: b.id, name: b.name, color: b.color, isDead: b.isDead, role: b.role }))
+                ];
+
+                allParticipants.forEach(p => {
+                    const card = document.createElement('div');
+                    card.className = `p-2.5 sm:p-3 rounded-2xl border-2 flex items-center justify-between transition-all ${
+                        p.isDead 
+                            ? 'bg-slate-900/60 border-slate-800 opacity-50' 
+                            : 'bg-slate-800 hover:bg-slate-750 border-slate-700 hover:border-cyan-400 cursor-pointer'
+                    }`;
+
+                    const palette = getColorObj(p.color);
+
+                    card.innerHTML = `
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-black flex-shrink-0" style="background-color: ${palette.body}"></div>
+                            <span class="font-orbitron font-bold text-xs ${p.isDead ? 'line-through text-slate-500' : 'text-white'}">${p.name}</span>
+                        </div>
+                        ${p.isDead ? '<span class="text-red-500 text-[10px] sm:text-xs font-bold font-orbitron">MUERTO</span>' : `<button onclick="castPlayerVote('${p.id}')" class="among-btn px-2.5 py-1 bg-cyan-600 text-white rounded-lg text-[10px] sm:text-xs font-orbitron font-bold">VOTAR</button>`}
+                    `;
+                    votersGrid.appendChild(card);
+                });
+
+                let voteTimer = 15;
+                const timerSpan = document.getElementById('voting-timer');
+                timerSpan.innerText = `Tiempo: ${voteTimer}s`;
+
+                this.votingInterval = setInterval(() => {
+                    voteTimer--;
+                    timerSpan.innerText = `Tiempo: ${voteTimer}s`;
+                    if (voteTimer <= 0) {
+                        clearInterval(this.votingInterval);
+                        this.processVotingResults('skip');
+                    }
+                }, 1000);
+
+                window.castPlayerVote = (targetId) => {
+                    clearInterval(this.votingInterval);
+                    this.processVotingResults(targetId);
+                };
+
+                document.getElementById('skip-vote-btn').onclick = () => {
+                    clearInterval(this.votingInterval);
+                    this.processVotingResults('skip');
+                };
+            }
+
+            processVotingResults(playerVotedId) {
+                document.getElementById('meeting-modal').classList.add('hidden');
+
+                const aliveParticipants = [
+                    { id: 'player', name: 'Tú', color: this.player.color, hat: this.player.hat, role: this.player.role },
+                    ...this.bots.filter(b => !b.isDead).map(b => ({ id: b.id, name: b.name, color: b.color, hat: b.hat, role: b.role }))
+                ];
+
+                const voteCounts = {};
+                aliveParticipants.forEach(p => voteCounts[p.id] = 0);
+                voteCounts['skip'] = 0;
+
+                if (playerVotedId && voteCounts[playerVotedId] !== undefined) {
+                    voteCounts[playerVotedId]++;
+                } else {
+                    voteCounts['skip']++;
+                }
+
+                aliveParticipants.forEach(bot => {
+                    if (bot.id === 'player') return;
+
+                    if (bot.role === 'impostor') {
+                        const crewTargets = aliveParticipants.filter(p => p.role === 'crewmate');
+                        if (crewTargets.length > 0) {
+                            const chosen = crewTargets[Math.floor(Math.random() * crewTargets.length)].id;
+                            voteCounts[chosen]++;
+                        } else {
+                            voteCounts['skip']++;
+                        }
+                    } else {
+                        const impostorObj = aliveParticipants.find(p => p.role === 'impostor');
+                        if (impostorObj && Math.random() < 0.65) {
+                            voteCounts[impostorObj.id]++;
+                        } else {
+                            voteCounts['skip']++;
+                        }
+                    }
+                });
+
+                let highestVotedId = 'skip';
+                let maxVotes = 0;
+                let tie = false;
+
+                Object.keys(voteCounts).forEach(id => {
+                    if (voteCounts[id] > maxVotes) {
+                        maxVotes = voteCounts[id];
+                        highestVotedId = id;
+                        tie = false;
+                    } else if (voteCounts[id] === maxVotes && maxVotes > 0) {
+                        tie = true;
+                    }
+                });
+
+                if (tie || highestVotedId === 'skip') {
+                    this.showEjectionScreen(null, "Nadie fue expulsado. (Empate u Omisión de voto)");
+                } else {
+                    const ejected = aliveParticipants.find(p => p.id === highestVotedId);
+                    const isImpostor = ejected.role === 'impostor';
+                    
+                    if (ejected.id === 'player') {
+                        this.player.isDead = true;
+                    } else {
+                        const botObj = this.bots.find(b => b.id === ejected.id);
+                        if (botObj) botObj.isDead = true;
+                    }
+
+                    const resultMsg = ejected.id === 'player'
+                        ? `¡Fuiste expulsado al espacio exterior!\n${isImpostor ? 'Eras el Impostor.' : 'No eras el Impostor.'}`
+                        : `${ejected.name} fue expulsado al espacio exterior.\n${isImpostor ? 'Era el Impostor.' : 'No era el Impostor.'}`;
+
+                    this.showEjectionScreen(ejected, resultMsg, isImpostor);
+                }
+            }
+
+            showEjectionScreen(ejectedParticipant, message, wasImpostor = false) {
+                const ejectionModal = document.getElementById('ejection-modal');
+                const resultText = document.getElementById('ejection-result-text');
+                const continueBtn = document.getElementById('continue-after-vote-btn');
+                const canvas = document.getElementById('ejectionCanvas');
+                const ctx = canvas.getContext('2d');
+
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+
+                ejectionModal.classList.remove('hidden');
+                continueBtn.classList.add('hidden');
+                resultText.innerText = "";
+
+                if (this.ejectionAnimId) cancelAnimationFrame(this.ejectionAnimId);
+
+                const stars = Array.from({ length: 80 }, () => ({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2 + 1,
+                    speed: Math.random() * 3 + 1
+                }));
+
+                let charX = -60;
+                let charY = canvas.height / 2;
+                let rotation = 0;
+
+                let charIdx = 0;
+                const typeInterval = setInterval(() => {
+                    if (charIdx < message.length) {
+                        resultText.innerText += message[charIdx];
+                        charIdx++;
+                    } else {
+                        clearInterval(typeInterval);
+                        setTimeout(() => {
+                            continueBtn.classList.remove('hidden');
+                        }, 400);
+                    }
+                }, 40);
+
+                const animateEjection = () => {
+                    ctx.fillStyle = '#030712';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    ctx.fillStyle = '#ffffff';
+                    stars.forEach(s => {
+                        s.x -= s.speed;
+                        if (s.x < 0) s.x = canvas.width;
+                        ctx.beginPath();
+                        ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    });
+
+                    if (ejectedParticipant) {
+                        charX += (canvas.width + 120) / (3.5 * 60);
+                        rotation += 0.025;
+
+                        ctx.save();
+                        ctx.translate(charX, charY);
+                        ctx.rotate(rotation);
+                        drawCrewmateCharacter(ctx, 0, 0, 32, ejectedParticipant.color, ejectedParticipant.hat || 'none');
+                        ctx.restore();
+                    }
+
+                    this.ejectionAnimId = requestAnimationFrame(animateEjection);
+                };
+
+                animateEjection();
+
+                continueBtn.onclick = () => {
+                    if (this.ejectionAnimId) cancelAnimationFrame(this.ejectionAnimId);
+                    clearInterval(typeInterval);
+                    ejectionModal.classList.add('hidden');
+                    continueBtn.classList.add('hidden');
+                    this.isMeetingActive = false;
+                    this.deadBodies = [];
+
+                    const aliveImpostors = (this.player.role === 'impostor' && !this.player.isDead ? 1 : 0) + this.bots.filter(b => b.role === 'impostor' && !b.isDead).length;
+                    const aliveCrewmates = (this.player.role === 'crewmate' && !this.player.isDead ? 1 : 0) + this.bots.filter(b => b.role === 'crewmate' && !b.isDead).length;
+
+                    if (this.player.isDead) {
+                        this.triggerGameOver(false, "Fuiste expulsado al espacio por la tripulación.");
+                    } else if (aliveImpostors === 0) {
+                        this.triggerGameOver(true, "¡Expulsaron al Impostor! La tripulación gana.");
+                    } else if (aliveImpostors >= aliveCrewmates) {
+                        this.triggerGameOver(false, "¡Los Impostores tienen el control de la nave!");
+                    } else {
+                        this.player.x = 14.5 * TILE_SIZE;
+                        this.player.y = 5.5 * TILE_SIZE;
+                        this.bots.forEach(b => {
+                            if (!b.isDead) {
+                                b.x = 14.5 * TILE_SIZE + (Math.random() * 60 - 30);
+                                b.y = 5.5 * TILE_SIZE + (Math.random() * 60 - 30);
+                            }
+                        });
+                    }
+                };
+            }
+
+            useVent() {
+                if (this.player.role !== 'impostor') return;
+
+                audio.playVentSwoosh();
+                if (!this.player.inVent) {
+                    const closestVent = SKELD_VENTS.reduce((prev, curr) => {
+                        const dPrev = Math.hypot(prev.x - this.player.x, prev.y - this.player.y);
+                        const dCurr = Math.hypot(curr.x - this.player.x, curr.y - this.player.y);
+                        return dCurr < dPrev ? curr : prev;
+                    });
+
+                    if (Math.hypot(closestVent.x - this.player.x, closestVent.y - this.player.y) < 70) {
+                        this.player.inVent = true;
+                        this.player.ventIdx = closestVent.id;
+                        this.player.x = closestVent.x;
+                        this.player.y = closestVent.y;
+                    }
+                } else {
+                    const currVent = SKELD_VENTS.find(v => v.id === this.player.ventIdx) || SKELD_VENTS[0];
+                    const nextVentId = currVent.connectTo[0];
+                    const nextVent = SKELD_VENTS.find(v => v.id === nextVentId) || SKELD_VENTS[0];
+
+                    this.player.ventIdx = nextVent.id;
+                    this.player.x = nextVent.x;
+                    this.player.y = nextVent.y;
+                    currVent.connectTo.push(currVent.connectTo.shift());
+                }
+            }
+
+            exitVent() {
+                if (this.player.role !== 'impostor' || !this.player.inVent) return;
+                this.player.inVent = false;
+                audio.playVentSwoosh();
+            }
+
+            triggerSabotage() {
+                if (this.isSabotageActive) return;
+
+                this.isSabotageActive = true;
+                this.sabotageTimer = 25;
+                audio.playSabotageAlarm();
+
+                const alertBox = document.getElementById('sabotage-alert');
+                const sabotageText = document.getElementById('sabotage-text');
+                alertBox.classList.remove('hidden');
+
+                this.sabotageInterval = setInterval(() => {
+                    this.sabotageTimer--;
+                    sabotageText.innerText = `¡REACTOR EN CRISIS! (${this.sabotageTimer}s)`;
+
+                    if (this.sabotageTimer <= 0) {
+                        clearInterval(this.sabotageInterval);
+                        if (this.player.role === 'impostor') {
+                            this.triggerGameOver(true, "¡El reactor explotó! El Impostor gana.");
+                        } else {
+                            this.triggerGameOver(false, "¡No repararon el reactor a tiempo!");
+                        }
+                    }
+                }, 1000);
+            }
+
+            resolveSabotage(message = "¡Crisis del reactor solucionada!") {
+                if (!this.isSabotageActive) return;
+
+                this.isSabotageActive = false;
+                if (this.sabotageInterval) clearInterval(this.sabotageInterval);
+
+                const alertBox = document.getElementById('sabotage-alert');
+                alertBox.classList.add('hidden');
+
+                audio.playTaskComplete();
+            }
+
+            completeTask(taskId) {
+                if (taskId === 99) {
+                    this.resolveSabotage("¡Reparaste con éxito el reactor de emergencia!");
+                    return;
+                }
+
+                const task = this.tasks.find(t => t.id === taskId);
+                if (task) {
+                    task.completed = true;
+                    audio.playTaskComplete();
+                    this.updateHUD();
+
+                    const totalCompleted = this.tasks.filter(t => t.completed).length;
+                    if (totalCompleted === this.tasks.length) {
+                        if (this.player.role === 'impostor') {
+                            this.triggerGameOver(false, "¡Los tripulantes completaron todas las tareas! Has sido derrotado.");
+                        } else {
+                            this.triggerGameOver(true, "¡Todas las tareas han sido completadas!");
+                        }
+                    }
+                }
+            }
+
+            updateHUD() {
+                const completed = this.tasks.filter(t => t.completed).length;
+                const total = this.tasks.length;
+                document.getElementById('task-count-text').innerText = `${completed} / ${total}`;
+                document.getElementById('task-progress-fill').style.width = `${(completed / total) * 100}%`;
+            }
+
+            triggerGameOver(isWin, message) {
+                this.isGameOver = true;
+                if (this.sabotageInterval) clearInterval(this.sabotageInterval);
+
+                const modal = document.getElementById('game-over-modal');
+                const title = document.getElementById('game-over-title');
+                const desc = document.getElementById('game-over-desc');
+                const iconBox = document.getElementById('game-over-icon-box');
+
+                modal.classList.remove('hidden');
+
+                if (isWin) {
+                    title.innerText = "¡VICTORIA!";
+                    title.className = "font-orbitron font-black text-2xl sm:text-3xl mb-2 text-emerald-400";
+                    iconBox.className = "w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mb-4 bg-emerald-500/20 text-emerald-400 text-3xl sm:text-4xl";
+                    iconBox.innerHTML = '<i class="fa-solid fa-trophy"></i>';
+                } else {
+                    title.innerText = "DERROTA";
+                    title.className = "font-orbitron font-black text-2xl sm:text-3xl mb-2 text-red-500";
+                    iconBox.className = "w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mb-4 bg-red-500/20 text-red-500 text-3xl sm:text-4xl";
+                    iconBox.innerHTML = '<i class="fa-solid fa-skull"></i>';
+                }
+
+                desc.innerText = message;
+            }
+        }
+
+        function openMinigameModal(task) {
+            const modal = document.getElementById('minigame-modal');
+            const title = document.getElementById('minigame-title');
+            const container = document.getElementById('minigame-container');
+
+            title.innerText = `TAREA: ${task.name}`;
+            container.innerHTML = '';
+            modal.classList.remove('hidden');
+
+            if (task.type === 'wires') {
+                container.innerHTML = `
+                    <div class="w-full h-full flex justify-between items-center px-6 sm:px-8 relative">
+                        <div class="flex flex-col gap-4 sm:gap-6">
+                            <button onclick="connectWire(0)" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-red-500 border-2 border-white shadow-lg"></button>
+                            <button onclick="connectWire(1)" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-500 border-2 border-white shadow-lg"></button>
+                            <button onclick="connectWire(2)" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-yellow-500 border-2 border-white shadow-lg"></button>
+                        </div>
+                        <p class="text-[10px] sm:text-[11px] text-slate-400 font-orbitron">CONECTA CABLES</p>
+                        <div class="flex flex-col gap-4 sm:gap-6">
+                            <button onclick="checkWire(0)" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-red-500 border-2 border-white shadow-lg"></button>
+                            <button onclick="checkWire(1)" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-500 border-2 border-white shadow-lg"></button>
+                            <button onclick="checkWire(2)" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-yellow-500 border-2 border-white shadow-lg"></button>
+                        </div>
+                    </div>
+                `;
+                let selectedWire = null;
+                window.connectWire = (idx) => { selectedWire = idx; };
+                window.checkWire = (idx) => {
+                    if (selectedWire === idx) {
+                        game.completeTask(task.id);
+                        modal.classList.add('hidden');
+                    }
+                };
+            } else if (task.type === 'reactor') {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center gap-4">
+                        <div class="w-40 sm:w-48 h-6 bg-slate-800 rounded-full border-2 border-slate-600 relative overflow-hidden">
+                            <div class="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-12 bg-emerald-500/50"></div>
+                            <div id="reactor-needle" class="absolute top-0 bottom-0 w-2 bg-white left-0 transition-all duration-75"></div>
+                        </div>
+                        <button id="stop-needle-btn" class="among-btn px-6 py-2.5 bg-cyan-500 text-slate-950 font-orbitron font-bold text-xs rounded-xl">CALIBRAR</button>
+                    </div>
+                `;
+                let pos = 0;
+                let dir = 2;
+                const needle = document.getElementById('reactor-needle');
+                const interval = setInterval(() => {
+                    pos += dir;
+                    if (pos > 90 || pos < 0) dir *= -1;
+                    if (needle) needle.style.left = `${pos}%`;
+                }, 20);
+
+                document.getElementById('stop-needle-btn').onclick = () => {
+                    clearInterval(interval);
+                    if (pos >= 40 && pos <= 60) {
+                        game.completeTask(task.id);
+                        modal.classList.add('hidden');
+                    } else {
+                        modal.classList.add('hidden');
+                    }
+                };
+            } else {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center gap-4 w-52 sm:w-64">
+                        <div class="w-full bg-slate-800 h-5 sm:h-6 rounded-full overflow-hidden border border-slate-700">
+                            <div id="download-progress" class="bg-cyan-400 h-full w-0% transition-all"></div>
+                        </div>
+                        <button id="download-btn" class="among-btn px-6 py-2.5 bg-emerald-500 text-slate-950 font-orbitron font-bold text-xs rounded-xl">DESCARGAR</button>
+                    </div>
+                `;
+                document.getElementById('download-btn').onclick = () => {
+                    let prog = 0;
+                    const fill = document.getElementById('download-progress');
+                    const interval = setInterval(() => {
+                        prog += 20;
+                        fill.style.width = `${prog}%`;
+                        if (prog >= 100) {
+                            clearInterval(interval);
+                            game.completeTask(task.id);
+                            modal.classList.add('hidden');
+                        }
+                    }, 300);
+                };
+            }
+        }
+
+        let game = null;
+
+        function setupMenuControls() {
+            const colorContainer = document.getElementById('color-selector');
+            colorContainer.innerHTML = '';
+
+            PRESET_COLORS.forEach(hex => {
+                const btn = document.createElement('button');
+                btn.className = `w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 transition-transform ${selectedColor === hex ? 'scale-125 border-white ring-2 ring-cyan-400' : 'border-transparent'}`;
+                btn.style.backgroundColor = hex;
+                btn.onclick = () => {
+                    selectedColor = hex;
+                    setupMenuControls();
+                    renderPreview();
+                };
+                colorContainer.appendChild(btn);
+            });
+
+            const pickerLabel = document.createElement('label');
+            pickerLabel.className = 'relative cursor-pointer w-6 h-6 sm:w-7 sm:h-7 rounded-full border-2 border-white/40 overflow-hidden flex items-center justify-center shrink-0 ml-1 shadow-md bg-gradient-to-tr from-red-500 via-green-500 to-blue-500';
+            pickerLabel.title = "Seleccionar cualquier color personalizado";
+
+            const pickerInput = document.createElement('input');
+            pickerInput.type = 'color';
+            pickerInput.value = selectedColor;
+            pickerInput.className = 'absolute inset-0 opacity-0 cursor-pointer w-full h-full';
+
+            pickerInput.oninput = (e) => {
+                selectedColor = e.target.value;
+                renderPreview();
+            };
+            pickerInput.onchange = (e) => {
+                selectedColor = e.target.value;
+                setupMenuControls();
+                renderPreview();
+            };
+
+            pickerLabel.appendChild(pickerInput);
+            colorContainer.appendChild(pickerLabel);
+
+            const hatContainer = document.getElementById('hat-selector');
+            hatContainer.innerHTML = '';
+            HATS.forEach(hat => {
+                const btn = document.createElement('button');
+                btn.className = `among-btn p-1.5 rounded-xl border-2 text-[8px] sm:text-[9px] font-orbitron font-bold flex flex-col items-center justify-center gap-1 ${selectedHat === hat.id ? 'border-cyan-400 bg-cyan-950 text-cyan-200' : 'border-slate-700 bg-slate-800 text-slate-400'}`;
+                btn.innerHTML = `<i class="fa-solid ${hat.icon} text-xs"></i><span>${hat.label}</span>`;
+                btn.onclick = () => {
+                    selectedHat = hat.id;
+                    setupMenuControls();
+                    renderPreview();
+                };
+                hatContainer.appendChild(btn);
+            });
+
+            const crewBtn = document.getElementById('role-crewmate-btn');
+            const impBtn = document.getElementById('role-impostor-btn');
+
+            if (selectedRole === 'crewmate') {
+                crewBtn.className = "among-btn py-2 sm:py-2.5 rounded-xl border-2 font-orbitron text-xs font-bold bg-cyan-600/30 border-cyan-400 text-cyan-200";
+                impBtn.className = "among-btn py-2 sm:py-2.5 rounded-xl border-2 font-orbitron text-xs font-bold bg-slate-800 border-slate-700 text-slate-400";
+            } else {
+                impBtn.className = "among-btn py-2 sm:py-2.5 rounded-xl border-2 font-orbitron text-xs font-bold bg-red-600/30 border-red-400 text-red-200";
+                crewBtn.className = "among-btn py-2 sm:py-2.5 rounded-xl border-2 font-orbitron text-xs font-bold bg-slate-800 border-slate-700 text-slate-400";
+            }
+
+            crewBtn.onclick = () => { selectedRole = 'crewmate'; setupMenuControls(); };
+            impBtn.onclick = () => { selectedRole = 'impostor'; setupMenuControls(); };
+        }
+
+        // --- JOYSTICK ANALÓGICO PANTALLA TÁCTIL ---
+        function setupAnalogJoystick() {
+            const zone = document.getElementById('joystick-zone');
+            const base = document.getElementById('joystick-base');
+            const stick = document.getElementById('joystick-stick');
+
+            let activeTouchId = null;
+            let startX = 0;
+            let startY = 0;
+            const maxRadius = 45;
+
+            const handleStart = (e) => {
+                if (activeTouchId !== null) return;
+                const touch = e.changedTouches ? e.changedTouches[0] : e;
+                activeTouchId = touch.identifier !== undefined ? touch.identifier : 'mouse';
+
+                startX = touch.clientX;
+                startY = touch.clientY;
+
+                base.style.left = `${startX}px`;
+                base.style.top = `${startY}px`;
+                base.style.display = 'block';
+
+                stick.style.transform = `translate(-50%, -50%)`;
+            };
+
+            const handleMove = (e) => {
+                if (activeTouchId === null) return;
+
+                let touch = null;
+                if (e.changedTouches) {
+                    for (let i = 0; i < e.changedTouches.length; i++) {
+                        if (e.changedTouches[i].identifier === activeTouchId) {
+                            touch = e.changedTouches[i];
+                            break;
+                        }
+                    }
+                } else {
+                    touch = e;
+                }
+
+                if (!touch) return;
+
+                const deltaX = touch.clientX - startX;
+                const deltaY = touch.clientY - startY;
+                const dist = Math.hypot(deltaX, deltaY);
+
+                const angle = Math.atan2(deltaY, deltaX);
+                const moveDist = Math.min(dist, maxRadius);
+
+                const stickX = Math.cos(angle) * moveDist;
+                const stickY = Math.sin(angle) * moveDist;
+
+                stick.style.transform = `translate(calc(-50% + ${stickX}px), calc(-50% + ${stickY}px))`;
+
+                if (game) {
+                    game.analogDir.x = Math.cos(angle) * (moveDist / maxRadius);
+                    game.analogDir.y = Math.sin(angle) * (moveDist / maxRadius);
+                }
+            };
+
+            const handleEnd = (e) => {
+                if (activeTouchId === null) return;
+
+                let ended = false;
+                if (e.changedTouches) {
+                    for (let i = 0; i < e.changedTouches.length; i++) {
+                        if (e.changedTouches[i].identifier === activeTouchId) {
+                            ended = true;
+                            break;
+                        }
+                    }
+                } else {
+                    ended = true;
+                }
+
+                if (ended) {
+                    activeTouchId = null;
+                    base.style.display = 'none';
+                    if (game) game.analogDir = { x: 0, y: 0 };
+                }
+            };
+
+            zone.addEventListener('touchstart', handleStart, { passive: false });
+            zone.addEventListener('touchmove', handleMove, { passive: false });
+            zone.addEventListener('touchend', handleEnd, { passive: false });
+            zone.addEventListener('touchcancel', handleEnd, { passive: false });
+
+            zone.addEventListener('mousedown', handleStart);
+            window.addEventListener('mousemove', handleMove);
+            window.addEventListener('mouseup', handleEnd);
+        }
+
+        window.onload = () => {
+            setupMenuControls();
+            renderPreview();
+
+            game = new GameEngine();
+
+            window.addEventListener('keydown', (e) => {
+                game.keys[e.code] = true;
+                game.keys[e.key] = true;
+                if (e.code === 'Space' || e.code === 'KeyE') game.handlePrimaryAction();
+                if (e.code === 'KeyR') game.reportDeadBody();
+                if (e.code === 'KeyV') game.useVent();
+            });
+
+            window.addEventListener('keyup', (e) => {
+                game.keys[e.code] = false;
+                game.keys[e.key] = false;
+            });
+
+            document.getElementById('action-btn').onclick = () => game.handlePrimaryAction();
+            document.getElementById('report-btn').onclick = () => game.reportDeadBody();
+            document.getElementById('vent-btn').onclick = () => game.useVent();
+            document.getElementById('sabotage-btn').onclick = () => game.triggerSabotage();
+            document.getElementById('close-minigame-btn').onclick = () => {
+                document.getElementById('minigame-modal').classList.add('hidden');
+            };
+
+            document.getElementById('restart-btn').onclick = () => {
+                if (game) game.gameStarted = false;
+                document.getElementById('game-over-modal').classList.add('hidden');
+                document.getElementById('main-menu').classList.remove('hidden');
+                document.getElementById('hud').classList.add('hidden');
+                document.getElementById('action-controls').classList.add('hidden');
+                document.getElementById('joystick-zone').classList.add('hidden');
+            };
+
+            document.getElementById('start-game-btn').onclick = () => {
+                audio.init();
+                document.getElementById('main-menu').classList.add('hidden');
+                document.getElementById('hud').classList.remove('hidden');
+                document.getElementById('action-controls').classList.remove('hidden');
+                document.getElementById('joystick-zone').classList.remove('hidden');
+
+                game.init();
+            };
+
+            setupAnalogJoystick();
+
+            function gameLoop() {
+                game.update();
+                game.render();
+                requestAnimationFrame(gameLoop);
+            }
+
+            requestAnimationFrame(gameLoop);
+        };
+    </script>
+</body>
+</html>
