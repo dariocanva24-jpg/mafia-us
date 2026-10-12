@@ -169,7 +169,7 @@
 
         <button id="vent-btn" class="among-btn hidden bg-slate-700 hover:bg-slate-600 text-white font-orbitron font-bold w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex flex-col items-center justify-center border-2 border-slate-400 shadow-lg text-[10px] sm:text-xs">
             <i class="fa-solid fa-wind text-lg sm:text-xl mb-0.5"></i>
-            ESCOTILLA
+            <span id="vent-btn-text">ESCOTILLA</span>
         </button>
 
         <button id="action-btn" class="among-btn bg-cyan-600 hover:bg-cyan-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-cyan-300 shadow-xl text-[10px] sm:text-xs glow-cyan">
@@ -208,15 +208,20 @@
                     <div id="hat-selector" class="grid grid-cols-4 sm:grid-cols-5 gap-1.5 max-h-36 overflow-y-auto pr-1 hat-scroll"></div>
                 </div>
 
-                <div>
-                    <label class="block text-[10px] sm:text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-wide">Seleccionar Rol</label>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button id="role-crewmate-btn" class="among-btn py-2 sm:py-2.5 rounded-xl border-2 font-orbitron text-xs font-bold bg-cyan-600/30 border-cyan-400 text-cyan-200">
-                            <i class="fa-solid fa-user-astronaut mr-1"></i> TRIPULANTE
-                        </button>
-                        <button id="role-impostor-btn" class="among-btn py-2 sm:py-2.5 rounded-xl border-2 font-orbitron text-xs font-bold bg-slate-800 border-slate-700 text-slate-400">
-                            <i class="fa-solid fa-skull mr-1"></i> IMPOSTOR
-                        </button>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-[10px] sm:text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-wide">Rol</label>
+                        <div class="grid grid-cols-2 gap-1.5">
+                            <button id="role-crewmate-btn" class="among-btn py-2 rounded-xl border-2 font-orbitron text-[10px] font-bold bg-cyan-600/30 border-cyan-400 text-cyan-200">TRIP</button>
+                            <button id="role-impostor-btn" class="among-btn py-2 rounded-xl border-2 font-orbitron text-[10px] font-bold bg-slate-800 border-slate-700 text-slate-400">IMPOSTOR</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] sm:text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-wide">Bloqueo Escotilla</label>
+                        <div class="grid grid-cols-2 gap-1.5">
+                            <button id="vent-time-5" class="among-btn py-2 rounded-xl border-2 font-orbitron text-[10px] font-bold bg-cyan-600/30 border-cyan-400 text-cyan-200">5s</button>
+                            <button id="vent-time-10" class="among-btn py-2 rounded-xl border-2 font-orbitron text-[10px] font-bold bg-slate-800 border-slate-700 text-slate-400">10s</button>
+                        </div>
                     </div>
                 </div>
 
@@ -396,6 +401,7 @@
         let selectedColor = '#007aff';
         let selectedHat = 'cherry';
         let selectedRole = 'crewmate';
+        let selectedVentCooldownTime = 5;
 
         function drawRoundRect(ctx, x, y, w, h, r) {
             ctx.beginPath();
@@ -650,29 +656,30 @@
         const MAP_ROWS = SKELD_MIRA_MAP_GRID.length;
         const MAP_COLS = SKELD_MIRA_MAP_GRID[0].length;
 
-        // 8 DUCTOS FUNCIONALES EN LAS ZONAS PEDIDAS (Cafetería, Seguridad, Electricidad, Administración, Invernadero, Laboratorio, Reactor, Motor inferior)
+        // DUCTOS CORREGIDOS (posicionados estrictamente dentro de habitaciones y áreas transitables seguras)
         const SKELD_VENTS = [
-            { id: 0, name: 'Cafetería', x: 15.5 * TILE_SIZE, y: 3.5 * TILE_SIZE, connectTo: [1, 3] },
-            { id: 1, name: 'Administración', x: 15.5 * TILE_SIZE, y: 11.5 * TILE_SIZE, connectTo: [0, 2] },
-            { id: 2, name: 'Electricidad', x: 7.5 * TILE_SIZE, y: 11.5 * TILE_SIZE, connectTo: [1, 4] },
-            { id: 3, name: 'Laboratorio', x: 26.5 * TILE_SIZE, y: 1.5 * TILE_SIZE, connectTo: [0, 5] },
-            { id: 4, name: 'Seguridad', x: 7.5 * TILE_SIZE, y: 9.5 * TILE_SIZE, connectTo: [2, 6] },
-            { id: 5, name: 'Invernadero', x: 28.5 * TILE_SIZE, y: 19.5 * TILE_SIZE, connectTo: [3, 7] },
-            { id: 6, name: 'Reactor', x: 3.5 * TILE_SIZE, y: 6.5 * TILE_SIZE, connectTo: [4, 7] },
-            { id: 7, name: 'Motor inferior', x: 3.5 * TILE_SIZE, y: 18.5 * TILE_SIZE, connectTo: [5, 6] }
+            { id: 0, name: 'Cafetería', x: 14.5 * TILE_SIZE, y: 2.5 * TILE_SIZE, connectTo: [1, 3] },
+            { id: 1, name: 'Administración', x: 14.5 * TILE_SIZE, y: 12.5 * TILE_SIZE, connectTo: [0, 2] },
+            { id: 2, name: 'Electricidad', x: 8.5 * TILE_SIZE, y: 10.5 * TILE_SIZE, connectTo: [1, 4] },
+            { id: 3, name: 'Laboratorio', x: 25.5 * TILE_SIZE, y: 2.5 * TILE_SIZE, connectTo: [0, 5] },
+            { id: 4, name: 'Seguridad', x: 8.5 * TILE_SIZE, y: 6.5 * TILE_SIZE, connectTo: [2, 6] },
+            { id: 5, name: 'Invernadero', x: 29.5 * TILE_SIZE, y: 18.5 * TILE_SIZE, connectTo: [3, 7] },
+            { id: 6, name: 'Reactor', x: 2.5 * TILE_SIZE, y: 6.5 * TILE_SIZE, connectTo: [4, 7] },
+            { id: 7, name: 'Motor inferior', x: 2.5 * TILE_SIZE, y: 19.5 * TILE_SIZE, connectTo: [5, 6] }
         ];
 
-        const REACTOR_SABOTAGE_POS = { x: 4.5 * TILE_SIZE, y: 9.5 * TILE_SIZE };
+        const REACTOR_SABOTAGE_POS = { x: 2.5 * TILE_SIZE, y: 6.5 * TILE_SIZE };
 
+        // TAREAS CORREGIDAS (dentro de las habitaciones y pasillos transitables)
         const SKELD_TASKS = [
-            { id: 0, name: 'CABLES', x: 10.5 * TILE_SIZE, y: 5.5 * TILE_SIZE, type: 'wires', completed: false },
-            { id: 1, name: 'DESCARGA', x: 26.5 * TILE_SIZE, y: 3.5 * TILE_SIZE, type: 'download', completed: false },
-            { id: 2, name: 'CALIBRAR', x: 4.5 * TILE_SIZE, y: 9.5 * TILE_SIZE, type: 'reactor', completed: false },
-            { id: 3, name: 'MUESTRAMED', x: 10.5 * TILE_SIZE, y: 3.5 * TILE_SIZE, type: 'download', completed: false },
-            { id: 4, name: 'REGAR', x: 31.5 * TILE_SIZE, y: 19.5 * TILE_SIZE, type: 'reactor', completed: false },
-            { id: 5, name: 'MUNICIÓN', x: 19.5 * TILE_SIZE, y: 8.5 * TILE_SIZE, type: 'wires', completed: false },
-            { id: 6, name: 'LIMPIEZA', x: 15.5 * TILE_SIZE, y: 3.5 * TILE_SIZE, type: 'download', completed: false },
-            { id: 7, name: 'ESCÁNER', x: 31.5 * TILE_SIZE, y: 9.5 * TILE_SIZE, type: 'wires', completed: false }
+            { id: 0, name: 'CABLES', x: 10.5 * TILE_SIZE, y: 6.5 * TILE_SIZE, type: 'wires', completed: false },
+            { id: 1, name: 'DESCARGA', x: 25.5 * TILE_SIZE, y: 4.5 * TILE_SIZE, type: 'download', completed: false },
+            { id: 2, name: 'CALIBRAR', x: 2.5 * TILE_SIZE, y: 8.5 * TILE_SIZE, type: 'reactor', completed: false },
+            { id: 3, name: 'MUESTRAMED', x: 12.5 * TILE_SIZE, y: 2.5 * TILE_SIZE, type: 'download', completed: false },
+            { id: 4, name: 'REGAR', x: 28.5 * TILE_SIZE, y: 18.5 * TILE_SIZE, type: 'reactor', completed: false },
+            { id: 5, name: 'MUNICIÓN', x: 18.5 * TILE_SIZE, y: 8.5 * TILE_SIZE, type: 'wires', completed: false },
+            { id: 6, name: 'LIMPIEZA', x: 16.5 * TILE_SIZE, y: 2.5 * TILE_SIZE, type: 'download', completed: false },
+            { id: 7, name: 'ESCÁNER', x: 26.5 * TILE_SIZE, y: 10.5 * TILE_SIZE, type: 'wires', completed: false }
         ];
 
         class GameEngine {
@@ -753,8 +760,8 @@
                 this.player = {
                     id: 'player',
                     name: 'Tú',
-                    x: 15.5 * TILE_SIZE,
-                    y: 3.5 * TILE_SIZE,
+                    x: 14.5 * TILE_SIZE,
+                    y: 2.5 * TILE_SIZE,
                     radius: 20,
                     speed: 4.2,
                     color: selectedColor,
@@ -765,7 +772,7 @@
                     inVent: false,
                     ventIdx: -1,
                     ventCooldown: 0,
-                    killCooldown: 0,
+                    killCooldown: 10,
                     isDead: false
                 };
 
@@ -773,10 +780,10 @@
                 const botColors = PRESET_COLORS.filter(c => c !== selectedColor);
 
                 const spawnLocs = [
-                    { x: 15.5 * TILE_SIZE, y: 3.5 * TILE_SIZE },
-                    { x: 10.5 * TILE_SIZE, y: 5.5 * TILE_SIZE },
-                    { x: 26.5 * TILE_SIZE, y: 3.5 * TILE_SIZE },
-                    { x: 14.5 * TILE_SIZE, y: 10.5 * TILE_SIZE },
+                    { x: 14.5 * TILE_SIZE, y: 2.5 * TILE_SIZE },
+                    { x: 10.5 * TILE_SIZE, y: 6.5 * TILE_SIZE },
+                    { x: 25.5 * TILE_SIZE, y: 4.5 * TILE_SIZE },
+                    { x: 14.5 * TILE_SIZE, y: 11.5 * TILE_SIZE },
                     { x: 20.5 * TILE_SIZE, y: 23.5 * TILE_SIZE }
                 ];
 
@@ -787,7 +794,7 @@
                         x: spawnLocs[1].x,
                         y: spawnLocs[1].y,
                         radius: 20,
-                        speed: 3.2,
+                        speed: 3.0,
                         color: '#ff3b30',
                         hat: 'knight',
                         role: 'impostor',
@@ -798,8 +805,9 @@
                         workingTimer: 0,
                         stuckFrames: 0,
                         unstuckTimer: 0,
-                        killCooldown: 5,
-                        isDead: false
+                        killCooldown: 15,
+                        isDead: false,
+                        simulatedTask: null
                     });
 
                     for (let i = 0; i < 4; i++) {
@@ -883,7 +891,7 @@
                         }
                     }
                 }
-                return { x: 15.5 * TILE_SIZE, y: 3.5 * TILE_SIZE };
+                return { x: 14.5 * TILE_SIZE, y: 2.5 * TILE_SIZE };
             }
 
             checkCollision(newX, newY) {
@@ -945,7 +953,6 @@
                 }
 
                 this.updateBots();
-                this.checkDeadBodyDiscovery();
                 this.checkProximity();
                 this.updateActionButtons();
             }
@@ -983,27 +990,28 @@
                                 }
                             });
 
-                            targets = targets.filter(t => t.dist < 400 && (!this.isWallBetween(bot.x, bot.y, t.x, t.y) || t.dist < 100));
+                            targets = targets.filter(t => t.dist < 350 && !this.isWallBetween(bot.x, bot.y, t.x, t.y));
                             targets.sort((a, b) => a.dist - b.dist);
 
-                            if (targets.length > 0) {
-                                const closestTarget = targets[0];
-                                const validTgt = this.getValidTarget(closestTarget.x, closestTarget.y);
+                            // IA DISIMULADA E INTELIGENTE: No ataca de inmediato, simula tareas y se mezcla
+                            if (targets.length > 0 && bot.killCooldown <= 0 && Math.random() < 0.25) {
+                                const chosenTarget = targets[Math.floor(Math.random() * Math.min(targets.length, 2))];
+                                const validTgt = this.getValidTarget(chosenTarget.x, chosenTarget.y);
                                 bot.targetX = validTgt.x;
                                 bot.targetY = validTgt.y;
 
-                                if (closestTarget.dist < 38 && bot.killCooldown <= 0) {
+                                if (chosenTarget.dist < 42) {
                                     audio.playKillSound();
-                                    bot.killCooldown = 12;
+                                    bot.killCooldown = 18; // Enfriamiento equilibrado para partidas más largas
 
-                                    if (closestTarget.isPlayer) {
+                                    if (chosenTarget.isPlayer) {
                                         this.player.isDead = true;
                                         this.deadBodies.push({ id: 'player', x: this.player.x, y: this.player.y, color: this.player.color, name: 'Tú' });
-                                        this.triggerGameOver(false, "¡El Impostor te atrapó y te eliminó!");
+                                        this.triggerGameOver(false, "¡El Impostor te eliminó por sorpresa!");
                                         return;
                                     } else {
-                                        closestTarget.botRef.isDead = true;
-                                        this.deadBodies.push({ id: closestTarget.botRef.id, x: closestTarget.botRef.x, y: closestTarget.botRef.y, color: closestTarget.botRef.color, name: closestTarget.botRef.name });
+                                        chosenTarget.botRef.isDead = true;
+                                        this.deadBodies.push({ id: chosenTarget.botRef.id, x: chosenTarget.botRef.x, y: chosenTarget.botRef.y, color: chosenTarget.botRef.color, name: chosenTarget.botRef.name });
                                     }
                                 }
                             } else {
@@ -1012,20 +1020,21 @@
                                     const validTgt = this.getValidTarget(randTask.x, randTask.y);
                                     bot.targetX = validTgt.x;
                                     bot.targetY = validTgt.y;
+                                    bot.workingTimer = 2.0; // Simula que hace tareas como un tripulante normal
                                 }
                             }
                         }
                     } else {
                         const impostorRef = this.player.role === 'impostor' ? this.player : this.bots.find(b => b.role === 'impostor');
-                        const isImpostorVisible = impostorRef && (!impostorRef.inVent) && (!impostorRef.isDead) && Math.hypot(impostorRef.x - bot.x, impostorRef.y - bot.y) < 185;
+                        const isImpostorVisible = impostorRef && (!impostorRef.inVent) && (!impostorRef.isDead) && Math.hypot(impostorRef.x - bot.x, impostorRef.y - bot.y) < 160;
 
                         if (isImpostorVisible) {
                             bot.isPanicking = true;
-                            bot.panicTimer = 90;
+                            bot.panicTimer = 60;
                             
                             const escapeAngle = Math.atan2(bot.y - impostorRef.y, bot.x - impostorRef.x);
-                            const rawTargetX = bot.x + Math.cos(escapeAngle) * 120;
-                            const rawTargetY = bot.y + Math.sin(escapeAngle) * 120;
+                            const rawTargetX = bot.x + Math.cos(escapeAngle) * 100;
+                            const rawTargetY = bot.y + Math.sin(escapeAngle) * 100;
                             
                             const validTgt = this.getValidTarget(rawTargetX, rawTargetY);
                             bot.targetX = validTgt.x;
@@ -1043,7 +1052,7 @@
 
                             if (Math.hypot(bot.x - REACTOR_SABOTAGE_POS.x, bot.y - REACTOR_SABOTAGE_POS.y) < 40) {
                                 bot.workingTimer = (bot.workingTimer || 0) + 1 / 60;
-                                if (bot.workingTimer >= 2.5) {
+                                if (bot.workingTimer >= 3.0) {
                                     this.resolveSabotage("¡Un tripulante reparó la crisis del reactor!");
                                     bot.workingTimer = 0;
                                 }
@@ -1064,7 +1073,7 @@
 
                             if (bot.currentTask && Math.hypot(bot.targetX - bot.x, bot.targetY - bot.y) < 30) {
                                 bot.workingTimer += 1 / 60;
-                                if (bot.workingTimer >= 3.0) {
+                                if (bot.workingTimer >= 3.5) {
                                     this.completeTask(bot.currentTask.id);
                                     bot.workingTimer = 0;
                                     bot.currentTask = null;
@@ -1073,7 +1082,7 @@
                         }
                     }
 
-                    const currentSpeed = bot.isPanicking ? bot.speed * 1.35 : bot.speed;
+                    const currentSpeed = bot.isPanicking ? bot.speed * 1.3 : bot.speed;
                     const bdx = bot.targetX - bot.x;
                     const bdy = bot.targetY - bot.y;
                     const dist = Math.hypot(bdx, bdy);
@@ -1096,13 +1105,13 @@
 
                         if (!movedX && !movedY) {
                             bot.stuckFrames = (bot.stuckFrames || 0) + 1;
-                            if (bot.stuckFrames > 6) {
+                            if (bot.stuckFrames > 8) {
                                 const randTask = SKELD_TASKS[Math.floor(Math.random() * SKELD_TASKS.length)];
                                 const validTgt = this.getValidTarget(randTask.x, randTask.y);
                                 bot.targetX = validTgt.x;
                                 bot.targetY = validTgt.y;
                                 bot.stuckFrames = 0;
-                                bot.unstuckTimer = 90;
+                                bot.unstuckTimer = 120;
                                 bot.currentTask = null;
                             }
                         } else {
@@ -1112,20 +1121,6 @@
                         bot.isFacingLeft = bdx < 0;
                         bot.walkFrame += 0.25;
                     }
-                });
-            }
-
-            checkDeadBodyDiscovery() {
-                if (this.isMeetingActive) return;
-
-                this.bots.forEach(bot => {
-                    if (bot.isDead) return;
-                    this.deadBodies.forEach(body => {
-                        const dist = Math.hypot(bot.x - body.x, bot.y - body.y);
-                        if (dist < 100 && !this.isWallBetween(bot.x, bot.y, body.x, body.y)) {
-                            this.startEmergencyMeeting(bot.name, body.name);
-                        }
-                    });
                 });
             }
 
@@ -1289,6 +1284,7 @@
                 const actionText = document.getElementById('action-text');
                 const actionIcon = document.getElementById('action-icon');
                 const ventBtn = document.getElementById('vent-btn');
+                const ventBtnText = document.getElementById('vent-btn-text');
                 const sabotageBtn = document.getElementById('sabotage-btn');
                 const reportBtn = document.getElementById('report-btn');
 
@@ -1304,12 +1300,12 @@
                     sabotageBtn.classList.remove('hidden');
 
                     if (this.player.inVent) {
-                        ventBtn.querySelector('span') ? ventBtn.querySelector('span').innerText = "MOVER" : ventBtn.innerText = "MOVER";
+                        ventBtnText.innerText = "MOVER";
                         actionText.innerText = "SALIR";
                         actionIcon.className = "fa-solid fa-door-open text-xl sm:text-2xl mb-0.5";
                         actionBtn.className = "among-btn bg-emerald-600 hover:bg-emerald-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-emerald-300 shadow-xl text-[10px] sm:text-xs glow-cyan";
                     } else {
-                        ventBtn.querySelector('span') ? ventBtn.querySelector('span').innerText = this.player.ventCooldown > 0 ? `${Math.ceil(this.player.ventCooldown)}s` : "ESCOTILLA" : ventBtn.innerText = "ESCOTILLA";
+                        ventBtnText.innerText = this.player.ventCooldown > 0 ? `${Math.ceil(this.player.ventCooldown)}s` : "ESCOTILLA";
                         const targetBot = this.bots.find(b => !b.isDead && Math.hypot(b.x - this.player.x, b.y - this.player.y) < 50);
 
                         if (targetBot && this.player.killCooldown <= 0) {
@@ -1356,7 +1352,7 @@
                     if (targetBot && this.player.killCooldown <= 0) {
                         targetBot.isDead = true;
                         this.deadBodies.push({ id: targetBot.id, x: targetBot.x, y: targetBot.y, color: targetBot.color, name: targetBot.name });
-                        this.player.killCooldown = 12;
+                        this.player.killCooldown = 18;
                         audio.playKillSound();
 
                         const aliveCrew = this.bots.filter(b => b.role === 'crewmate' && !b.isDead).length;
@@ -1611,12 +1607,12 @@
                     } else if (aliveImpostors >= aliveCrewmates) {
                         this.triggerGameOver(false, "¡Los Impostores tienen el control de la nave!");
                     } else {
-                        this.player.x = 15.5 * TILE_SIZE;
-                        this.player.y = 3.5 * TILE_SIZE;
+                        this.player.x = 14.5 * TILE_SIZE;
+                        this.player.y = 2.5 * TILE_SIZE;
                         this.bots.forEach(b => {
                             if (!b.isDead) {
-                                b.x = 15.5 * TILE_SIZE + (Math.random() * 60 - 30);
-                                b.y = 3.5 * TILE_SIZE + (Math.random() * 60 - 30);
+                                b.x = 14.5 * TILE_SIZE + (Math.random() * 60 - 30);
+                                b.y = 2.5 * TILE_SIZE + (Math.random() * 60 - 30);
                             }
                         });
                     }
@@ -1656,7 +1652,7 @@
             exitVent() {
                 if (this.player.role !== 'impostor' || !this.player.inVent) return;
                 this.player.inVent = false;
-                this.player.ventCooldown = 5.0; // Bloqueo de 5 segundos después de usar el sistema
+                this.player.ventCooldown = selectedVentCooldownTime; // Utiliza el valor configurable seleccionado (5s o 10s)
                 audio.playVentSwoosh();
             }
 
@@ -1899,15 +1895,29 @@
             const impBtn = document.getElementById('role-impostor-btn');
 
             if (selectedRole === 'crewmate') {
-                crewBtn.className = "among-btn py-2 sm:py-2.5 rounded-xl border-2 font-orbitron text-xs font-bold bg-cyan-600/30 border-cyan-400 text-cyan-200";
-                impBtn.className = "among-btn py-2 sm:py-2.5 rounded-xl border-2 font-orbitron text-xs font-bold bg-slate-800 border-slate-700 text-slate-400";
+                crewBtn.className = "among-btn py-2 rounded-xl border-2 font-orbitron text-[10px] font-bold bg-cyan-600/30 border-cyan-400 text-cyan-200";
+                impBtn.className = "among-btn py-2 rounded-xl border-2 font-orbitron text-[10px] font-bold bg-slate-800 border-slate-700 text-slate-400";
             } else {
-                impBtn.className = "among-btn py-2 sm:py-2.5 rounded-xl border-2 font-orbitron text-xs font-bold bg-red-600/30 border-red-400 text-red-200";
-                crewBtn.className = "among-btn py-2 sm:py-2.5 rounded-xl border-2 font-orbitron text-xs font-bold bg-slate-800 border-slate-700 text-slate-400";
+                impBtn.className = "among-btn py-2 rounded-xl border-2 font-orbitron text-[10px] font-bold bg-red-600/30 border-red-400 text-red-200";
+                crewBtn.className = "among-btn py-2 rounded-xl border-2 font-orbitron text-[10px] font-bold bg-slate-800 border-slate-700 text-slate-400";
             }
 
             crewBtn.onclick = () => { selectedRole = 'crewmate'; setupMenuControls(); };
             impBtn.onclick = () => { selectedRole = 'impostor'; setupMenuControls(); };
+
+            const vent5Btn = document.getElementById('vent-time-5');
+            const vent10Btn = document.getElementById('vent-time-10');
+
+            if (selectedVentCooldownTime === 5) {
+                vent5Btn.className = "among-btn py-2 rounded-xl border-2 font-orbitron text-[10px] font-bold bg-cyan-600/30 border-cyan-400 text-cyan-200";
+                vent10Btn.className = "among-btn py-2 rounded-xl border-2 font-orbitron text-[10px] font-bold bg-slate-800 border-slate-700 text-slate-400";
+            } else {
+                vent10Btn.className = "among-btn py-2 rounded-xl border-2 font-orbitron text-[10px] font-bold bg-cyan-600/30 border-cyan-400 text-cyan-200";
+                vent5Btn.className = "among-btn py-2 rounded-xl border-2 font-orbitron text-[10px] font-bold bg-slate-800 border-slate-700 text-slate-400";
+            }
+
+            vent5Btn.onclick = () => { selectedVentCooldownTime = 5; setupMenuControls(); };
+            vent10Btn.onclick = () => { selectedVentCooldownTime = 10; setupMenuControls(); };
         }
 
         // --- JOYSTICK ANALÓGICO PANTALLA TÁCTIL ---
