@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mafia Us</title>
+    <title>Mafia Us - Mapa Combinado</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome for Icons -->
@@ -148,7 +148,7 @@
         </div>
     </div>
 
-    <!-- Touch Screen Analog Joystick Zone -->
+    <!-- Joystick Zone -->
     <div id="joystick-zone" class="hidden">
         <div id="joystick-base">
             <div id="joystick-stick"></div>
@@ -354,6 +354,10 @@
         }
 
         const audio = new SoundEngine();
+
+        // Cargar imagen del mapa local
+        const mapImage = new Image();
+        mapImage.src = 'map.png';
 
         const PRESET_COLORS = [
             '#ff3b30', '#ff9500', '#ffcc00', '#34c759', 
@@ -656,7 +660,6 @@
         const MAP_ROWS = SKELD_MIRA_MAP_GRID.length;
         const MAP_COLS = SKELD_MIRA_MAP_GRID[0].length;
 
-        // DUCTOS CORREGIDOS (posicionados estrictamente dentro de habitaciones y áreas transitables seguras)
         const SKELD_VENTS = [
             { id: 0, name: 'Cafetería', x: 14.5 * TILE_SIZE, y: 2.5 * TILE_SIZE, connectTo: [1, 3] },
             { id: 1, name: 'Administración', x: 14.5 * TILE_SIZE, y: 12.5 * TILE_SIZE, connectTo: [0, 2] },
@@ -670,7 +673,6 @@
 
         const REACTOR_SABOTAGE_POS = { x: 2.5 * TILE_SIZE, y: 6.5 * TILE_SIZE };
 
-        // TAREAS CORREGIDAS (dentro de las habitaciones y pasillos transitables)
         const SKELD_TASKS = [
             { id: 0, name: 'CABLES', x: 10.5 * TILE_SIZE, y: 6.5 * TILE_SIZE, type: 'wires', completed: false },
             { id: 1, name: 'DESCARGA', x: 25.5 * TILE_SIZE, y: 4.5 * TILE_SIZE, type: 'download', completed: false },
@@ -703,42 +705,8 @@
                 this.isMeetingActive = false;
                 this.heartbeatTimer = 0;
 
-                this.initTextures();
                 this.resizeCanvas();
                 window.addEventListener('resize', () => this.resizeCanvas());
-            }
-
-            initTextures() {
-                this.wallTileCanvas = document.createElement('canvas');
-                this.wallTileCanvas.width = TILE_SIZE;
-                this.wallTileCanvas.height = TILE_SIZE;
-                const wCtx = this.wallTileCanvas.getContext('2d');
-
-                const wGrad = wCtx.createLinearGradient(0, 0, TILE_SIZE, TILE_SIZE);
-                wGrad.addColorStop(0, '#111827');
-                wGrad.addColorStop(0.5, '#1f2937');
-                wGrad.addColorStop(1, '#0f172a');
-                wCtx.fillStyle = wGrad;
-                wCtx.fillRect(0, 0, TILE_SIZE, TILE_SIZE);
-
-                wCtx.fillStyle = 'rgba(56, 189, 248, 0.15)';
-                wCtx.fillRect(0, 0, TILE_SIZE, 3);
-                wCtx.fillRect(0, 0, 3, TILE_SIZE);
-
-                this.floorTileCanvas = document.createElement('canvas');
-                this.floorTileCanvas.width = TILE_SIZE;
-                this.floorTileCanvas.height = TILE_SIZE;
-                const fCtx = this.floorTileCanvas.getContext('2d');
-
-                const fGrad = fCtx.createRadialGradient(TILE_SIZE/2, TILE_SIZE/2, 5, TILE_SIZE/2, TILE_SIZE/2, TILE_SIZE/1.2);
-                fGrad.addColorStop(0, '#1e293b');
-                fGrad.addColorStop(1, '#0f172a');
-                fCtx.fillStyle = fGrad;
-                fCtx.fillRect(0, 0, TILE_SIZE, TILE_SIZE);
-
-                fCtx.strokeStyle = '#334155';
-                fCtx.lineWidth = 1;
-                fCtx.strokeRect(0, 0, TILE_SIZE, TILE_SIZE);
             }
 
             resizeCanvas() {
@@ -806,8 +774,7 @@
                         stuckFrames: 0,
                         unstuckTimer: 0,
                         killCooldown: 15,
-                        isDead: false,
-                        simulatedTask: null
+                        isDead: false
                     });
 
                     for (let i = 0; i < 4; i++) {
@@ -993,7 +960,6 @@
                             targets = targets.filter(t => t.dist < 350 && !this.isWallBetween(bot.x, bot.y, t.x, t.y));
                             targets.sort((a, b) => a.dist - b.dist);
 
-                            // IA DISIMULADA E INTELIGENTE: No ataca de inmediato, simula tareas y se mezcla
                             if (targets.length > 0 && bot.killCooldown <= 0 && Math.random() < 0.25) {
                                 const chosenTarget = targets[Math.floor(Math.random() * Math.min(targets.length, 2))];
                                 const validTgt = this.getValidTarget(chosenTarget.x, chosenTarget.y);
@@ -1002,7 +968,7 @@
 
                                 if (chosenTarget.dist < 42) {
                                     audio.playKillSound();
-                                    bot.killCooldown = 18; // Enfriamiento equilibrado para partidas más largas
+                                    bot.killCooldown = 18;
 
                                     if (chosenTarget.isPlayer) {
                                         this.player.isDead = true;
@@ -1020,7 +986,7 @@
                                     const validTgt = this.getValidTarget(randTask.x, randTask.y);
                                     bot.targetX = validTgt.x;
                                     bot.targetY = validTgt.y;
-                                    bot.workingTimer = 2.0; // Simula que hace tareas como un tripulante normal
+                                    bot.workingTimer = 2.0;
                                 }
                             }
                         }
@@ -1163,25 +1129,15 @@
                 this.ctx.translate(cameraX, cameraY);
                 this.ctx.lineJoin = 'round';
 
-                for (let r = 0; r < MAP_ROWS; r++) {
-                    for (let c = 0; c < MAP_COLS; c++) {
-                        const x = c * TILE_SIZE;
-                        const y = r * TILE_SIZE;
+                // Renderizado del Fondo Ilustrado de la Nave (map.png)
+                const totalWidth = SKELD_MIRA_MAP_GRID[0].length * TILE_SIZE;
+                const totalHeight = SKELD_MIRA_MAP_GRID.length * TILE_SIZE;
 
-                        if (SKELD_MIRA_MAP_GRID[r][c] === 1) {
-                            this.ctx.drawImage(this.wallTileCanvas, x, y);
-                            if (r + 1 < MAP_ROWS && SKELD_MIRA_MAP_GRID[r + 1][c] === 0) {
-                                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
-                                this.ctx.fillRect(x, y + TILE_SIZE - 6, TILE_SIZE, 6);
-                            }
-                        } else {
-                            this.ctx.drawImage(this.floorTileCanvas, x, y);
-                            if (r > 0 && SKELD_MIRA_MAP_GRID[r - 1][c] === 1) {
-                                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.38)';
-                                this.ctx.fillRect(x, y, TILE_SIZE, 10);
-                            }
-                        }
-                    }
+                if (mapImage.complete && mapImage.naturalWidth !== 0) {
+                    this.ctx.drawImage(mapImage, 0, 0, totalWidth, totalHeight);
+                } else {
+                    this.ctx.fillStyle = '#0f172a';
+                    this.ctx.fillRect(0, 0, totalWidth, totalHeight);
                 }
 
                 SKELD_VENTS.forEach(v => {
@@ -1652,7 +1608,7 @@
             exitVent() {
                 if (this.player.role !== 'impostor' || !this.player.inVent) return;
                 this.player.inVent = false;
-                this.player.ventCooldown = selectedVentCooldownTime; // Utiliza el valor configurable seleccionado (5s o 10s)
+                this.player.ventCooldown = selectedVentCooldownTime;
                 audio.playVentSwoosh();
             }
 
@@ -1920,7 +1876,7 @@
             vent10Btn.onclick = () => { selectedVentCooldownTime = 10; setupMenuControls(); };
         }
 
-        // --- JOYSTICK ANALÓGICO PANTALLA TÁCTIL ---
+        // Joystick Analógico Táctil
         function setupAnalogJoystick() {
             const zone = document.getElementById('joystick-zone');
             const base = document.getElementById('joystick-base');
