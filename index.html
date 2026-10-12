@@ -46,7 +46,6 @@
         .glow-cyan {
             box-shadow: 0 0 18px rgba(6, 182, 212, 0.8);
         }
-
         input[type="color"]::-webkit-color-swatch-wrapper {
             padding: 0;
         }
@@ -54,7 +53,6 @@
             border: none;
             border-radius: 9999px;
         }
-
         .hat-scroll::-webkit-scrollbar {
             width: 6px;
         }
@@ -66,7 +64,6 @@
             background: rgba(56, 189, 248, 0.5);
             border-radius: 8px;
         }
-
         #joystick-zone {
             position: absolute;
             bottom: 20px;
@@ -102,7 +99,6 @@
             transform: translate(-50%, -50%);
             box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
         }
-
         #action-controls {
             position: absolute;
             bottom: 20px;
@@ -117,10 +113,10 @@
 </head>
 <body class="w-screen h-screen relative bg-slate-950 flex flex-col items-center justify-center overflow-hidden">
 
-    <!-- Main Game Canvas -->
+    <!-- Canvas Principal -->
     <canvas id="gameCanvas" class="absolute inset-0 w-full h-full z-0"></canvas>
 
-    <!-- Top Status Bar (Responsive HUD) -->
+    <!-- Barra HUD Superior -->
     <div id="hud" class="absolute top-2 left-2 right-2 sm:top-3 sm:left-4 sm:right-4 flex justify-between items-center z-20 pointer-events-none hidden gap-2">
         <div id="task-bar-container" class="bg-slate-900/90 border-2 border-slate-700 px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl flex items-center gap-2 sm:gap-3 w-36 sm:w-64 md:w-96 pointer-events-auto backdrop-blur-md shadow-lg">
             <i class="fa-solid fa-list-check text-cyan-400 text-base sm:text-xl"></i>
@@ -148,14 +144,14 @@
         </div>
     </div>
 
-    <!-- Joystick Zone -->
+    <!-- Joystick Táctil -->
     <div id="joystick-zone" class="hidden">
         <div id="joystick-base">
             <div id="joystick-stick"></div>
         </div>
     </div>
 
-    <!-- Action Controls -->
+    <!-- Botones de Acción -->
     <div id="action-controls" class="hidden">
         <button id="report-btn" class="among-btn hidden bg-red-600 hover:bg-red-500 text-white font-orbitron font-bold w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex flex-col items-center justify-center border-2 border-red-300 shadow-xl text-[10px] sm:text-xs glow-red animate-bounce">
             <i class="fa-solid fa-bullhorn text-lg sm:text-xl mb-0.5"></i>
@@ -178,7 +174,7 @@
         </button>
     </div>
 
-    <!-- MAIN MENU OVERLAY -->
+    <!-- Menú Principal -->
     <div id="main-menu" class="absolute inset-0 bg-slate-950/90 z-50 flex items-center justify-center p-3 sm:p-4 backdrop-blur-md overflow-y-auto">
         <div class="max-w-3xl w-full bg-slate-900 border-2 border-slate-700 rounded-3xl p-5 sm:p-6 flex flex-col md:flex-row items-center gap-4 sm:gap-6 shadow-2xl relative max-h-[95vh] overflow-y-auto">
             
@@ -193,7 +189,7 @@
                 </div>
 
                 <div class="w-full text-center text-[10px] sm:text-[11px] text-slate-400 bg-slate-850 p-2 rounded-xl border border-slate-800">
-                    <i class="fa-solid fa-gamepad text-cyan-400 mr-1"></i> Controles: <strong class="text-white">WASD / Flechas</strong> o <strong class="text-white">Mando Análogo Táctil</strong>.
+                    <i class="fa-solid fa-gamepad text-cyan-400 mr-1"></i> Controles: <strong class="text-white">WASD / Flechas</strong> o <strong class="text-white">Joystick</strong>.
                 </div>
             </div>
 
@@ -232,7 +228,7 @@
         </div>
     </div>
 
-    <!-- EMERGENCY MEETING MODAL -->
+    <!-- Modal de Reunión de Emergencia -->
     <div id="meeting-modal" class="absolute inset-0 bg-slate-950/95 z-50 hidden flex flex-col items-center justify-center p-3 sm:p-4 backdrop-blur-lg">
         <div class="max-w-2xl w-full bg-slate-900 border-4 border-slate-700 rounded-3xl p-4 sm:p-6 flex flex-col items-center shadow-2xl relative max-h-[90vh]">
             <div class="text-center mb-3 sm:mb-4">
@@ -241,11 +237,9 @@
                     <h2 id="meeting-title">¡CUERPO ENCONTRADO!</h2>
                     <i class="fa-solid fa-triangle-exclamation"></i>
                 </div>
-                <p id="meeting-subtitle" class="text-slate-400 text-[10px] sm:text-xs font-orbitron mt-1">Vota a quién crees que es el Impostor para expulsarlo al espacio.</p>
+                <p id="meeting-subtitle" class="text-slate-400 text-[10px] sm:text-xs font-orbitron mt-1">Vota a quién crees que es el Impostor.</p>
             </div>
-
             <div id="voters-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full mb-4 max-h-52 sm:max-h-56 overflow-y-auto p-1"></div>
-
             <div class="flex justify-between items-center w-full pt-2 border-t border-slate-800">
                 <span id="voting-timer" class="font-orbitron text-xs text-amber-400 font-bold">Tiempo: 15s</span>
                 <button id="skip-vote-btn" class="among-btn bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-500 font-orbitron font-bold text-xs px-3 py-2 rounded-xl">
@@ -255,7 +249,7 @@
         </div>
     </div>
 
-    <!-- EJECTION MODAL -->
+    <!-- Modal de Expulsión -->
     <div id="ejection-modal" class="absolute inset-0 bg-slate-950/98 z-50 hidden flex flex-col items-center justify-center p-4 backdrop-blur-md overflow-hidden">
         <canvas id="ejectionCanvas" class="absolute inset-0 w-full h-full z-0 pointer-events-none"></canvas>
         <div class="relative z-10 text-center max-w-lg w-full flex flex-col items-center p-5 sm:p-6 bg-slate-900/60 rounded-3xl border border-slate-800 backdrop-blur-sm shadow-2xl">
@@ -266,46 +260,36 @@
         </div>
     </div>
 
-    <!-- MINIGAME MODAL -->
+    <!-- Modal de Minijuego -->
     <div id="minigame-modal" class="absolute inset-0 bg-slate-950/80 z-50 hidden flex items-center justify-center p-4 backdrop-blur-md">
         <div class="bg-slate-900 border-4 border-slate-700 rounded-3xl p-5 sm:p-6 max-w-md w-full flex flex-col items-center relative shadow-2xl">
             <button id="close-minigame-btn" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl sm:text-2xl">
                 <i class="fa-solid fa-xmark"></i>
             </button>
-
-            <h3 id="minigame-title" class="font-orbitron font-bold text-base sm:text-lg text-cyan-400 mb-4">CONECTAR CABLES</h3>
-
+            <h3 id="minigame-title" class="font-orbitron font-bold text-base sm:text-lg text-cyan-400 mb-4">TAREA</h3>
             <div id="minigame-container" class="w-full h-52 sm:h-56 bg-slate-950 rounded-2xl border-2 border-slate-800 relative overflow-hidden flex items-center justify-center"></div>
         </div>
     </div>
 
-    <!-- GAME OVER MODAL -->
+    <!-- Modal de Fin de Partida -->
     <div id="game-over-modal" class="absolute inset-0 bg-slate-950/90 z-50 hidden flex flex-col items-center justify-center p-4 backdrop-blur-md">
         <div class="max-w-md w-full bg-slate-900 border-4 border-slate-700 rounded-3xl p-6 sm:p-8 flex flex-col items-center text-center shadow-2xl">
             <div id="game-over-icon-box" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mb-4 bg-emerald-500/20 text-emerald-400 text-3xl sm:text-4xl">
                 <i class="fa-solid fa-trophy"></i>
             </div>
             <h2 id="game-over-title" class="font-orbitron font-black text-2xl sm:text-3xl mb-2 text-emerald-400">¡VICTORIA!</h2>
-            <p id="game-over-desc" class="text-slate-300 text-xs sm:text-sm mb-5 sm:mb-6">Completaste todas las tareas de la nave a tiempo.</p>
-
+            <p id="game-over-desc" class="text-slate-300 text-xs sm:text-sm mb-5 sm:mb-6">Completaste la misión.</p>
             <button id="restart-btn" class="among-btn w-full py-3 sm:py-3.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-orbitron font-black text-xs sm:text-sm rounded-2xl border-2 border-cyan-200">
                 <i class="fa-solid fa-rotate-right mr-2"></i> REINICIAR MISIÓN
             </button>
         </div>
     </div>
 
+    <!-- Script Principal del Juego -->
     <script>
         class SoundEngine {
-            constructor() {
-                this.ctx = null;
-            }
-
-            init() {
-                if (!this.ctx) {
-                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-                }
-            }
-
+            constructor() { this.ctx = null; }
+            init() { if (!this.ctx) { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } }
             playTone(freq, type, duration, vol = 0.1) {
                 if (!this.ctx) return;
                 try {
@@ -321,31 +305,26 @@
                     osc.stop(this.ctx.currentTime + duration);
                 } catch(e){}
             }
-
             playHeartbeat(rate = 1) {
                 this.init();
                 this.playTone(60, 'sine', 0.15, 0.3);
                 setTimeout(() => this.playTone(50, 'sine', 0.2, 0.25), 180 / rate);
             }
-
             playTaskComplete() {
                 this.init();
                 [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
                     setTimeout(() => this.playTone(freq, 'triangle', 0.2, 0.15), idx * 80);
                 });
             }
-
             playKillSound() {
                 this.init();
                 this.playTone(150, 'sawtooth', 0.3, 0.4);
                 this.playTone(80, 'square', 0.4, 0.5);
             }
-
             playVentSwoosh() {
                 this.init();
                 this.playTone(200, 'sine', 0.25, 0.2);
             }
-
             playSabotageAlarm() {
                 this.init();
                 this.playTone(880, 'sawtooth', 0.15, 0.15);
@@ -355,7 +334,6 @@
 
         const audio = new SoundEngine();
 
-        // Cargar imagen del mapa local
         const mapImage = new Image();
         mapImage.src = 'map.png';
 
@@ -368,9 +346,7 @@
         function getShadowColor(hexColor) {
             if (!hexColor || typeof hexColor !== 'string') return '#000000';
             let hex = hexColor.replace('#', '');
-            if (hex.length === 3) {
-                hex = hex.split('').map(c => c + c).join('');
-            }
+            if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
             if (hex.length !== 6) return '#000000';
             const r = Math.max(0, Math.floor(parseInt(hex.substring(0, 2), 16) * 0.55));
             const g = Math.max(0, Math.floor(parseInt(hex.substring(2, 4), 16) * 0.55));
@@ -425,10 +401,9 @@
             ctx.save();
             ctx.translate(x, y);
             if (isFacingLeft) ctx.scale(-1, 1);
-
             const palette = getColorObj(colorVal);
 
-            // Backpack
+            // Mochila
             ctx.fillStyle = palette.shadow;
             drawRoundRect(ctx, -radius * 0.9, -radius * 0.5, radius * 0.4, radius * 0.9, radius * 0.2);
             ctx.fill();
@@ -436,18 +411,17 @@
             ctx.strokeStyle = '#000000';
             ctx.stroke();
 
-            // Legs
+            // Piernas
             const legOffset = Math.sin(walkFrame) * radius * 0.2;
             ctx.fillStyle = palette.shadow;
             drawRoundRect(ctx, -radius * 0.4, radius * 0.3 + legOffset, radius * 0.35, radius * 0.5, radius * 0.15);
             ctx.fill();
             ctx.stroke();
-
             drawRoundRect(ctx, radius * 0.05, radius * 0.3 - legOffset, radius * 0.35, radius * 0.5, radius * 0.15);
             ctx.fill();
             ctx.stroke();
 
-            // Main Body
+            // Cuerpo
             ctx.fillStyle = palette.body;
             drawRoundRect(ctx, -radius * 0.6, -radius * 0.8, radius * 1.2, radius * 1.4, radius * 0.5);
             ctx.fill();
@@ -462,13 +436,13 @@
             ctx.strokeStyle = '#000000';
             ctx.stroke();
 
-            // Visor Glint
+            // Brillo Visor
             ctx.fillStyle = '#ffffff';
             ctx.beginPath();
             ctx.ellipse(radius * 0.25, -radius * 0.32, radius * 0.2, radius * 0.1, -Math.PI / 6, 0, Math.PI * 2);
             ctx.fill();
 
-            // Hats
+            // Sombrero
             if (hat === 'party') {
                 ctx.fillStyle = '#f43f5e';
                 ctx.beginPath();
@@ -505,14 +479,11 @@
                 ctx.arc(radius * 0.2, -radius * 0.85, radius * 0.2, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.stroke();
-
                 ctx.strokeStyle = '#15803d';
                 ctx.lineWidth = 3;
                 ctx.beginPath();
                 ctx.moveTo(-radius * 0.1, -radius * 0.9);
                 ctx.quadraticCurveTo(0, -radius * 1.2, radius * 0.05, -radius * 1.25);
-                ctx.moveTo(radius * 0.2, -radius * 0.85);
-                ctx.quadraticCurveTo(0.1, -radius * 1.1, radius * 0.05, -radius * 1.25);
                 ctx.stroke();
             } else if (hat === 'egg') {
                 ctx.fillStyle = '#f8fafc';
@@ -520,86 +491,28 @@
                 ctx.ellipse(0, -radius * 0.8, radius * 0.45, radius * 0.2, 0, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.stroke();
-
-                ctx.fillStyle = '#eab308';
-                ctx.beginPath();
-                ctx.arc(-radius * 0.05, -radius * 0.85, radius * 0.18, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.stroke();
             } else if (hat === 'banana') {
                 ctx.fillStyle = '#facc15';
                 ctx.beginPath();
                 ctx.moveTo(-radius * 0.25, -radius * 0.75);
                 ctx.quadraticCurveTo(0, -radius * 1.25, radius * 0.35, -radius * 0.8);
-                ctx.quadraticCurveTo(0, -radius * 1.0, -radius * 0.25, -radius * 0.75);
                 ctx.closePath();
                 ctx.fill();
                 ctx.stroke();
-            } else if (hat === 'cheese') {
-                ctx.fillStyle = '#f59e0b';
-                ctx.beginPath();
-                ctx.moveTo(-radius * 0.3, -radius * 0.75);
-                ctx.lineTo(radius * 0.3, -radius * 0.75);
-                ctx.lineTo(radius * 0.2, -radius * 1.15);
-                ctx.closePath();
-                ctx.fill();
-                ctx.stroke();
-
-                ctx.fillStyle = '#b45309';
-                ctx.beginPath();
-                ctx.arc(-radius * 0.05, -radius * 0.85, 3, 0, Math.PI * 2);
-                ctx.arc(radius * 0.1, -radius * 0.95, 2, 0, Math.PI * 2);
-                ctx.fill();
-            } else if (hat === 'halo') {
-                ctx.strokeStyle = '#fef08a';
-                ctx.lineWidth = 4;
-                ctx.beginPath();
-                ctx.ellipse(0, -radius * 1.05, radius * 0.4, radius * 0.12, 0, 0, Math.PI * 2);
-                ctx.stroke();
-            } else if (hat === 'military') {
-                ctx.fillStyle = '#15803d';
-                ctx.beginPath();
-                ctx.ellipse(0, -radius * 0.8, radius * 0.5, radius * 0.22, 0, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.stroke();
-                ctx.fillStyle = '#166534';
-                ctx.fillRect(-radius * 0.35, -radius * 0.95, radius * 0.7, radius * 0.2);
-                ctx.strokeRect(-radius * 0.35, -radius * 0.95, radius * 0.7, radius * 0.2);
-            } else if (hat === 'knight') {
-                ctx.fillStyle = '#64748b';
-                drawRoundRect(ctx, -radius * 0.45, -radius * 1.05, radius * 0.9, radius * 0.45, radius * 0.1);
-                ctx.fill();
-                ctx.stroke();
-                ctx.fillStyle = '#0f172a';
-                ctx.fillRect(-radius * 0.3, -radius * 0.9, radius * 0.6, radius * 0.08);
             } else if (hat === 'headphones') {
                 ctx.strokeStyle = '#0284c7';
                 ctx.lineWidth = 5;
                 ctx.beginPath();
                 ctx.arc(0, -radius * 0.4, radius * 0.52, Math.PI, 0);
                 ctx.stroke();
-                ctx.fillStyle = '#e11d48';
-                ctx.fillRect(-radius * 0.6, -radius * 0.5, radius * 0.18, radius * 0.35);
-                ctx.strokeRect(-radius * 0.6, -radius * 0.5, radius * 0.18, radius * 0.35);
-                ctx.fillRect(radius * 0.42, -radius * 0.5, radius * 0.18, radius * 0.35);
-                ctx.strokeRect(radius * 0.42, -radius * 0.5, radius * 0.18, radius * 0.35);
-            } else if (hat === 'tophat') {
-                ctx.fillStyle = '#1e293b';
-                ctx.fillRect(-radius * 0.5, -radius * 0.75, radius * 1.0, radius * 0.12);
-                ctx.strokeRect(-radius * 0.5, -radius * 0.75, radius * 1.0, radius * 0.12);
-                ctx.fillRect(-radius * 0.3, -radius * 1.25, radius * 0.6, radius * 0.5);
-                ctx.strokeRect(-radius * 0.3, -radius * 1.25, radius * 0.6, radius * 0.5);
             }
-
             ctx.restore();
         }
 
         function drawDeadBody(ctx, x, y, colorVal) {
             ctx.save();
             ctx.translate(x, y);
-
             const palette = getColorObj(colorVal);
-
             ctx.fillStyle = palette.body;
             ctx.beginPath();
             ctx.ellipse(0, 5, 18, 11, 0, 0, Math.PI * 2);
@@ -607,14 +520,12 @@
             ctx.lineWidth = 3;
             ctx.strokeStyle = '#000000';
             ctx.stroke();
-
             ctx.fillStyle = '#f8fafc';
             ctx.fillRect(-3, -12, 6, 14);
             ctx.beginPath();
             ctx.arc(-3, -12, 4, 0, Math.PI * 2);
             ctx.arc(3, -12, 4, 0, Math.PI * 2);
             ctx.fill();
-
             ctx.restore();
         }
 
@@ -688,19 +599,16 @@
             constructor() {
                 this.canvas = document.getElementById('gameCanvas');
                 this.ctx = this.canvas.getContext('2d');
-                
                 this.player = null;
                 this.bots = [];
                 this.deadBodies = [];
                 this.keys = {};
                 this.analogDir = { x: 0, y: 0 };
                 this.gameStarted = false;
-                
                 this.tasks = JSON.parse(JSON.stringify(SKELD_TASKS));
                 this.isSabotageActive = false;
                 this.sabotageTimer = 30;
                 this.sabotageInterval = null;
-
                 this.isGameOver = false;
                 this.isMeetingActive = false;
                 this.heartbeatTimer = 0;
@@ -711,8 +619,8 @@
 
             resizeCanvas() {
                 if (this.canvas) {
-                    this.canvas.width = window.innerWidth || document.documentElement.clientWidth || 800;
-                    this.canvas.height = window.innerHeight || document.documentElement.clientHeight || 600;
+                    this.canvas.width = window.innerWidth || 800;
+                    this.canvas.height = window.innerHeight || 600;
                 }
             }
 
@@ -746,7 +654,6 @@
 
                 this.bots = [];
                 const botColors = PRESET_COLORS.filter(c => c !== selectedColor);
-
                 const spawnLocs = [
                     { x: 14.5 * TILE_SIZE, y: 2.5 * TILE_SIZE },
                     { x: 10.5 * TILE_SIZE, y: 6.5 * TILE_SIZE },
@@ -770,16 +677,12 @@
                         walkFrame: 0,
                         targetX: spawnLocs[1].x,
                         targetY: spawnLocs[1].y,
-                        workingTimer: 0,
                         stuckFrames: 0,
                         unstuckTimer: 0,
                         killCooldown: 15,
                         isDead: false
                     });
-
                     for (let i = 0; i < 4; i++) {
-                        const colorHex = botColors[i % botColors.length];
-                        const hatObj = HATS[(i + 1) % HATS.length];
                         this.bots.push({
                             id: `bot_crew_${i}`,
                             name: `Bot ${i + 1}`,
@@ -787,8 +690,8 @@
                             y: spawnLocs[(i + 2) % spawnLocs.length].y,
                             radius: 20,
                             speed: 2.8,
-                            color: colorHex,
-                            hat: hatObj.id,
+                            color: botColors[i % botColors.length],
+                            hat: HATS[(i + 1) % HATS.length].id,
                             role: 'crewmate',
                             isFacingLeft: false,
                             walkFrame: 0,
@@ -803,8 +706,6 @@
                     }
                 } else {
                     for (let i = 0; i < 4; i++) {
-                        const colorHex = botColors[i % botColors.length];
-                        const hatObj = HATS[(i + 2) % HATS.length];
                         this.bots.push({
                             id: `bot_crew_${i}`,
                             name: `Bot ${i + 1}`,
@@ -812,8 +713,8 @@
                             y: spawnLocs[i % spawnLocs.length].y,
                             radius: 20,
                             speed: 2.6,
-                            color: colorHex,
-                            hat: hatObj.id,
+                            color: botColors[i % botColors.length],
+                            hat: HATS[(i + 2) % HATS.length].id,
                             role: 'crewmate',
                             isFacingLeft: false,
                             walkFrame: 0,
@@ -827,7 +728,6 @@
                         });
                     }
                 }
-
                 this.updateHUD();
             }
 
@@ -843,18 +743,11 @@
                 let row = Math.floor(y / TILE_SIZE);
                 col = Math.max(1, Math.min(MAP_COLS - 2, col));
                 row = Math.max(1, Math.min(MAP_ROWS - 2, row));
-
-                if (SKELD_MIRA_MAP_GRID[row] && SKELD_MIRA_MAP_GRID[row][col] === 0) {
-                    return { x, y };
-                }
-
+                if (SKELD_MIRA_MAP_GRID[row] && SKELD_MIRA_MAP_GRID[row][col] === 0) return { x, y };
                 for (let dr = -1; dr <= 1; dr++) {
                     for (let dc = -1; dc <= 1; dc++) {
                         if (SKELD_MIRA_MAP_GRID[row + dr] && SKELD_MIRA_MAP_GRID[row + dr][col + dc] === 0) {
-                            return {
-                                x: (col + dc + 0.5) * TILE_SIZE,
-                                y: (row + dr + 0.5) * TILE_SIZE
-                            };
+                            return { x: (col + dc + 0.5) * TILE_SIZE, y: (row + dr + 0.5) * TILE_SIZE };
                         }
                     }
                 }
@@ -888,9 +781,7 @@
                 if (this.player.killCooldown > 0) this.player.killCooldown -= 1/60;
                 if (this.player.ventCooldown > 0) this.player.ventCooldown -= 1/60;
 
-                let dx = 0;
-                let dy = 0;
-
+                let dx = 0, dy = 0;
                 if (this.keys['KeyW'] || this.keys['ArrowUp'] || this.keys['w'] || this.keys['W']) dy -= 1;
                 if (this.keys['KeyS'] || this.keys['ArrowDown'] || this.keys['s'] || this.keys['S']) dy += 1;
                 if (this.keys['KeyA'] || this.keys['ArrowLeft'] || this.keys['a'] || this.keys['A']) dx -= 1;
@@ -906,16 +797,11 @@
                     const normX = (dx / len) * this.player.speed;
                     const normY = (dy / len) * this.player.speed;
 
-                    if (!this.checkCollision(this.player.x + normX, this.player.y)) {
-                        this.player.x += normX;
-                    }
-                    if (!this.checkCollision(this.player.x, this.player.y + normY)) {
-                        this.player.y += normY;
-                    }
+                    if (!this.checkCollision(this.player.x + normX, this.player.y)) this.player.x += normX;
+                    if (!this.checkCollision(this.player.x, this.player.y + normY)) this.player.y += normY;
 
                     if (dx < 0) this.player.isFacingLeft = true;
                     if (dx > 0) this.player.isFacingLeft = false;
-
                     this.player.walkFrame += 0.25;
                 }
 
@@ -927,57 +813,38 @@
             updateBots() {
                 this.bots.forEach(bot => {
                     if (bot.isDead) return;
-
                     if (bot.role === 'impostor') {
                         if (bot.killCooldown > 0) bot.killCooldown -= 1 / 60;
                         if (bot.unstuckTimer > 0) bot.unstuckTimer--;
-
                         if (bot.unstuckTimer <= 0) {
                             let targets = [];
-
                             if (this.player.role === 'crewmate' && !this.player.inVent && !this.player.isDead) {
-                                targets.push({
-                                    isPlayer: true,
-                                    botRef: null,
-                                    x: this.player.x,
-                                    y: this.player.y,
-                                    dist: Math.hypot(this.player.x - bot.x, this.player.y - bot.y)
-                                });
+                                targets.push({ isPlayer: true, botRef: null, x: this.player.x, y: this.player.y, dist: Math.hypot(this.player.x - bot.x, this.player.y - bot.y) });
                             }
-
                             this.bots.forEach(b => {
                                 if (b.role === 'crewmate' && !b.isDead) {
-                                    targets.push({
-                                        isPlayer: false,
-                                        botRef: b,
-                                        x: b.x,
-                                        y: b.y,
-                                        dist: Math.hypot(b.x - bot.x, b.y - bot.y)
-                                    });
+                                    targets.push({ isPlayer: false, botRef: b, x: b.x, y: b.y, dist: Math.hypot(b.x - bot.x, b.y - bot.y) });
                                 }
                             });
-
                             targets = targets.filter(t => t.dist < 350 && !this.isWallBetween(bot.x, bot.y, t.x, t.y));
                             targets.sort((a, b) => a.dist - b.dist);
 
                             if (targets.length > 0 && bot.killCooldown <= 0 && Math.random() < 0.25) {
-                                const chosenTarget = targets[Math.floor(Math.random() * Math.min(targets.length, 2))];
-                                const validTgt = this.getValidTarget(chosenTarget.x, chosenTarget.y);
+                                const chosen = targets[0];
+                                const validTgt = this.getValidTarget(chosen.x, chosen.y);
                                 bot.targetX = validTgt.x;
                                 bot.targetY = validTgt.y;
-
-                                if (chosenTarget.dist < 42) {
+                                if (chosen.dist < 42) {
                                     audio.playKillSound();
                                     bot.killCooldown = 18;
-
-                                    if (chosenTarget.isPlayer) {
+                                    if (chosen.isPlayer) {
                                         this.player.isDead = true;
                                         this.deadBodies.push({ id: 'player', x: this.player.x, y: this.player.y, color: this.player.color, name: 'Tú' });
-                                        this.triggerGameOver(false, "¡El Impostor te eliminó por sorpresa!");
+                                        this.triggerGameOver(false, "¡El Impostor te eliminó!");
                                         return;
                                     } else {
-                                        chosenTarget.botRef.isDead = true;
-                                        this.deadBodies.push({ id: chosenTarget.botRef.id, x: chosenTarget.botRef.x, y: chosenTarget.botRef.y, color: chosenTarget.botRef.color, name: chosenTarget.botRef.name });
+                                        chosen.botRef.isDead = true;
+                                        this.deadBodies.push({ id: chosen.botRef.id, x: chosen.botRef.x, y: chosen.botRef.y, color: chosen.botRef.color, name: chosen.botRef.name });
                                     }
                                 }
                             } else {
@@ -986,26 +853,20 @@
                                     const validTgt = this.getValidTarget(randTask.x, randTask.y);
                                     bot.targetX = validTgt.x;
                                     bot.targetY = validTgt.y;
-                                    bot.workingTimer = 2.0;
                                 }
                             }
                         }
                     } else {
                         const impostorRef = this.player.role === 'impostor' ? this.player : this.bots.find(b => b.role === 'impostor');
-                        const isImpostorVisible = impostorRef && (!impostorRef.inVent) && (!impostorRef.isDead) && Math.hypot(impostorRef.x - bot.x, impostorRef.y - bot.y) < 160;
+                        const isImpostorVisible = impostorRef && !impostorRef.inVent && !impostorRef.isDead && Math.hypot(impostorRef.x - bot.x, impostorRef.y - bot.y) < 160;
 
                         if (isImpostorVisible) {
                             bot.isPanicking = true;
                             bot.panicTimer = 60;
-                            
                             const escapeAngle = Math.atan2(bot.y - impostorRef.y, bot.x - impostorRef.x);
-                            const rawTargetX = bot.x + Math.cos(escapeAngle) * 100;
-                            const rawTargetY = bot.y + Math.sin(escapeAngle) * 100;
-                            
-                            const validTgt = this.getValidTarget(rawTargetX, rawTargetY);
+                            const validTgt = this.getValidTarget(bot.x + Math.cos(escapeAngle) * 100, bot.y + Math.sin(escapeAngle) * 100);
                             bot.targetX = validTgt.x;
                             bot.targetY = validTgt.y;
-                            bot.workingTimer = 0;
                         } else if (bot.panicTimer > 0) {
                             bot.panicTimer--;
                             if (bot.panicTimer <= 0) bot.isPanicking = false;
@@ -1015,15 +876,12 @@
                             bot.isPanicking = false;
                             bot.targetX = REACTOR_SABOTAGE_POS.x;
                             bot.targetY = REACTOR_SABOTAGE_POS.y;
-
                             if (Math.hypot(bot.x - REACTOR_SABOTAGE_POS.x, bot.y - REACTOR_SABOTAGE_POS.y) < 40) {
-                                bot.workingTimer = (bot.workingTimer || 0) + 1 / 60;
+                                bot.workingTimer = (bot.workingTimer || 0) + 1/60;
                                 if (bot.workingTimer >= 3.0) {
-                                    this.resolveSabotage("¡Un tripulante reparó la crisis del reactor!");
+                                    this.resolveSabotage("¡Un tripulante reparó la crisis!");
                                     bot.workingTimer = 0;
                                 }
-                            } else {
-                                bot.workingTimer = 0;
                             }
                         } else if (!bot.isPanicking) {
                             if (!bot.currentTask || bot.currentTask.completed) {
@@ -1036,9 +894,8 @@
                                     bot.workingTimer = 0;
                                 }
                             }
-
                             if (bot.currentTask && Math.hypot(bot.targetX - bot.x, bot.targetY - bot.y) < 30) {
-                                bot.workingTimer += 1 / 60;
+                                bot.workingTimer += 1/60;
                                 if (bot.workingTimer >= 3.5) {
                                     this.completeTask(bot.currentTask.id);
                                     bot.workingTimer = 0;
@@ -1052,23 +909,12 @@
                     const bdx = bot.targetX - bot.x;
                     const bdy = bot.targetY - bot.y;
                     const dist = Math.hypot(bdx, bdy);
-
-                    if (dist > 3 && (!bot.workingTimer || bot.workingTimer === 0)) {
+                    if (dist > 3) {
                         const vx = (bdx / dist) * currentSpeed;
                         const vy = (bdy / dist) * currentSpeed;
-
-                        let movedX = false;
-                        let movedY = false;
-
-                        if (!this.checkCollision(bot.x + vx, bot.y)) {
-                            bot.x += vx;
-                            movedX = true;
-                        }
-                        if (!this.checkCollision(bot.x, bot.y + vy)) {
-                            bot.y += vy;
-                            movedY = true;
-                        }
-
+                        let movedX = false, movedY = false;
+                        if (!this.checkCollision(bot.x + vx, bot.y)) { bot.x += vx; movedX = true; }
+                        if (!this.checkCollision(bot.x, bot.y + vy)) { bot.y += vy; movedY = true; }
                         if (!movedX && !movedY) {
                             bot.stuckFrames = (bot.stuckFrames || 0) + 1;
                             if (bot.stuckFrames > 8) {
@@ -1078,12 +924,10 @@
                                 bot.targetY = validTgt.y;
                                 bot.stuckFrames = 0;
                                 bot.unstuckTimer = 120;
-                                bot.currentTask = null;
                             }
                         } else {
                             bot.stuckFrames = 0;
                         }
-
                         bot.isFacingLeft = bdx < 0;
                         bot.walkFrame += 0.25;
                     }
@@ -1093,11 +937,9 @@
             checkProximity() {
                 const impostor = this.player.role === 'impostor' ? this.player : this.bots.find(b => b.role === 'impostor');
                 if (!impostor || impostor.isDead) return;
-
                 const dist = Math.hypot(this.player.x - impostor.x, this.player.y - impostor.y);
                 const proxText = document.getElementById('proximity-text');
                 const heartIcon = document.getElementById('heart-icon');
-
                 this.heartbeatTimer++;
 
                 if (dist < 160) {
@@ -1119,7 +961,6 @@
 
             render() {
                 if (!this.gameStarted || !this.player) return;
-
                 this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
                 const cameraX = this.canvas.width / 2 - this.player.x;
@@ -1129,16 +970,36 @@
                 this.ctx.translate(cameraX, cameraY);
                 this.ctx.lineJoin = 'round';
 
-                // Renderizado del Fondo Ilustrado de la Nave (map.png)
-                const totalWidth = SKELD_MIRA_MAP_GRID[0].length * TILE_SIZE;
-                const totalHeight = SKELD_MIRA_MAP_GRID.length * TILE_SIZE;
+                // --- RENDERIZADO DEL MAPA (Respaldo vectorial + map.png) ---
+                const rows = SKELD_MIRA_MAP_GRID.length;
+                const cols = SKELD_MIRA_MAP_GRID[0].length;
+                const totalW = cols * TILE_SIZE;
+                const totalH = rows * TILE_SIZE;
 
-                if (mapImage.complete && mapImage.naturalWidth !== 0) {
-                    this.ctx.drawImage(mapImage, 0, 0, totalWidth, totalHeight);
-                } else {
-                    this.ctx.fillStyle = '#0f172a';
-                    this.ctx.fillRect(0, 0, totalWidth, totalHeight);
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        const x = c * TILE_SIZE;
+                        const y = r * TILE_SIZE;
+                        if (SKELD_MIRA_MAP_GRID[r][c] === 1) {
+                            this.ctx.fillStyle = '#0f172a';
+                            this.ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+                            this.ctx.strokeStyle = '#1e293b';
+                            this.ctx.lineWidth = 2;
+                            this.ctx.strokeRect(x, y, TILE_SIZE, TILE_SIZE);
+                        } else {
+                            this.ctx.fillStyle = '#1e293b';
+                            this.ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+                            this.ctx.strokeStyle = '#334155';
+                            this.ctx.lineWidth = 1;
+                            this.ctx.strokeRect(x, y, TILE_SIZE, TILE_SIZE);
+                        }
+                    }
                 }
+
+                if (mapImage.complete && mapImage.naturalWidth > 0) {
+                    this.ctx.drawImage(mapImage, 0, 0, totalW, totalH);
+                }
+                // -----------------------------------------------------------
 
                 SKELD_VENTS.forEach(v => {
                     this.ctx.fillStyle = '#334155';
@@ -1146,14 +1007,6 @@
                     this.ctx.strokeStyle = '#64748b';
                     this.ctx.lineWidth = 3;
                     this.ctx.strokeRect(v.x - 22, v.y - 16, 44, 32);
-                    
-                    this.ctx.strokeStyle = '#0284c7';
-                    for (let i = -12; i <= 12; i += 6) {
-                        this.ctx.beginPath();
-                        this.ctx.moveTo(v.x + i, v.y - 12);
-                        this.ctx.lineTo(v.x + i, v.y + 12);
-                        this.ctx.stroke();
-                    }
                 });
 
                 this.tasks.forEach(t => {
@@ -1173,29 +1026,6 @@
                 this.bots.forEach(bot => {
                     if (!bot.isDead) {
                         drawCrewmateCharacter(this.ctx, bot.x, bot.y, bot.radius, bot.color, bot.hat, bot.isFacingLeft, bot.walkFrame);
-
-                        if (bot.role === 'impostor') {
-                            this.ctx.fillStyle = '#ef4444';
-                            this.ctx.font = 'bold 12px Orbitron';
-                            this.ctx.textAlign = 'center';
-                            if (bot.killCooldown > 0) {
-                                this.ctx.fillText(`🔪 ${Math.ceil(bot.killCooldown)}s`, bot.x, bot.y - bot.radius - 18);
-                            } else {
-                                this.ctx.fillText("🔪 ¡LISTO!", bot.x, bot.y - bot.radius - 18);
-                            }
-                        } else if (bot.role === 'crewmate') {
-                            if (bot.isPanicking) {
-                                this.ctx.fillStyle = '#ef4444';
-                                this.ctx.font = 'bold 16px Orbitron';
-                                this.ctx.textAlign = 'center';
-                                this.ctx.fillText("¡!", bot.x, bot.y - bot.radius - 22);
-                            } else if (bot.workingTimer > 0) {
-                                this.ctx.fillStyle = '#38fedc';
-                                this.ctx.font = 'bold 13px Orbitron';
-                                this.ctx.textAlign = 'center';
-                                this.ctx.fillText("🔧", bot.x, bot.y - bot.radius - 20);
-                            }
-                        }
                     }
                 });
 
@@ -1204,34 +1034,18 @@
                 }
 
                 this.renderFogOfWar();
-
                 this.ctx.restore();
             }
 
             renderFogOfWar() {
                 if (!this.player) return;
                 const viewRadius = this.player.role === 'impostor' ? 320 : 240;
-
                 this.ctx.save();
                 this.ctx.beginPath();
                 this.ctx.rect(this.player.x - this.canvas.width, this.player.y - this.canvas.height, this.canvas.width * 2, this.canvas.height * 2);
                 this.ctx.arc(this.player.x, this.player.y, viewRadius, 0, Math.PI * 2, true);
                 this.ctx.fillStyle = 'rgba(3, 7, 18, 0.85)';
                 this.ctx.fill();
-
-                try {
-                    const grad = this.ctx.createRadialGradient(
-                        this.player.x, this.player.y, Math.max(0, viewRadius - 35),
-                        this.player.x, this.player.y, viewRadius
-                    );
-                    grad.addColorStop(0, 'rgba(3, 7, 18, 0)');
-                    grad.addColorStop(1, 'rgba(3, 7, 18, 0.85)');
-                    this.ctx.fillStyle = grad;
-                    this.ctx.beginPath();
-                    this.ctx.arc(this.player.x, this.player.y, viewRadius, 0, Math.PI * 2);
-                    this.ctx.fill();
-                } catch(e) {}
-
                 this.ctx.restore();
             }
 
@@ -1240,119 +1054,68 @@
                 const actionText = document.getElementById('action-text');
                 const actionIcon = document.getElementById('action-icon');
                 const ventBtn = document.getElementById('vent-btn');
-                const ventBtnText = document.getElementById('vent-btn-text');
                 const sabotageBtn = document.getElementById('sabotage-btn');
                 const reportBtn = document.getElementById('report-btn');
 
                 const nearbyBody = this.deadBodies.find(b => Math.hypot(b.x - this.player.x, b.y - this.player.y) < 70);
-                if (nearbyBody && !this.player.isDead) {
-                    reportBtn.classList.remove('hidden');
-                } else {
-                    reportBtn.classList.add('hidden');
-                }
+                if (nearbyBody && !this.player.isDead) reportBtn.classList.remove('hidden');
+                else reportBtn.classList.add('hidden');
 
                 if (this.player.role === 'impostor') {
                     ventBtn.classList.remove('hidden');
                     sabotageBtn.classList.remove('hidden');
-
                     if (this.player.inVent) {
-                        ventBtnText.innerText = "MOVER";
                         actionText.innerText = "SALIR";
-                        actionIcon.className = "fa-solid fa-door-open text-xl sm:text-2xl mb-0.5";
-                        actionBtn.className = "among-btn bg-emerald-600 hover:bg-emerald-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-emerald-300 shadow-xl text-[10px] sm:text-xs glow-cyan";
+                        actionIcon.className = "fa-solid fa-door-open text-xl mb-0.5";
                     } else {
-                        ventBtnText.innerText = this.player.ventCooldown > 0 ? `${Math.ceil(this.player.ventCooldown)}s` : "ESCOTILLA";
                         const targetBot = this.bots.find(b => !b.isDead && Math.hypot(b.x - this.player.x, b.y - this.player.y) < 50);
-
                         if (targetBot && this.player.killCooldown <= 0) {
                             actionText.innerText = "ASESINAR";
-                            actionIcon.className = "fa-solid fa-skull text-xl sm:text-2xl mb-0.5";
-                            actionBtn.className = "among-btn bg-red-600 hover:bg-red-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-red-300 shadow-xl text-[10px] sm:text-xs glow-red animate-pulse";
+                            actionIcon.className = "fa-solid fa-skull text-xl mb-0.5";
                         } else {
                             actionText.innerText = this.player.killCooldown > 0 ? `${Math.ceil(this.player.killCooldown)}s` : "BUSCAR";
-                            actionIcon.className = "fa-solid fa-hourglass-half text-xl sm:text-2xl mb-0.5";
-                            actionBtn.className = "among-btn bg-slate-800 text-slate-400 font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-slate-700 text-[10px] sm:text-xs";
+                            actionIcon.className = "fa-solid fa-hourglass-half text-xl mb-0.5";
                         }
                     }
                 } else {
                     ventBtn.classList.add('hidden');
                     sabotageBtn.classList.add('hidden');
-
-                    const isNearReactorSabotage = this.isSabotageActive && Math.hypot(this.player.x - REACTOR_SABOTAGE_POS.x, this.player.y - REACTOR_SABOTAGE_POS.y) < 60;
                     const nearbyTask = this.tasks.find(t => !t.completed && Math.hypot(t.x - this.player.x, t.y - this.player.y) < 55);
-
-                    if (isNearReactorSabotage) {
-                        actionText.innerText = "REPARAR";
-                        actionIcon.className = "fa-solid fa-triangle-exclamation text-xl sm:text-2xl mb-0.5";
-                        actionBtn.className = "among-btn bg-red-600 hover:bg-red-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-red-300 shadow-xl text-[10px] sm:text-xs glow-red animate-pulse";
-                    } else if (nearbyTask) {
-                        actionText.innerText = "USAR";
-                        actionIcon.className = "fa-solid fa-hand text-xl sm:text-2xl mb-0.5";
-                        actionBtn.className = "among-btn bg-cyan-600 hover:bg-cyan-500 text-white font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-cyan-300 shadow-xl text-[10px] sm:text-xs glow-cyan";
-                    } else {
-                        actionText.innerText = "USAR";
-                        actionIcon.className = "fa-solid fa-screwdriver-wrench text-xl sm:text-2xl mb-0.5";
-                        actionBtn.className = "among-btn bg-cyan-600/60 text-cyan-200 font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center border-2 border-cyan-400 text-[10px] sm:text-xs glow-cyan";
-                    }
+                    actionText.innerText = "USAR";
+                    actionIcon.className = nearbyTask ? "fa-solid fa-hand text-xl mb-0.5" : "fa-solid fa-screwdriver-wrench text-xl mb-0.5";
                 }
             }
 
             handlePrimaryAction() {
                 if (this.player.role === 'impostor') {
-                    if (this.player.inVent) {
-                        this.exitVent();
-                        return;
-                    }
-
+                    if (this.player.inVent) { this.exitVent(); return; }
                     const targetBot = this.bots.find(b => !b.isDead && Math.hypot(b.x - this.player.x, b.y - this.player.y) < 50);
                     if (targetBot && this.player.killCooldown <= 0) {
                         targetBot.isDead = true;
                         this.deadBodies.push({ id: targetBot.id, x: targetBot.x, y: targetBot.y, color: targetBot.color, name: targetBot.name });
                         this.player.killCooldown = 18;
                         audio.playKillSound();
-
-                        const aliveCrew = this.bots.filter(b => b.role === 'crewmate' && !b.isDead).length;
-                        if (aliveCrew === 0) {
-                            this.triggerGameOver(true, "¡Has eliminado a toda la tripulación de la nave!");
-                        }
                     }
                 } else {
-                    if (this.isSabotageActive && Math.hypot(this.player.x - REACTOR_SABOTAGE_POS.x, this.player.y - REACTOR_SABOTAGE_POS.y) < 60) {
-                        openMinigameModal({ id: 99, name: 'CALIBRAR REACTOR (EMERGENCIA)', type: 'reactor' });
-                        return;
-                    }
-
                     const nearbyTask = this.tasks.find(t => !t.completed && Math.hypot(t.x - this.player.x, t.y - this.player.y) < 55);
-                    if (nearbyTask) {
-                        openMinigameModal(nearbyTask);
-                    }
+                    if (nearbyTask) openMinigameModal(nearbyTask);
                 }
             }
 
             reportDeadBody() {
                 const nearbyBody = this.deadBodies.find(b => Math.hypot(b.x - this.player.x, b.y - this.player.y) < 70);
-                if (nearbyBody) {
-                    this.startEmergencyMeeting('Tú', nearbyBody.name);
-                }
+                if (nearbyBody) this.startEmergencyMeeting('Tú', nearbyBody.name);
             }
 
             startEmergencyMeeting(reporterName, victimName) {
                 if (this.isMeetingActive) return;
-
                 this.isMeetingActive = true;
                 audio.playSabotageAlarm();
-
-                const meetingModal = document.getElementById('meeting-modal');
-                const title = document.getElementById('meeting-title');
-                const subtitle = document.getElementById('meeting-subtitle');
+                document.getElementById('meeting-modal').classList.remove('hidden');
+                document.getElementById('meeting-subtitle').innerText = `${reporterName} encontró un cuerpo. ¡A debatir!`;
+                
                 const votersGrid = document.getElementById('voters-grid');
-
-                title.innerText = "¡CUERPO ENCONTRADO!";
-                subtitle.innerText = `${reporterName} encontró el cuerpo de ${victimName}. ¡Debaten quién es el Impostor!`;
                 votersGrid.innerHTML = '';
-
-                meetingModal.classList.remove('hidden');
-
                 const allParticipants = [
                     { id: 'player', name: 'Tú', color: this.player.color, isDead: this.player.isDead, role: this.player.role },
                     ...this.bots.map(b => ({ id: b.id, name: b.name, color: b.color, isDead: b.isDead, role: b.role }))
@@ -1360,437 +1123,102 @@
 
                 allParticipants.forEach(p => {
                     const card = document.createElement('div');
-                    card.className = `p-2.5 sm:p-3 rounded-2xl border-2 flex items-center justify-between transition-all ${
-                        p.isDead 
-                            ? 'bg-slate-900/60 border-slate-800 opacity-50' 
-                            : 'bg-slate-800 hover:bg-slate-750 border-slate-700 hover:border-cyan-400 cursor-pointer'
-                    }`;
-
+                    card.className = `p-2.5 rounded-2xl border-2 flex items-center justify-between ${p.isDead ? 'opacity-50 bg-slate-900' : 'bg-slate-800'}`;
                     const palette = getColorObj(p.color);
-
                     card.innerHTML = `
                         <div class="flex items-center gap-2.5">
-                            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-black flex-shrink-0" style="background-color: ${palette.body}"></div>
+                            <div class="w-7 h-7 rounded-full border-2 border-black" style="background-color: ${palette.body}"></div>
                             <span class="font-orbitron font-bold text-xs ${p.isDead ? 'line-through text-slate-500' : 'text-white'}">${p.name}</span>
                         </div>
-                        ${p.isDead ? '<span class="text-red-500 text-[10px] sm:text-xs font-bold font-orbitron">MUERTO</span>' : `<button onclick="castPlayerVote('${p.id}')" class="among-btn px-2.5 py-1 bg-cyan-600 text-white rounded-lg text-[10px] sm:text-xs font-orbitron font-bold">VOTAR</button>`}
+                        ${p.isDead ? '<span class="text-red-500 text-xs font-bold">MUERTO</span>' : `<button onclick="castPlayerVote('${p.id}')" class="px-2.5 py-1 bg-cyan-600 text-white rounded-lg text-xs font-orbitron font-bold">VOTAR</button>`}
                     `;
                     votersGrid.appendChild(card);
                 });
 
                 let voteTimer = 15;
                 const timerSpan = document.getElementById('voting-timer');
-                timerSpan.innerText = `Tiempo: ${voteTimer}s`;
-
                 this.votingInterval = setInterval(() => {
                     voteTimer--;
                     timerSpan.innerText = `Tiempo: ${voteTimer}s`;
-                    if (voteTimer <= 0) {
-                        clearInterval(this.votingInterval);
-                        this.processVotingResults('skip');
-                    }
+                    if (voteTimer <= 0) { clearInterval(this.votingInterval); this.processVotingResults('skip'); }
                 }, 1000);
 
-                window.castPlayerVote = (targetId) => {
-                    clearInterval(this.votingInterval);
-                    this.processVotingResults(targetId);
-                };
-
-                document.getElementById('skip-vote-btn').onclick = () => {
-                    clearInterval(this.votingInterval);
-                    this.processVotingResults('skip');
-                };
+                window.castPlayerVote = (id) => { clearInterval(this.votingInterval); this.processVotingResults(id); };
+                document.getElementById('skip-vote-btn').onclick = () => { clearInterval(this.votingInterval); this.processVotingResults('skip'); };
             }
 
-            processVotingResults(playerVotedId) {
+            processVotingResults(targetId) {
                 document.getElementById('meeting-modal').classList.add('hidden');
-
-                const aliveParticipants = [
-                    { id: 'player', name: 'Tú', color: this.player.color, hat: this.player.hat, role: this.player.role },
-                    ...this.bots.filter(b => !b.isDead).map(b => ({ id: b.id, name: b.name, color: b.color, hat: b.hat, role: b.role }))
-                ];
-
-                const voteCounts = {};
-                aliveParticipants.forEach(p => voteCounts[p.id] = 0);
-                voteCounts['skip'] = 0;
-
-                if (playerVotedId && voteCounts[playerVotedId] !== undefined) {
-                    voteCounts[playerVotedId]++;
-                } else {
-                    voteCounts['skip']++;
-                }
-
-                aliveParticipants.forEach(bot => {
-                    if (bot.id === 'player') return;
-
-                    if (bot.role === 'impostor') {
-                        const crewTargets = aliveParticipants.filter(p => p.role === 'crewmate');
-                        if (crewTargets.length > 0) {
-                            const chosen = crewTargets[Math.floor(Math.random() * crewTargets.length)].id;
-                            voteCounts[chosen]++;
-                        } else {
-                            voteCounts['skip']++;
-                        }
-                    } else {
-                        const impostorObj = aliveParticipants.find(p => p.role === 'impostor');
-                        if (impostorObj && Math.random() < 0.65) {
-                            voteCounts[impostorObj.id]++;
-                        } else {
-                            voteCounts['skip']++;
-                        }
-                    }
-                });
-
-                let highestVotedId = 'skip';
-                let maxVotes = 0;
-                let tie = false;
-
-                Object.keys(voteCounts).forEach(id => {
-                    if (voteCounts[id] > maxVotes) {
-                        maxVotes = voteCounts[id];
-                        highestVotedId = id;
-                        tie = false;
-                    } else if (voteCounts[id] === maxVotes && maxVotes > 0) {
-                        tie = true;
-                    }
-                });
-
-                if (tie || highestVotedId === 'skip') {
-                    this.showEjectionScreen(null, "Nadie fue expulsado. (Empate u Omisión de voto)");
-                } else {
-                    const ejected = aliveParticipants.find(p => p.id === highestVotedId);
-                    const isImpostor = ejected.role === 'impostor';
-                    
-                    if (ejected.id === 'player') {
-                        this.player.isDead = true;
-                    } else {
-                        const botObj = this.bots.find(b => b.id === ejected.id);
-                        if (botObj) botObj.isDead = true;
-                    }
-
-                    const resultMsg = ejected.id === 'player'
-                        ? `¡Fuiste expulsado al espacio exterior!\n${isImpostor ? 'Eras el Impostor.' : 'No eras el Impostor.'}`
-                        : `${ejected.name} fue expulsado al espacio exterior.\n${isImpostor ? 'Era el Impostor.' : 'No era el Impostor.'}`;
-
-                    this.showEjectionScreen(ejected, resultMsg, isImpostor);
-                }
+                this.showEjectionScreen(null, "Nadie fue expulsado.");
             }
 
-            showEjectionScreen(ejectedParticipant, message, wasImpostor = false) {
+            showEjectionScreen(ejected, message) {
                 const ejectionModal = document.getElementById('ejection-modal');
-                const resultText = document.getElementById('ejection-result-text');
-                const continueBtn = document.getElementById('continue-after-vote-btn');
-                const canvas = document.getElementById('ejectionCanvas');
-                const ctx = canvas.getContext('2d');
-
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-
+                document.getElementById('ejection-result-text').innerText = message;
                 ejectionModal.classList.remove('hidden');
-                continueBtn.classList.add('hidden');
-                resultText.innerText = "";
-
-                if (this.ejectionAnimId) cancelAnimationFrame(this.ejectionAnimId);
-
-                const stars = Array.from({ length: 80 }, () => ({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    size: Math.random() * 2 + 1,
-                    speed: Math.random() * 3 + 1
-                }));
-
-                let charX = -60;
-                let charY = canvas.height / 2;
-                let rotation = 0;
-
-                let charIdx = 0;
-                const typeInterval = setInterval(() => {
-                    if (charIdx < message.length) {
-                        resultText.innerText += message[charIdx];
-                        charIdx++;
-                    } else {
-                        clearInterval(typeInterval);
-                        setTimeout(() => {
-                            continueBtn.classList.remove('hidden');
-                        }, 400);
-                    }
-                }, 40);
-
-                const animateEjection = () => {
-                    ctx.fillStyle = '#030712';
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                    ctx.fillStyle = '#ffffff';
-                    stars.forEach(s => {
-                        s.x -= s.speed;
-                        if (s.x < 0) s.x = canvas.width;
-                        ctx.beginPath();
-                        ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
-                        ctx.fill();
-                    });
-
-                    if (ejectedParticipant) {
-                        charX += (canvas.width + 120) / (3.5 * 60);
-                        rotation += 0.025;
-
-                        ctx.save();
-                        ctx.translate(charX, charY);
-                        ctx.rotate(rotation);
-                        drawCrewmateCharacter(ctx, 0, 0, 32, ejectedParticipant.color, ejectedParticipant.hat || 'none');
-                        ctx.restore();
-                    }
-
-                    this.ejectionAnimId = requestAnimationFrame(animateEjection);
-                };
-
-                animateEjection();
-
-                continueBtn.onclick = () => {
-                    if (this.ejectionAnimId) cancelAnimationFrame(this.ejectionAnimId);
-                    clearInterval(typeInterval);
+                document.getElementById('continue-after-vote-btn').classList.remove('hidden');
+                document.getElementById('continue-after-vote-btn').onclick = () => {
                     ejectionModal.classList.add('hidden');
-                    continueBtn.classList.add('hidden');
                     this.isMeetingActive = false;
                     this.deadBodies = [];
-
-                    const aliveImpostors = (this.player.role === 'impostor' && !this.player.isDead ? 1 : 0) + this.bots.filter(b => b.role === 'impostor' && !b.isDead).length;
-                    const aliveCrewmates = (this.player.role === 'crewmate' && !this.player.isDead ? 1 : 0) + this.bots.filter(b => b.role === 'crewmate' && !b.isDead).length;
-
-                    if (this.player.isDead) {
-                        this.triggerGameOver(false, "Fuiste expulsado al espacio por la tripulación.");
-                    } else if (aliveImpostors === 0) {
-                        this.triggerGameOver(true, "¡Expulsaron al Impostor! La tripulación gana.");
-                    } else if (aliveImpostors >= aliveCrewmates) {
-                        this.triggerGameOver(false, "¡Los Impostores tienen el control de la nave!");
-                    } else {
-                        this.player.x = 14.5 * TILE_SIZE;
-                        this.player.y = 2.5 * TILE_SIZE;
-                        this.bots.forEach(b => {
-                            if (!b.isDead) {
-                                b.x = 14.5 * TILE_SIZE + (Math.random() * 60 - 30);
-                                b.y = 2.5 * TILE_SIZE + (Math.random() * 60 - 30);
-                            }
-                        });
-                    }
                 };
             }
 
             useVent() {
-                if (this.player.role !== 'impostor') return;
-                if (this.player.ventCooldown > 0) return;
-
+                if (this.player.role !== 'impostor' || this.player.ventCooldown > 0) return;
                 audio.playVentSwoosh();
-                if (!this.player.inVent) {
-                    const closestVent = SKELD_VENTS.reduce((prev, curr) => {
-                        const dPrev = Math.hypot(prev.x - this.player.x, prev.y - this.player.y);
-                        const dCurr = Math.hypot(curr.x - this.player.x, curr.y - this.player.y);
-                        return dCurr < dPrev ? curr : prev;
-                    });
-
-                    if (Math.hypot(closestVent.x - this.player.x, closestVent.y - this.player.y) < 70) {
-                        this.player.inVent = true;
-                        this.player.ventIdx = closestVent.id;
-                        this.player.x = closestVent.x;
-                        this.player.y = closestVent.y;
-                    }
-                } else {
-                    const currVent = SKELD_VENTS.find(v => v.id === this.player.ventIdx) || SKELD_VENTS[0];
-                    const nextVentId = currVent.connectTo[0];
-                    const nextVent = SKELD_VENTS.find(v => v.id === nextVentId) || SKELD_VENTS[0];
-
-                    this.player.ventIdx = nextVent.id;
-                    this.player.x = nextVent.x;
-                    this.player.y = nextVent.y;
-                    currVent.connectTo.push(currVent.connectTo.shift());
-                }
+                this.player.inVent = !this.player.inVent;
             }
-
             exitVent() {
-                if (this.player.role !== 'impostor' || !this.player.inVent) return;
                 this.player.inVent = false;
                 this.player.ventCooldown = selectedVentCooldownTime;
                 audio.playVentSwoosh();
             }
-
             triggerSabotage() {
                 if (this.isSabotageActive) return;
-
                 this.isSabotageActive = true;
-                this.sabotageTimer = 25;
+                document.getElementById('sabotage-alert').classList.remove('hidden');
                 audio.playSabotageAlarm();
-
-                const alertBox = document.getElementById('sabotage-alert');
-                const sabotageText = document.getElementById('sabotage-text');
-                alertBox.classList.remove('hidden');
-
-                this.sabotageInterval = setInterval(() => {
-                    this.sabotageTimer--;
-                    sabotageText.innerText = `¡REACTOR EN CRISIS! (${this.sabotageTimer}s)`;
-
-                    if (this.sabotageTimer <= 0) {
-                        clearInterval(this.sabotageInterval);
-                        if (this.player.role === 'impostor') {
-                            this.triggerGameOver(true, "¡El reactor explotó! El Impostor gana.");
-                        } else {
-                            this.triggerGameOver(false, "¡No repararon el reactor a tiempo!");
-                        }
-                    }
-                }, 1000);
             }
-
-            resolveSabotage(message = "¡Crisis del reactor solucionada!") {
-                if (!this.isSabotageActive) return;
-
+            resolveSabotage(msg) {
                 this.isSabotageActive = false;
-                if (this.sabotageInterval) clearInterval(this.sabotageInterval);
-
-                const alertBox = document.getElementById('sabotage-alert');
-                alertBox.classList.add('hidden');
-
+                document.getElementById('sabotage-alert').classList.add('hidden');
                 audio.playTaskComplete();
             }
-
-            completeTask(taskId) {
-                if (taskId === 99) {
-                    this.resolveSabotage("¡Reparaste con éxito el reactor de emergencia!");
-                    return;
-                }
-
-                const task = this.tasks.find(t => t.id === taskId);
-                if (task) {
-                    task.completed = true;
-                    audio.playTaskComplete();
-                    this.updateHUD();
-
-                    const totalCompleted = this.tasks.filter(t => t.completed).length;
-                    if (totalCompleted === this.tasks.length) {
-                        if (this.player.role === 'impostor') {
-                            this.triggerGameOver(false, "¡Los tripulantes completaron todas las tareas! Has sido derrotado.");
-                        } else {
-                            this.triggerGameOver(true, "¡Todas las tareas han sido completadas!");
-                        }
-                    }
-                }
+            completeTask(id) {
+                const t = this.tasks.find(tsk => tsk.id === id);
+                if (t) { t.completed = true; audio.playTaskComplete(); this.updateHUD(); }
             }
-
             updateHUD() {
-                const completed = this.tasks.filter(t => t.completed).length;
-                const total = this.tasks.length;
-                document.getElementById('task-count-text').innerText = `${completed} / ${total}`;
-                document.getElementById('task-progress-fill').style.width = `${(completed / total) * 100}%`;
+                const comp = this.tasks.filter(t => t.completed).length;
+                document.getElementById('task-count-text').innerText = `${comp} / ${this.tasks.length}`;
+                document.getElementById('task-progress-fill').style.width = `${(comp / this.tasks.length) * 100}%`;
             }
-
-            triggerGameOver(isWin, message) {
+            triggerGameOver(win, msg) {
                 this.isGameOver = true;
-                if (this.sabotageInterval) clearInterval(this.sabotageInterval);
-
-                const modal = document.getElementById('game-over-modal');
-                const title = document.getElementById('game-over-title');
-                const desc = document.getElementById('game-over-desc');
-                const iconBox = document.getElementById('game-over-icon-box');
-
-                modal.classList.remove('hidden');
-
-                if (isWin) {
-                    title.innerText = "¡VICTORIA!";
-                    title.className = "font-orbitron font-black text-2xl sm:text-3xl mb-2 text-emerald-400";
-                    iconBox.className = "w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mb-4 bg-emerald-500/20 text-emerald-400 text-3xl sm:text-4xl";
-                    iconBox.innerHTML = '<i class="fa-solid fa-trophy"></i>';
-                } else {
-                    title.innerText = "DERROTA";
-                    title.className = "font-orbitron font-black text-2xl sm:text-3xl mb-2 text-red-500";
-                    iconBox.className = "w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mb-4 bg-red-500/20 text-red-500 text-3xl sm:text-4xl";
-                    iconBox.innerHTML = '<i class="fa-solid fa-skull"></i>';
-                }
-
-                desc.innerText = message;
+                document.getElementById('game-over-modal').classList.remove('hidden');
+                document.getElementById('game-over-title').innerText = win ? "¡VICTORIA!" : "DERROTA";
+                document.getElementById('game-over-desc').innerText = msg;
             }
         }
 
         function openMinigameModal(task) {
             const modal = document.getElementById('minigame-modal');
-            const title = document.getElementById('minigame-title');
+            document.getElementById('minigame-title').innerText = `TAREA: ${task.name}`;
             const container = document.getElementById('minigame-container');
-
-            title.innerText = `TAREA: ${task.name}`;
-            container.innerHTML = '';
+            container.innerHTML = `
+                <div class="flex flex-col items-center gap-4 w-52">
+                    <div class="w-full bg-slate-800 h-5 rounded-full overflow-hidden border border-slate-700">
+                        <div id="download-progress" class="bg-cyan-400 h-full w-0%"></div>
+                    </div>
+                    <button id="download-btn" class="px-6 py-2 bg-emerald-500 text-slate-950 font-orbitron font-bold text-xs rounded-xl">COMPLETAR</button>
+                </div>
+            `;
             modal.classList.remove('hidden');
-
-            if (task.type === 'wires') {
-                container.innerHTML = `
-                    <div class="w-full h-full flex justify-between items-center px-6 sm:px-8 relative">
-                        <div class="flex flex-col gap-4 sm:gap-6">
-                            <button onclick="connectWire(0)" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-red-500 border-2 border-white shadow-lg"></button>
-                            <button onclick="connectWire(1)" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-500 border-2 border-white shadow-lg"></button>
-                            <button onclick="connectWire(2)" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-yellow-500 border-2 border-white shadow-lg"></button>
-                        </div>
-                        <p class="text-[10px] sm:text-[11px] text-slate-400 font-orbitron">CONECTA CABLES</p>
-                        <div class="flex flex-col gap-4 sm:gap-6">
-                            <button onclick="checkWire(0)" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-red-500 border-2 border-white shadow-lg"></button>
-                            <button onclick="checkWire(1)" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-500 border-2 border-white shadow-lg"></button>
-                            <button onclick="checkWire(2)" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-yellow-500 border-2 border-white shadow-lg"></button>
-                        </div>
-                    </div>
-                `;
-                let selectedWire = null;
-                window.connectWire = (idx) => { selectedWire = idx; };
-                window.checkWire = (idx) => {
-                    if (selectedWire === idx) {
-                        game.completeTask(task.id);
-                        modal.classList.add('hidden');
-                    }
-                };
-            } else if (task.type === 'reactor') {
-                container.innerHTML = `
-                    <div class="flex flex-col items-center gap-4">
-                        <div class="w-40 sm:w-48 h-6 bg-slate-800 rounded-full border-2 border-slate-600 relative overflow-hidden">
-                            <div class="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-12 bg-emerald-500/50"></div>
-                            <div id="reactor-needle" class="absolute top-0 bottom-0 w-2 bg-white left-0 transition-all duration-75"></div>
-                        </div>
-                        <button id="stop-needle-btn" class="among-btn px-6 py-2.5 bg-cyan-500 text-slate-950 font-orbitron font-bold text-xs rounded-xl">CALIBRAR</button>
-                    </div>
-                `;
-                let pos = 0;
-                let dir = 2;
-                const needle = document.getElementById('reactor-needle');
-                const interval = setInterval(() => {
-                    pos += dir;
-                    if (pos > 90 || pos < 0) dir *= -1;
-                    if (needle) needle.style.left = `${pos}%`;
-                }, 20);
-
-                document.getElementById('stop-needle-btn').onclick = () => {
-                    clearInterval(interval);
-                    if (pos >= 40 && pos <= 60) {
-                        game.completeTask(task.id);
-                        modal.classList.add('hidden');
-                    } else {
-                        modal.classList.add('hidden');
-                    }
-                };
-            } else {
-                container.innerHTML = `
-                    <div class="flex flex-col items-center gap-4 w-52 sm:w-64">
-                        <div class="w-full bg-slate-800 h-5 sm:h-6 rounded-full overflow-hidden border border-slate-700">
-                            <div id="download-progress" class="bg-cyan-400 h-full w-0% transition-all"></div>
-                        </div>
-                        <button id="download-btn" class="among-btn px-6 py-2.5 bg-emerald-500 text-slate-950 font-orbitron font-bold text-xs rounded-xl">DESCARGAR</button>
-                    </div>
-                `;
-                document.getElementById('download-btn').onclick = () => {
-                    let prog = 0;
-                    const fill = document.getElementById('download-progress');
-                    const interval = setInterval(() => {
-                        prog += 20;
-                        fill.style.width = `${prog}%`;
-                        if (prog >= 100) {
-                            clearInterval(interval);
-                            game.completeTask(task.id);
-                            modal.classList.add('hidden');
-                        }
-                    }, 300);
-                };
-            }
+            document.getElementById('download-btn').onclick = () => {
+                game.completeTask(task.id);
+                modal.classList.add('hidden');
+            };
         }
 
         let game = null;
@@ -1798,172 +1226,66 @@
         function setupMenuControls() {
             const colorContainer = document.getElementById('color-selector');
             colorContainer.innerHTML = '';
-
             PRESET_COLORS.forEach(hex => {
                 const btn = document.createElement('button');
-                btn.className = `w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 transition-transform ${selectedColor === hex ? 'scale-125 border-white ring-2 ring-cyan-400' : 'border-transparent'}`;
+                btn.className = `w-6 h-6 rounded-full border-2 ${selectedColor === hex ? 'scale-125 border-white ring-2 ring-cyan-400' : 'border-transparent'}`;
                 btn.style.backgroundColor = hex;
-                btn.onclick = () => {
-                    selectedColor = hex;
-                    setupMenuControls();
-                    renderPreview();
-                };
+                btn.onclick = () => { selectedColor = hex; setupMenuControls(); renderPreview(); };
                 colorContainer.appendChild(btn);
             });
-
-            const pickerLabel = document.createElement('label');
-            pickerLabel.className = 'relative cursor-pointer w-6 h-6 sm:w-7 sm:h-7 rounded-full border-2 border-white/40 overflow-hidden flex items-center justify-center shrink-0 ml-1 shadow-md bg-gradient-to-tr from-red-500 via-green-500 to-blue-500';
-            pickerLabel.title = "Seleccionar cualquier color personalizado";
-
-            const pickerInput = document.createElement('input');
-            pickerInput.type = 'color';
-            pickerInput.value = selectedColor;
-            pickerInput.className = 'absolute inset-0 opacity-0 cursor-pointer w-full h-full';
-
-            pickerInput.oninput = (e) => {
-                selectedColor = e.target.value;
-                renderPreview();
-            };
-            pickerInput.onchange = (e) => {
-                selectedColor = e.target.value;
-                setupMenuControls();
-                renderPreview();
-            };
-
-            pickerLabel.appendChild(pickerInput);
-            colorContainer.appendChild(pickerLabel);
 
             const hatContainer = document.getElementById('hat-selector');
             hatContainer.innerHTML = '';
             HATS.forEach(hat => {
                 const btn = document.createElement('button');
-                btn.className = `among-btn p-1.5 rounded-xl border-2 text-[8px] sm:text-[9px] font-orbitron font-bold flex flex-col items-center justify-center gap-1 ${selectedHat === hat.id ? 'border-cyan-400 bg-cyan-950 text-cyan-200' : 'border-slate-700 bg-slate-800 text-slate-400'}`;
+                btn.className = `among-btn p-1.5 rounded-xl border-2 text-[9px] font-orbitron font-bold flex flex-col items-center justify-center gap-1 ${selectedHat === hat.id ? 'border-cyan-400 bg-cyan-950 text-cyan-200' : 'border-slate-700 bg-slate-800 text-slate-400'}`;
                 btn.innerHTML = `<i class="fa-solid ${hat.icon} text-xs"></i><span>${hat.label}</span>`;
-                btn.onclick = () => {
-                    selectedHat = hat.id;
-                    setupMenuControls();
-                    renderPreview();
-                };
+                btn.onclick = () => { selectedHat = hat.id; setupMenuControls(); renderPreview(); };
                 hatContainer.appendChild(btn);
             });
 
-            const crewBtn = document.getElementById('role-crewmate-btn');
-            const impBtn = document.getElementById('role-impostor-btn');
-
-            if (selectedRole === 'crewmate') {
-                crewBtn.className = "among-btn py-2 rounded-xl border-2 font-orbitron text-[10px] font-bold bg-cyan-600/30 border-cyan-400 text-cyan-200";
-                impBtn.className = "among-btn py-2 rounded-xl border-2 font-orbitron text-[10px] font-bold bg-slate-800 border-slate-700 text-slate-400";
-            } else {
-                impBtn.className = "among-btn py-2 rounded-xl border-2 font-orbitron text-[10px] font-bold bg-red-600/30 border-red-400 text-red-200";
-                crewBtn.className = "among-btn py-2 rounded-xl border-2 font-orbitron text-[10px] font-bold bg-slate-800 border-slate-700 text-slate-400";
-            }
-
-            crewBtn.onclick = () => { selectedRole = 'crewmate'; setupMenuControls(); };
-            impBtn.onclick = () => { selectedRole = 'impostor'; setupMenuControls(); };
-
-            const vent5Btn = document.getElementById('vent-time-5');
-            const vent10Btn = document.getElementById('vent-time-10');
-
-            if (selectedVentCooldownTime === 5) {
-                vent5Btn.className = "among-btn py-2 rounded-xl border-2 font-orbitron text-[10px] font-bold bg-cyan-600/30 border-cyan-400 text-cyan-200";
-                vent10Btn.className = "among-btn py-2 rounded-xl border-2 font-orbitron text-[10px] font-bold bg-slate-800 border-slate-700 text-slate-400";
-            } else {
-                vent10Btn.className = "among-btn py-2 rounded-xl border-2 font-orbitron text-[10px] font-bold bg-cyan-600/30 border-cyan-400 text-cyan-200";
-                vent5Btn.className = "among-btn py-2 rounded-xl border-2 font-orbitron text-[10px] font-bold bg-slate-800 border-slate-700 text-slate-400";
-            }
-
-            vent5Btn.onclick = () => { selectedVentCooldownTime = 5; setupMenuControls(); };
-            vent10Btn.onclick = () => { selectedVentCooldownTime = 10; setupMenuControls(); };
+            document.getElementById('role-crewmate-btn').onclick = () => { selectedRole = 'crewmate'; setupMenuControls(); };
+            document.getElementById('role-impostor-btn').onclick = () => { selectedRole = 'impostor'; setupMenuControls(); };
+            document.getElementById('vent-time-5').onclick = () => { selectedVentCooldownTime = 5; setupMenuControls(); };
+            document.getElementById('vent-time-10').onclick = () => { selectedVentCooldownTime = 10; setupMenuControls(); };
         }
 
-        // Joystick Analógico Táctil
         function setupAnalogJoystick() {
             const zone = document.getElementById('joystick-zone');
             const base = document.getElementById('joystick-base');
             const stick = document.getElementById('joystick-stick');
-
-            let activeTouchId = null;
-            let startX = 0;
-            let startY = 0;
-            const maxRadius = 45;
+            let activeId = null, startX = 0, startY = 0;
 
             const handleStart = (e) => {
-                if (activeTouchId !== null) return;
-                const touch = e.changedTouches ? e.changedTouches[0] : e;
-                activeTouchId = touch.identifier !== undefined ? touch.identifier : 'mouse';
-
-                startX = touch.clientX;
-                startY = touch.clientY;
-
-                base.style.left = `${startX}px`;
-                base.style.top = `${startY}px`;
+                if (activeId !== null) return;
+                const t = e.changedTouches ? e.changedTouches[0] : e;
+                activeId = t.identifier !== undefined ? t.identifier : 'mouse';
+                startX = t.clientX; startY = t.clientY;
+                base.style.left = `${startX}px`; base.style.top = `${startY}px`;
                 base.style.display = 'block';
-
-                stick.style.transform = `translate(-50%, -50%)`;
             };
-
             const handleMove = (e) => {
-                if (activeTouchId === null) return;
-
-                let touch = null;
+                if (activeId === null) return;
+                let t = null;
                 if (e.changedTouches) {
                     for (let i = 0; i < e.changedTouches.length; i++) {
-                        if (e.changedTouches[i].identifier === activeTouchId) {
-                            touch = e.changedTouches[i];
-                            break;
-                        }
+                        if (e.changedTouches[i].identifier === activeId) { t = e.changedTouches[i]; break; }
                     }
-                } else {
-                    touch = e;
-                }
-
-                if (!touch) return;
-
-                const deltaX = touch.clientX - startX;
-                const deltaY = touch.clientY - startY;
-                const dist = Math.hypot(deltaX, deltaY);
-
-                const angle = Math.atan2(deltaY, deltaX);
-                const moveDist = Math.min(dist, maxRadius);
-
-                const stickX = Math.cos(angle) * moveDist;
-                const stickY = Math.sin(angle) * moveDist;
-
-                stick.style.transform = `translate(calc(-50% + ${stickX}px), calc(-50% + ${stickY}px))`;
-
-                if (game) {
-                    game.analogDir.x = Math.cos(angle) * (moveDist / maxRadius);
-                    game.analogDir.y = Math.sin(angle) * (moveDist / maxRadius);
-                }
+                } else { t = e; }
+                if (!t) return;
+                const dx = t.clientX - startX, dy = t.clientY - startY;
+                const dist = Math.hypot(dx, dy), angle = Math.atan2(dy, dx), move = Math.min(dist, 45);
+                stick.style.transform = `translate(calc(-50% + ${Math.cos(angle)*move}px), calc(-50% + ${Math.sin(angle)*move}px))`;
+                if (game) { game.analogDir.x = Math.cos(angle)*(move/45); game.analogDir.y = Math.sin(angle)*(move/45); }
+            };
+            const handleEnd = () => {
+                activeId = null; base.style.display = 'none';
+                if (game) game.analogDir = { x: 0, y: 0 };
             };
 
-            const handleEnd = (e) => {
-                if (activeTouchId === null) return;
-
-                let ended = false;
-                if (e.changedTouches) {
-                    for (let i = 0; i < e.changedTouches.length; i++) {
-                        if (e.changedTouches[i].identifier === activeTouchId) {
-                            ended = true;
-                            break;
-                        }
-                    }
-                } else {
-                    ended = true;
-                }
-
-                if (ended) {
-                    activeTouchId = null;
-                    base.style.display = 'none';
-                    if (game) game.analogDir = { x: 0, y: 0 };
-                }
-            };
-
-            zone.addEventListener('touchstart', handleStart, { passive: false });
-            zone.addEventListener('touchmove', handleMove, { passive: false });
-            zone.addEventListener('touchend', handleEnd, { passive: false });
-            zone.addEventListener('touchcancel', handleEnd, { passive: false });
-
+            zone.addEventListener('touchstart', handleStart);
+            zone.addEventListener('touchmove', handleMove);
+            zone.addEventListener('touchend', handleEnd);
             zone.addEventListener('mousedown', handleStart);
             window.addEventListener('mousemove', handleMove);
             window.addEventListener('mouseup', handleEnd);
@@ -1972,7 +1294,6 @@
         window.onload = () => {
             setupMenuControls();
             renderPreview();
-
             game = new GameEngine();
 
             window.addEventListener('keydown', (e) => {
@@ -1982,7 +1303,6 @@
                 if (e.code === 'KeyR') game.reportDeadBody();
                 if (e.code === 'KeyV') game.useVent();
             });
-
             window.addEventListener('keyup', (e) => {
                 game.keys[e.code] = false;
                 game.keys[e.key] = false;
@@ -1992,38 +1312,32 @@
             document.getElementById('report-btn').onclick = () => game.reportDeadBody();
             document.getElementById('vent-btn').onclick = () => game.useVent();
             document.getElementById('sabotage-btn').onclick = () => game.triggerSabotage();
-            document.getElementById('close-minigame-btn').onclick = () => {
-                document.getElementById('minigame-modal').classList.add('hidden');
-            };
-
+            document.getElementById('close-minigame-btn').onclick = () => document.getElementById('minigame-modal').classList.add('hidden');
             document.getElementById('restart-btn').onclick = () => {
-                if (game) game.gameStarted = false;
+                game.gameStarted = false;
                 document.getElementById('game-over-modal').classList.add('hidden');
                 document.getElementById('main-menu').classList.remove('hidden');
                 document.getElementById('hud').classList.add('hidden');
                 document.getElementById('action-controls').classList.add('hidden');
                 document.getElementById('joystick-zone').classList.add('hidden');
             };
-
             document.getElementById('start-game-btn').onclick = () => {
                 audio.init();
                 document.getElementById('main-menu').classList.add('hidden');
                 document.getElementById('hud').classList.remove('hidden');
                 document.getElementById('action-controls').classList.remove('hidden');
                 document.getElementById('joystick-zone').classList.remove('hidden');
-
                 game.init();
             };
 
             setupAnalogJoystick();
 
-            function gameLoop() {
+            function loop() {
                 game.update();
                 game.render();
-                requestAnimationFrame(gameLoop);
+                requestAnimationFrame(loop);
             }
-
-            requestAnimationFrame(gameLoop);
+            requestAnimationFrame(loop);
         };
     </script>
 </body>
