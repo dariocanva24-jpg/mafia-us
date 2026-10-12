@@ -277,13 +277,16 @@
 
         const audio = new SoundEngine();
 
-        // Control de Carga Forzada para imágenes pesadas
+        // Carga de la imagen directamente desde la fuente publica de GitHub Raw
         let isImageReady = false;
         const mapImage = new Image();
-        mapImage.onload = () => {
-            isImageReady = true;
+        mapImage.crossOrigin = "Anonymous";
+        mapImage.onload = () => { isImageReady = true; };
+        mapImage.onerror = () => {
+            // Reintentar con ruta relativa si GitHub Raw falla
+            mapImage.src = './map.png';
         };
-        mapImage.src = 'map.png';
+        mapImage.src = 'https://raw.githubusercontent.com/dariocanvas24-jpg/mafia-us/main/map.png';
 
         const PRESET_COLORS = [
             '#ff3b30', '#ff9500', '#ffcc00', '#34c759', 
@@ -897,7 +900,7 @@
                 const totalW = cols * TILE_SIZE;
                 const totalH = rows * TILE_SIZE;
 
-                // Dibujar imagen del mapa cuando la variable isImageReady sea verdadera
+                // Carga directa y forzada de la imagen del mapa
                 if (isImageReady || (mapImage.complete && mapImage.naturalWidth > 0)) {
                     this.ctx.drawImage(mapImage, 0, 0, totalW, totalH);
                 } else {
