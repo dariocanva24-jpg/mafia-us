@@ -277,8 +277,12 @@
 
         const audio = new SoundEngine();
 
-        // Carga de imagen asegurada
+        // Control de Carga Forzada para imágenes pesadas
+        let isImageReady = false;
         const mapImage = new Image();
+        mapImage.onload = () => {
+            isImageReady = true;
+        };
         mapImage.src = 'map.png';
 
         const PRESET_COLORS = [
@@ -893,8 +897,8 @@
                 const totalW = cols * TILE_SIZE;
                 const totalH = rows * TILE_SIZE;
 
-                // Dibuja la imagen map.png directamente como fondo del juego
-                if (mapImage.complete && mapImage.naturalWidth > 0) {
+                // Dibujar imagen del mapa cuando la variable isImageReady sea verdadera
+                if (isImageReady || (mapImage.complete && mapImage.naturalWidth > 0)) {
                     this.ctx.drawImage(mapImage, 0, 0, totalW, totalH);
                 } else {
                     for (let r = 0; r < rows; r++) {
