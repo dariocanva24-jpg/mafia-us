@@ -277,15 +277,18 @@
 
         const audio = new SoundEngine();
 
-        // Carga de la imagen directamente desde la fuente publica de GitHub Raw
-        let isImageReady = false;
+        // Cargar imagen con fallback local y remoto
+        let isMapLoaded = false;
         const mapImage = new Image();
         mapImage.crossOrigin = "Anonymous";
-        mapImage.onload = () => { isImageReady = true; };
+        mapImage.onload = () => { isMapLoaded = true; };
         mapImage.onerror = () => {
-            // Reintentar con ruta relativa si GitHub Raw falla
-            mapImage.src = './map.png';
+            // Intentar cargar la ruta relativa si falla
+            if (!mapImage.src.endsWith('map.png')) {
+                mapImage.src = 'map.png';
+            }
         };
+        // Intentar primero desde la ruta directa de GitHub para asegurar disponibilidad inmediata
         mapImage.src = 'https://raw.githubusercontent.com/dariocanvas24-jpg/mafia-us/main/map.png';
 
         const PRESET_COLORS = [
@@ -900,10 +903,11 @@
                 const totalW = cols * TILE_SIZE;
                 const totalH = rows * TILE_SIZE;
 
-                // Carga directa y forzada de la imagen del mapa
-                if (isImageReady || (mapImage.complete && mapImage.naturalWidth > 0)) {
+                // Dibujar imagen del mapa si ya cargó
+                if (isMapLoaded || (mapImage.complete && mapImage.naturalWidth > 0)) {
                     this.ctx.drawImage(mapImage, 0, 0, totalW, totalH);
                 } else {
+                    // Muros y pasillos en grilla si la imagen aún no está disponible
                     for (let r = 0; r < rows; r++) {
                         for (let c = 0; c < cols; c++) {
                             const x = c * TILE_SIZE;
@@ -911,9 +915,15 @@
                             if (SKELD_MIRA_MAP_GRID[r][c] === 1) {
                                 this.ctx.fillStyle = '#0f172a';
                                 this.ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+                                this.ctx.strokeStyle = '#1e293b';
+                                this.ctx.lineWidth = 2;
+                                this.ctx.strokeRect(x, y, TILE_SIZE, TILE_SIZE);
                             } else {
                                 this.ctx.fillStyle = '#1e293b';
                                 this.ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+                                this.ctx.strokeStyle = '#334155';
+                                this.ctx.lineWidth = 1;
+                                this.ctx.strokeRect(x, y, TILE_SIZE, TILE_SIZE);
                             }
                         }
                     }
