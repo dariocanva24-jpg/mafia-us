@@ -2128,6 +2128,1307 @@
             requestAnimationFrame(gameLoop);
         };
     </script>
-    <script src="game-enhancements.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4aaaa2dd8b407e6',t:'MTc5MjAyMzY5Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+    <!-- MAFIA-US Foundation v2: embedded for GitHub/Vercel deployment -->
+    <script>
+/*
+ * MAFIA-US — Foundation v2
+ * Real map renderer, calibrated walkable space, frame-rate independent movement,
+ * responsive camera and grid-based bot navigation.
+ */
+(() => {
+    'use strict';
+
+    const WORLD = Object.freeze({ width: 1312, height: 1199 });
+    const NAV_CELL = 12;
+    const COLLISION_RADIUS = 12;
+    const CHARACTER_RADIUS = 14;
+    const PLAYER_SPAWN = Object.freeze({ x: 610, y: 225 });
+    const REACTOR_POSITION = Object.freeze({ x: 128, y: 432 });
+    const MAX_DELTA = 0.05;
+    // Embedded so Vercel only needs index.html plus the visible map.png asset.
+    const COLLISION_MASK_DATA_URI = 'data:image/png;base64,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';
+
+    const MAP_TASKS = Object.freeze([
+        { id: 0, name: 'CONECTAR CABLES', room: 'Electricidad', x: 420, y: 674, type: 'wires', completed: false },
+        { id: 1, name: 'PASAR TARJETA', room: 'Administración', x: 590, y: 520, type: 'download', completed: false },
+        { id: 2, name: 'CALIBRAR REACTOR', room: 'Reactor', x: 128, y: 432, type: 'reactor', completed: false },
+        { id: 3, name: 'DESCARGAR DATOS', room: 'Navegación', x: 600, y: 932, type: 'download', completed: false },
+        { id: 4, name: 'ENCENDER ESCUDOS', room: 'Escudos', x: 150, y: 938, type: 'reactor', completed: false },
+        { id: 5, name: 'ESCÁNER MÉDICO', room: 'Ala Médica', x: 392, y: 342, type: 'download', completed: false },
+        { id: 6, name: 'ALINEAR MOTOR', room: 'Motor Superior', x: 150, y: 255, type: 'wires', completed: false }
+    ]);
+
+    const MAP_VENTS = Object.freeze([
+        { id: 0, room: 'Cafetería', x: 718, y: 321, connectTo: [1, 2] },
+        { id: 1, room: 'Administración', x: 646, y: 550, connectTo: [0, 2] },
+        { id: 2, room: 'Ventanales', x: 925, y: 617, connectTo: [0, 1] },
+        { id: 3, room: 'Reactor', x: 108, y: 462, connectTo: [4, 5] },
+        { id: 4, room: 'Motor Superior', x: 164, y: 272, connectTo: [3, 5] },
+        { id: 5, room: 'Motor Inferior', x: 144, y: 736, connectTo: [3, 4] },
+        { id: 6, room: 'Ala Médica', x: 412, y: 370, connectTo: [7, 8] },
+        { id: 7, room: 'Seguridad', x: 374, y: 532, connectTo: [6, 8] },
+        { id: 8, room: 'Electricidad', x: 428, y: 716, connectTo: [6, 7] },
+        { id: 9, room: 'Armería', x: 826, y: 374, connectTo: [10, 11] },
+        { id: 10, room: 'Navegación', x: 615, y: 970, connectTo: [9, 11] },
+        { id: 11, room: 'Escudos', x: 152, y: 972, connectTo: [9, 10] }
+    ]);
+
+    /*
+     * Legacy fallback zones used only by the loading placeholder. Runtime
+     * collision is driven exclusively by collision-mask.png, aligned to the
+     * original map pixels, so decorative wall art cannot become a shortcut.
+     */
+    const WALKABLE_RECTS = Object.freeze([
+        // The Skeld rooms
+        [46, 198, 210, 112], [42, 340, 165, 198], [44, 620, 210, 160],
+        [322, 220, 164, 188], [293, 430, 190, 146], [505, 428, 180, 150],
+        [321, 588, 182, 168], [518, 600, 172, 177], [40, 838, 216, 172],
+        [312, 816, 184, 184], [514, 814, 180, 190], [718, 300, 177, 116],
+        [742, 420, 154, 180],
+
+        // MIRA HQ rooms
+        [968, 30, 268, 200], [1118, 257, 160, 160], [1115, 446, 168, 172],
+        [724, 785, 234, 195], [966, 754, 282, 207], [1072, 942, 162, 105],
+        [681, 1040, 275, 143],
+
+        // North and west connections
+        [246, 198, 205, 63], [200, 314, 120, 287], [244, 394, 82, 414],
+        [425, 192, 108, 240], [477, 342, 230, 96], [670, 193, 263, 104],
+        [876, 193, 142, 115], [925, 106, 91, 201],
+
+        // Main centre and the glazed MIRA corridor
+        [675, 392, 80, 224], [673, 580, 67, 238], [493, 555, 239, 255],
+        [890, 286, 231, 84], [900, 330, 61, 390], [1057, 330, 67, 405],
+        [926, 694, 193, 81], [1058, 438, 84, 174],
+
+        // South connections
+        [198, 750, 534, 72], [249, 795, 470, 108], [674, 738, 329, 94],
+        [683, 956, 137, 109], [786, 958, 79, 104], [1004, 692, 124, 88],
+        [1065, 902, 97, 76]
+    ]);
+
+    const WALKABLE_POLYGONS = Object.freeze([
+        // Cafetería: octagonal outline matching the central room.
+        [[440, 142], [495, 82], [708, 82], [782, 142], [782, 288], [735, 356], [500, 356], [440, 292]],
+        // The lower passage around navigation / meeting.
+        [[692, 794], [760, 755], [944, 755], [979, 806], [953, 835], [719, 835]]
+    ]);
+
+    const ROOM_AREAS = Object.freeze([
+        ['Motor Superior', 46, 198, 210, 112], ['Reactor', 42, 340, 165, 198],
+        ['Motor Inferior', 44, 620, 210, 160], ['Ala Médica', 322, 220, 164, 188],
+        ['Seguridad', 293, 430, 190, 146], ['Administración', 505, 428, 180, 150],
+        ['Electricidad', 321, 588, 182, 168], ['Almacén', 518, 600, 172, 177],
+        ['Escudos', 40, 838, 216, 172], ['Depósito', 312, 816, 184, 184],
+        ['Navegación', 514, 814, 180, 190], ['Armería', 718, 300, 177, 116],
+        ['Comunicaciones', 742, 420, 154, 180], ['Laboratorio', 968, 30, 268, 200],
+        ['Oficina', 1118, 257, 160, 160], ['Sala de Especímenes', 1115, 446, 168, 172],
+        ['Sala de Reuniones', 724, 785, 234, 195], ['Invernadero', 966, 754, 282, 207],
+        ['Cámaras', 1072, 942, 162, 105], ['Cafetería de Tripulación', 681, 1040, 275, 143],
+        ['Cafetería', 440, 82, 342, 274]
+    ]);
+
+    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+    const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+    const deepClone = (value) => JSON.parse(JSON.stringify(value));
+
+    function pointInPolygon(x, y, polygon) {
+        let inside = false;
+        for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+            const xi = polygon[i][0], yi = polygon[i][1];
+            const xj = polygon[j][0], yj = polygon[j][1];
+            const crosses = ((yi > y) !== (yj > y)) &&
+                (x < ((xj - xi) * (y - yi)) / ((yj - yi) || 0.00001) + xi);
+            if (crosses) inside = !inside;
+        }
+        return inside;
+    }
+
+    function isPointWalkable(x, y) {
+        if (x < 0 || y < 0 || x > WORLD.width || y > WORLD.height) return false;
+        for (const [rx, ry, rw, rh] of WALKABLE_RECTS) {
+            if (x >= rx && x <= rx + rw && y >= ry && y <= ry + rh) return true;
+        }
+        return WALKABLE_POLYGONS.some(polygon => pointInPolygon(x, y, polygon));
+    }
+
+    function isCircleWalkable(x, y, radius = COLLISION_RADIUS) {
+        const checks = [
+            [0, 0], [-radius, 0], [radius, 0], [0, -radius], [0, radius],
+            [-radius * 0.72, -radius * 0.72], [radius * 0.72, -radius * 0.72],
+            [-radius * 0.72, radius * 0.72], [radius * 0.72, radius * 0.72]
+        ];
+        return checks.every(([dx, dy]) => isPointWalkable(x + dx, y + dy));
+    }
+
+    function traceRoundRect(ctx, x, y, width, height, radius) {
+        const r = Math.min(radius, width / 2, height / 2);
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + width - r, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + r);
+        ctx.lineTo(x + width, y + height - r);
+        ctx.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
+        ctx.lineTo(x + r, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
+    }
+
+    function makeBot({ id, name, x, y, color, hat, role = 'crewmate', speed = 162 }) {
+        return {
+            id, name, x, y, radius: CHARACTER_RADIUS, speed, color, hat, role,
+            isFacingLeft: false, walkFrame: 0, targetX: x, targetY: y,
+            workingTimer: 0, currentTask: null, isPanicking: false, panicTimer: 0,
+            killCooldown: role === 'impostor' ? 5 : 0, isDead: false,
+            stuckFrames: 0, unstuckTimer: 0, path: [], pathKey: '', nextPathAt: 0
+        };
+    }
+
+    function actionClass(theme, pulse = false) {
+        const shared = 'among-btn font-orbitron font-bold w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-2xl flex flex-col items-center justify-center border-2 shadow-xl text-[10px] sm:text-xs md:text-sm';
+        if (theme === 'cyan') return `${shared} bg-cyan-600 hover:bg-cyan-500 text-white border-cyan-300 glow-cyan`;
+        if (theme === 'red') return `${shared} bg-red-600 hover:bg-red-500 text-white border-red-300 glow-red${pulse ? ' animate-pulse' : ''}`;
+        if (theme === 'green') return `${shared} bg-emerald-600 hover:bg-emerald-500 text-white border-emerald-300 glow-cyan`;
+        return `${shared} bg-slate-800 text-slate-500 border-slate-700`;
+    }
+
+    // -------------------------------------------------------------------------
+    // Canvas and game-state foundation
+    // -------------------------------------------------------------------------
+    GameEngine.prototype.initTextures = function initTexturesV2() {
+        this.mapImage = new Image();
+        this.mapReady = false;
+        this.mapError = false;
+        this.mapImage.addEventListener('load', () => {
+            this.mapReady = true;
+            this.mapError = false;
+        });
+        this.mapImage.addEventListener('error', () => {
+            this.mapReady = false;
+            this.mapError = true;
+            console.warn('No se pudo cargar map.png. Se utilizará el fondo de respaldo.');
+        });
+        this.mapImage.src = 'map.png';
+
+        // The transparent collision bitmap is authored against the exact map pixels.
+        // It is intentionally separate from the artwork so a decorative wall can
+        // never become a walkable shortcut due to a broad rectangle approximation.
+        this.collisionMaskReady = false;
+        this.collisionMaskError = false;
+        this.collisionMaskData = null;
+        this.collisionMaskImage = new Image();
+        this.collisionMaskImage.addEventListener('load', () => {
+            try {
+                const maskCanvas = document.createElement('canvas');
+                maskCanvas.width = WORLD.width;
+                maskCanvas.height = WORLD.height;
+                const maskContext = maskCanvas.getContext('2d', { willReadFrequently: true });
+                maskContext.clearRect(0, 0, WORLD.width, WORLD.height);
+                maskContext.drawImage(this.collisionMaskImage, 0, 0, WORLD.width, WORLD.height);
+                this.collisionMaskData = maskContext.getImageData(0, 0, WORLD.width, WORLD.height).data;
+                this.collisionMaskReady = true;
+                this.collisionMaskError = false;
+                this.navigation = this.buildNavigationGrid();
+            } catch (error) {
+                this.collisionMaskError = true;
+                console.error('No se pudo leer collision-mask.png.', error);
+            }
+        });
+        this.collisionMaskImage.addEventListener('error', () => {
+            this.collisionMaskError = true;
+            console.error('No se pudo cargar collision-mask.png.');
+        });
+        this.collisionMaskImage.src = COLLISION_MASK_DATA_URI;
+
+        this.navigation = this.buildNavigationGrid();
+        this.zoom = window.innerWidth < 640 ? 1.12 : 1.34;
+        this.debugCollision = false;
+    };
+
+    GameEngine.prototype.resizeCanvas = function resizeCanvasV2() {
+        if (!this.canvas) return;
+        const width = Math.max(1, window.innerWidth || document.documentElement.clientWidth || 800);
+        const height = Math.max(1, window.innerHeight || document.documentElement.clientHeight || 600);
+        const dpr = clamp(window.devicePixelRatio || 1, 1, 2);
+        this.viewportWidth = width;
+        this.viewportHeight = height;
+        this.pixelRatio = dpr;
+        this.canvas.width = Math.round(width * dpr);
+        this.canvas.height = Math.round(height * dpr);
+        this.canvas.style.width = `${width}px`;
+        this.canvas.style.height = `${height}px`;
+        this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        this.ctx.imageSmoothingEnabled = true;
+        this.ctx.imageSmoothingQuality = 'high';
+    };
+
+    GameEngine.prototype.isCollisionMaskPointWalkable = function isCollisionMaskPointWalkable(x, y) {
+        if (!this.collisionMaskReady || !this.collisionMaskData || x < 0 || y < 0 || x >= WORLD.width || y >= WORLD.height) return false;
+        const pixelX = Math.floor(x);
+        const pixelY = Math.floor(y);
+        const alphaOffset = (pixelY * WORLD.width + pixelX) * 4 + 3;
+        return this.collisionMaskData[alphaOffset] > 127;
+    };
+
+    GameEngine.prototype.isCollisionMaskCircleWalkable = function isCollisionMaskCircleWalkable(x, y, radius = COLLISION_RADIUS) {
+        if (!this.isCollisionMaskPointWalkable(x, y)) return false;
+        // Centre plus a 16-sample perimeter prevents diagonal corner clipping.
+        for (let index = 0; index < 16; index++) {
+            const angle = (Math.PI * 2 * index) / 16;
+            if (!this.isCollisionMaskPointWalkable(x + Math.cos(angle) * radius, y + Math.sin(angle) * radius)) return false;
+        }
+        return true;
+    };
+
+    GameEngine.prototype.buildNavigationGrid = function buildNavigationGrid() {
+        const cols = Math.ceil(WORLD.width / NAV_CELL);
+        const rows = Math.ceil(WORLD.height / NAV_CELL);
+        const walkable = new Uint8Array(cols * rows);
+        if (!this.collisionMaskReady) return { cols, rows, walkable };
+        for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < cols; col++) {
+                const x = Math.min(WORLD.width - 1, (col + 0.5) * NAV_CELL);
+                const y = Math.min(WORLD.height - 1, (row + 0.5) * NAV_CELL);
+                walkable[row * cols + col] = this.isCollisionMaskCircleWalkable(x, y, COLLISION_RADIUS) ? 1 : 0;
+            }
+        }
+        return { cols, rows, walkable };
+    };
+
+    GameEngine.prototype.init = function initV2() {
+        if (this.sabotageInterval) clearInterval(this.sabotageInterval);
+        if (this.votingInterval) clearInterval(this.votingInterval);
+        if (window.__mafiaTaskCleanup) window.__mafiaTaskCleanup();
+
+        this.isGameOver = false;
+        this.isMeetingActive = false;
+        this.gameStarted = true;
+        this.resizeCanvas();
+        this.tasks = deepClone(MAP_TASKS);
+        this.deadBodies = [];
+        this.isSabotageActive = false;
+        this.sabotageTimer = 0;
+        this.sabotageCooldown = 0;
+        this.heartbeatElapsed = 0;
+        this.locationElapsed = 0;
+        this._lastActionSignature = '';
+        this._lastUpdateTime = performance.now();
+        this.camera = { x: PLAYER_SPAWN.x, y: PLAYER_SPAWN.y };
+        this.zoom = window.innerWidth < 640 ? 1.12 : 1.34;
+
+        const alert = document.getElementById('sabotage-alert');
+        if (alert) alert.classList.add('hidden');
+        const taskModal = document.getElementById('minigame-modal');
+        if (taskModal) taskModal.classList.add('hidden');
+
+        this.player = {
+            id: 'player', name: 'Tú', x: PLAYER_SPAWN.x, y: PLAYER_SPAWN.y,
+            radius: CHARACTER_RADIUS, speed: 250, color: selectedColor, hat: selectedHat,
+            role: selectedRole, isFacingLeft: false, walkFrame: 0, inVent: false,
+            ventIdx: -1, killCooldown: 0, isDead: false
+        };
+
+        const usableColors = PRESET_COLORS.filter(color => color !== selectedColor);
+        const crewSpawns = [
+            { x: 396, y: 315 }, { x: 807, y: 365 }, { x: 604, y: 665 }, { x: 1182, y: 522 }
+        ];
+        this.bots = [];
+
+        if (selectedRole === 'crewmate') {
+            this.bots.push(makeBot({
+                id: 'bot_impostor', name: 'Rojo', x: 125, y: 458,
+                color: '#ff3b30', hat: 'knight', role: 'impostor', speed: 184
+            }));
+        }
+
+        for (let index = 0; index < 4; index++) {
+            const spawn = crewSpawns[index];
+            const hat = HATS[(index + (selectedRole === 'impostor' ? 2 : 1)) % HATS.length];
+            this.bots.push(makeBot({
+                id: `bot_crew_${index}`, name: `Tripulante ${index + 1}`,
+                x: spawn.x, y: spawn.y, color: usableColors[index % usableColors.length],
+                hat: hat.id, role: 'crewmate', speed: 160 + (index % 2) * 8
+            }));
+        }
+
+        this.updateHUD();
+        this.updateLocationHUD(true);
+        this.updateActionButtons(true);
+        const controls = document.getElementById('camera-controls');
+        const location = document.getElementById('location-chip');
+        if (controls) controls.classList.remove('hidden');
+        if (location) location.classList.remove('hidden');
+    };
+
+    GameEngine.prototype.setZoom = function setZoom(amount) {
+        this.zoom = clamp((this.zoom || 1.2) + amount, 0.8, 2.25);
+    };
+
+    GameEngine.prototype.getSpawnPoint = function getSpawnPoint() {
+        return { ...PLAYER_SPAWN };
+    };
+
+    GameEngine.prototype.isWall = function isWallV2(x, y) {
+        return !this.isCollisionMaskPointWalkable(x, y);
+    };
+
+    GameEngine.prototype.checkCollision = function checkCollisionV2(x, y) {
+        return !this.isCollisionMaskCircleWalkable(x, y, COLLISION_RADIUS);
+    };
+
+    GameEngine.prototype.getValidTarget = function getValidTargetV2(x, y) {
+        if (this.isCollisionMaskCircleWalkable(x, y, COLLISION_RADIUS)) return { x, y };
+        for (let radius = 12; radius <= 240; radius += 12) {
+            for (let i = 0; i < 24; i++) {
+                const angle = (Math.PI * 2 * i) / 24;
+                const testX = x + Math.cos(angle) * radius;
+                const testY = y + Math.sin(angle) * radius;
+                if (this.isCollisionMaskCircleWalkable(testX, testY, COLLISION_RADIUS)) return { x: testX, y: testY };
+            }
+        }
+        return this.getSpawnPoint();
+    };
+
+    GameEngine.prototype.isWallBetween = function isWallBetweenV2(x1, y1, x2, y2) {
+        const total = Math.hypot(x2 - x1, y2 - y1);
+        const steps = Math.max(1, Math.ceil(total / 8));
+        for (let i = 1; i < steps; i++) {
+            const progress = i / steps;
+            if (!this.isCollisionMaskCircleWalkable(x1 + (x2 - x1) * progress, y1 + (y2 - y1) * progress, 8)) return true;
+        }
+        return false;
+    };
+
+    GameEngine.prototype.moveEntity = function moveEntity(entity, deltaX, deltaY) {
+        const steps = Math.max(1, Math.ceil(Math.max(Math.abs(deltaX), Math.abs(deltaY)) / 7));
+        const stepX = deltaX / steps;
+        const stepY = deltaY / steps;
+        let moved = false;
+        for (let index = 0; index < steps; index++) {
+            if (!this.checkCollision(entity.x + stepX, entity.y)) {
+                entity.x += stepX;
+                moved = true;
+            }
+            if (!this.checkCollision(entity.x, entity.y + stepY)) {
+                entity.y += stepY;
+                moved = true;
+            }
+        }
+        return moved;
+    };
+
+    GameEngine.prototype.nearestNavigationIndex = function nearestNavigationIndex(x, y) {
+        const nav = this.navigation;
+        const baseCol = clamp(Math.floor(x / NAV_CELL), 0, nav.cols - 1);
+        const baseRow = clamp(Math.floor(y / NAV_CELL), 0, nav.rows - 1);
+        const base = baseRow * nav.cols + baseCol;
+        if (nav.walkable[base]) return base;
+        for (let radius = 1; radius < 16; radius++) {
+            for (let row = Math.max(0, baseRow - radius); row <= Math.min(nav.rows - 1, baseRow + radius); row++) {
+                for (let col = Math.max(0, baseCol - radius); col <= Math.min(nav.cols - 1, baseCol + radius); col++) {
+                    if (Math.abs(row - baseRow) !== radius && Math.abs(col - baseCol) !== radius) continue;
+                    const index = row * nav.cols + col;
+                    if (nav.walkable[index]) return index;
+                }
+            }
+        }
+        return -1;
+    };
+
+    GameEngine.prototype.findNavigationPath = function findNavigationPath(fromX, fromY, toX, toY) {
+        const nav = this.navigation;
+        const start = this.nearestNavigationIndex(fromX, fromY);
+        const target = this.nearestNavigationIndex(toX, toY);
+        if (start < 0 || target < 0 || start === target) return [];
+
+        const size = nav.cols * nav.rows;
+        const cameFrom = new Int32Array(size);
+        const costs = new Float32Array(size);
+        const closed = new Uint8Array(size);
+        cameFrom.fill(-1);
+        costs.fill(Infinity);
+        costs[start] = 0;
+
+        const heuristic = (index) => {
+            const col = index % nav.cols;
+            const row = Math.floor(index / nav.cols);
+            const targetCol = target % nav.cols;
+            const targetRow = Math.floor(target / nav.cols);
+            return Math.abs(col - targetCol) + Math.abs(row - targetRow);
+        };
+
+        const open = [{ index: start, score: heuristic(start) }];
+        const directions = [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]];
+        let found = false;
+        let inspected = 0;
+
+        while (open.length && inspected++ < 6500) {
+            open.sort((a, b) => a.score - b.score);
+            const current = open.shift().index;
+            if (closed[current]) continue;
+            if (current === target) {
+                found = true;
+                break;
+            }
+            closed[current] = 1;
+            const col = current % nav.cols;
+            const row = Math.floor(current / nav.cols);
+
+            for (const [dc, dr] of directions) {
+                const nextCol = col + dc;
+                const nextRow = row + dr;
+                if (nextCol < 0 || nextRow < 0 || nextCol >= nav.cols || nextRow >= nav.rows) continue;
+                const next = nextRow * nav.cols + nextCol;
+                if (!nav.walkable[next] || closed[next]) continue;
+                // Do not clip diagonally through a corner.
+                if (dc !== 0 && dr !== 0) {
+                    const sideA = row * nav.cols + nextCol;
+                    const sideB = nextRow * nav.cols + col;
+                    if (!nav.walkable[sideA] || !nav.walkable[sideB]) continue;
+                }
+                const nextCost = costs[current] + (dc !== 0 && dr !== 0 ? 1.414 : 1);
+                if (nextCost < costs[next]) {
+                    costs[next] = nextCost;
+                    cameFrom[next] = current;
+                    open.push({ index: next, score: nextCost + heuristic(next) });
+                }
+            }
+        }
+
+        if (!found) return [];
+        const raw = [];
+        for (let node = target; node !== -1 && node !== start; node = cameFrom[node]) {
+            raw.push({ x: (node % nav.cols + 0.5) * NAV_CELL, y: (Math.floor(node / nav.cols) + 0.5) * NAV_CELL });
+        }
+        raw.reverse();
+        if (!raw.length) return raw;
+
+        // Collapse straight grid segments so bot paths look natural.
+        const compact = [raw[0]];
+        for (let index = 1; index < raw.length - 1; index++) {
+            const previous = compact[compact.length - 1];
+            const next = raw[index + 1];
+            if (this.isWallBetween(previous.x, previous.y, next.x, next.y)) compact.push(raw[index]);
+        }
+        compact.push(raw[raw.length - 1]);
+        return compact;
+    };
+
+    GameEngine.prototype.moveBotToward = function moveBotToward(bot, targetX, targetY, speed, dt) {
+        const now = performance.now();
+        const key = `${Math.round(targetX / NAV_CELL)}:${Math.round(targetY / NAV_CELL)}`;
+        const directPath = !this.isWallBetween(bot.x, bot.y, targetX, targetY);
+
+        if (directPath) {
+            bot.path = [];
+            bot.pathKey = key;
+        } else if (bot.pathKey !== key || !bot.path.length || now >= bot.nextPathAt) {
+            bot.path = this.findNavigationPath(bot.x, bot.y, targetX, targetY);
+            bot.pathKey = key;
+            bot.nextPathAt = now + 850;
+        }
+
+        let waypoint = directPath ? { x: targetX, y: targetY } : (bot.path[0] || { x: targetX, y: targetY });
+        let dx = waypoint.x - bot.x;
+        let dy = waypoint.y - bot.y;
+        let dist = Math.hypot(dx, dy);
+
+        if (!directPath && dist < 11 && bot.path.length) {
+            bot.path.shift();
+            waypoint = bot.path[0] || { x: targetX, y: targetY };
+            dx = waypoint.x - bot.x;
+            dy = waypoint.y - bot.y;
+            dist = Math.hypot(dx, dy);
+        }
+        if (dist < 1) return false;
+
+        const travel = Math.min(speed * dt, dist);
+        const moved = this.moveEntity(bot, (dx / dist) * travel, (dy / dist) * travel);
+        if (!moved) {
+            bot.path = [];
+            bot.nextPathAt = 0;
+            bot.stuckFrames = (bot.stuckFrames || 0) + 1;
+        } else {
+            bot.stuckFrames = 0;
+            bot.isFacingLeft = dx < 0;
+            bot.walkFrame += dt * 14;
+        }
+        return moved;
+    };
+
+    GameEngine.prototype.update = function updateV2() {
+        if (!this.gameStarted || !this.player || this.isGameOver || this.isMeetingActive) return;
+        const now = performance.now();
+        const dt = clamp((now - (this._lastUpdateTime || now)) / 1000, 0, MAX_DELTA);
+        this._lastUpdateTime = now;
+
+        // Never fall back to loose collision rectangles while the exact mask loads.
+        if (!this.collisionMaskReady) return;
+
+        if (this.player.killCooldown > 0) this.player.killCooldown = Math.max(0, this.player.killCooldown - dt);
+        if (this.sabotageCooldown > 0) this.sabotageCooldown = Math.max(0, this.sabotageCooldown - dt);
+
+        let dx = 0;
+        let dy = 0;
+        if (this.keys.KeyW || this.keys.ArrowUp || this.keys.w || this.keys.W) dy -= 1;
+        if (this.keys.KeyS || this.keys.ArrowDown || this.keys.s || this.keys.S) dy += 1;
+        if (this.keys.KeyA || this.keys.ArrowLeft || this.keys.a || this.keys.A) dx -= 1;
+        if (this.keys.KeyD || this.keys.ArrowRight || this.keys.d || this.keys.D) dx += 1;
+        if (this.analogDir.x || this.analogDir.y) {
+            dx = this.analogDir.x;
+            dy = this.analogDir.y;
+        }
+
+        if ((dx || dy) && !this.player.inVent && !this.player.isDead) {
+            const length = Math.hypot(dx, dy) || 1;
+            const moved = this.moveEntity(this.player, (dx / length) * this.player.speed * dt, (dy / length) * this.player.speed * dt);
+            if (moved) {
+                if (dx < 0) this.player.isFacingLeft = true;
+                if (dx > 0) this.player.isFacingLeft = false;
+                this.player.walkFrame += dt * 15;
+            }
+        }
+
+        this.updateBots(dt);
+        this.checkDeadBodyDiscovery();
+        this.checkProximity(dt);
+        this.updateActionButtons();
+        this.updateLocationHUD(false, dt);
+    };
+
+    GameEngine.prototype.updateBots = function updateBotsV2(dt) {
+        for (const bot of this.bots) {
+            if (bot.isDead) continue;
+
+            if (bot.role === 'impostor') {
+                if (bot.killCooldown > 0) bot.killCooldown = Math.max(0, bot.killCooldown - dt);
+                const targets = [];
+                if (this.player.role === 'crewmate' && !this.player.inVent && !this.player.isDead) {
+                    const d = Math.hypot(this.player.x - bot.x, this.player.y - bot.y);
+                    if (d < 430) targets.push({ isPlayer: true, ref: this.player, distance: d });
+                }
+                for (const crew of this.bots) {
+                    if (crew.role !== 'crewmate' || crew.isDead) continue;
+                    const d = Math.hypot(crew.x - bot.x, crew.y - bot.y);
+                    if (d < 430) targets.push({ isPlayer: false, ref: crew, distance: d });
+                }
+                targets.sort((a, b) => a.distance - b.distance);
+                const target = targets.find(candidate => !this.isWallBetween(bot.x, bot.y, candidate.ref.x, candidate.ref.y));
+
+                if (target) {
+                    bot.targetX = target.ref.x;
+                    bot.targetY = target.ref.y;
+                    if (target.distance < 43 && bot.killCooldown <= 0) {
+                        bot.killCooldown = 12;
+                        audio.playKillSound();
+                        if (target.isPlayer) {
+                            this.player.isDead = true;
+                            this.deadBodies.push({ id: 'player', x: this.player.x, y: this.player.y, color: this.player.color, name: 'Tú' });
+                            this.triggerGameOver(false, '¡El Impostor te atrapó y te eliminó!');
+                            continue;
+                        }
+                        target.ref.isDead = true;
+                        this.deadBodies.push({ id: target.ref.id, x: target.ref.x, y: target.ref.y, color: target.ref.color, name: target.ref.name });
+                    }
+                } else if (Math.hypot(bot.targetX - bot.x, bot.targetY - bot.y) < 24 || Math.random() < dt * 0.15) {
+                    const pool = ROOM_AREAS[Math.floor(Math.random() * ROOM_AREAS.length)];
+                    const candidate = this.getValidTarget(pool[1] + pool[3] / 2, pool[2] + pool[4] / 2);
+                    bot.targetX = candidate.x;
+                    bot.targetY = candidate.y;
+                }
+
+                this.moveBotToward(bot, bot.targetX, bot.targetY, bot.speed, dt);
+                continue;
+            }
+
+            const impostor = this.player.role === 'impostor' ? this.player : this.bots.find(other => other.role === 'impostor');
+            const impostorVisible = impostor && !impostor.isDead && !impostor.inVent &&
+                Math.hypot(impostor.x - bot.x, impostor.y - bot.y) < 190 &&
+                !this.isWallBetween(bot.x, bot.y, impostor.x, impostor.y);
+
+            if (impostorVisible) {
+                bot.isPanicking = true;
+                bot.panicTimer = 1.75;
+                const escapeAngle = Math.atan2(bot.y - impostor.y, bot.x - impostor.x);
+                const escape = this.getValidTarget(bot.x + Math.cos(escapeAngle) * 150, bot.y + Math.sin(escapeAngle) * 150);
+                bot.targetX = escape.x;
+                bot.targetY = escape.y;
+                bot.workingTimer = 0;
+            } else if (bot.panicTimer > 0) {
+                bot.panicTimer = Math.max(0, bot.panicTimer - dt);
+                bot.isPanicking = bot.panicTimer > 0;
+            }
+
+            if (this.isSabotageActive) {
+                bot.isPanicking = false;
+                bot.targetX = REACTOR_POSITION.x;
+                bot.targetY = REACTOR_POSITION.y;
+                if (Math.hypot(bot.x - REACTOR_POSITION.x, bot.y - REACTOR_POSITION.y) < 38) {
+                    bot.workingTimer += dt;
+                    if (bot.workingTimer >= 3.5) {
+                        this.resolveSabotage('¡Un tripulante reparó la crisis del reactor!');
+                        bot.workingTimer = 0;
+                    }
+                } else {
+                    bot.workingTimer = 0;
+                }
+            } else if (!bot.isPanicking) {
+                if (!bot.currentTask || bot.currentTask.completed) {
+                    const candidates = this.tasks.filter(task => !task.completed);
+                    if (candidates.length) {
+                        bot.currentTask = candidates[Math.floor(Math.random() * candidates.length)];
+                        const target = this.getValidTarget(bot.currentTask.x, bot.currentTask.y);
+                        bot.targetX = target.x;
+                        bot.targetY = target.y;
+                        bot.workingTimer = 0;
+                    }
+                }
+                if (bot.currentTask && Math.hypot(bot.x - bot.targetX, bot.y - bot.targetY) < 28) {
+                    bot.workingTimer += dt;
+                    if (bot.workingTimer >= 6.5) {
+                        this.completeTask(bot.currentTask.id);
+                        bot.workingTimer = 0;
+                        bot.currentTask = null;
+                    }
+                }
+            }
+
+            if (!bot.workingTimer) this.moveBotToward(bot, bot.targetX, bot.targetY, bot.isPanicking ? bot.speed * 1.35 : bot.speed, dt);
+        }
+    };
+
+    GameEngine.prototype.checkProximity = function checkProximityV2(dt) {
+        const text = document.getElementById('proximity-text');
+        const heart = document.getElementById('heart-icon');
+        if (!text || !heart) return;
+
+        if (this.player.role === 'impostor') {
+            text.innerText = this.player.inVent ? 'OCULTO' : 'CAZANDO';
+            text.className = 'font-orbitron text-[10px] sm:text-xs font-semibold text-red-400';
+            heart.className = 'fa-solid fa-crosshairs text-red-400 text-base sm:text-xl transition-all';
+            return;
+        }
+
+        const impostor = this.bots.find(bot => bot.role === 'impostor' && !bot.isDead);
+        if (!impostor) {
+            text.innerText = 'SEGURO';
+            text.className = 'font-orbitron text-[10px] sm:text-xs font-semibold text-emerald-400';
+            heart.className = 'fa-solid fa-heart text-emerald-400 text-sm sm:text-lg transition-all';
+            return;
+        }
+        const d = Math.hypot(this.player.x - impostor.x, this.player.y - impostor.y);
+        this.heartbeatElapsed += dt;
+        let interval = Infinity;
+        if (d < 160) {
+            text.innerText = '¡PELIGRO!';
+            text.className = 'font-orbitron text-[10px] sm:text-xs font-semibold text-red-500 animate-pulse';
+            heart.className = 'fa-solid fa-heart text-red-500 text-xl sm:text-2xl scale-125 transition-all';
+            interval = 0.62;
+        } else if (d < 320) {
+            text.innerText = 'ALERTA';
+            text.className = 'font-orbitron text-[10px] sm:text-xs font-semibold text-amber-400';
+            heart.className = 'fa-solid fa-heart text-amber-400 text-base sm:text-xl transition-all';
+            interval = 1.2;
+        } else {
+            text.innerText = 'SEGURO';
+            text.className = 'font-orbitron text-[10px] sm:text-xs font-semibold text-slate-300';
+            heart.className = 'fa-solid fa-heart text-emerald-400 text-sm sm:text-lg transition-all';
+        }
+        if (this.heartbeatElapsed >= interval) {
+            this.heartbeatElapsed = 0;
+            audio.playHeartbeat(d < 160 ? 1.8 : 1);
+        }
+    };
+
+    GameEngine.prototype.getRoomName = function getRoomName(x, y) {
+        for (const [name, rx, ry, rw, rh] of ROOM_AREAS) {
+            if (x >= rx && x <= rx + rw && y >= ry && y <= ry + rh) return name;
+        }
+        return 'Pasillo de conexión';
+    };
+
+    GameEngine.prototype.updateLocationHUD = function updateLocationHUD(force = false, dt = 0) {
+        this.locationElapsed = (this.locationElapsed || 0) + dt;
+        if (!force && this.locationElapsed < 0.18) return;
+        this.locationElapsed = 0;
+        const chip = document.getElementById('location-chip');
+        if (chip && this.player) chip.innerHTML = `<i class="fa-solid fa-location-dot text-cyan-300 mr-1.5"></i>${this.getRoomName(this.player.x, this.player.y)}`;
+    };
+
+    GameEngine.prototype.updateActionButtons = function updateActionButtonsV2(force = false) {
+        if (!this.player) return;
+        const action = document.getElementById('action-btn');
+        const actionText = document.getElementById('action-text');
+        const actionIcon = document.getElementById('action-icon');
+        const vent = document.getElementById('vent-btn');
+        const sabotage = document.getElementById('sabotage-btn');
+        const report = document.getElementById('report-btn');
+        if (!action || !actionText || !actionIcon || !vent || !sabotage || !report) return;
+
+        const nearbyBody = this.deadBodies.find(body => Math.hypot(body.x - this.player.x, body.y - this.player.y) < 70);
+        const nearbyTask = this.tasks.find(task => !task.completed && Math.hypot(task.x - this.player.x, task.y - this.player.y) < 55);
+        const atReactor = this.isSabotageActive && Math.hypot(this.player.x - REACTOR_POSITION.x, this.player.y - REACTOR_POSITION.y) < 62;
+        const killTarget = this.bots.find(bot => !bot.isDead && Math.hypot(bot.x - this.player.x, bot.y - this.player.y) < 52 && !this.isWallBetween(bot.x, bot.y, this.player.x, this.player.y));
+        const signature = [this.player.role, this.player.inVent, this.player.isDead, Boolean(nearbyBody), Boolean(nearbyTask), atReactor, Boolean(killTarget), Math.ceil(this.player.killCooldown), this.isSabotageActive, Math.ceil(this.sabotageCooldown || 0)].join('|');
+        if (!force && signature === this._lastActionSignature) return;
+        this._lastActionSignature = signature;
+
+        report.classList.toggle('hidden', !nearbyBody || this.player.isDead);
+        if (this.player.isDead) {
+            vent.classList.add('hidden');
+            sabotage.classList.add('hidden');
+            action.className = actionClass('disabled');
+            actionText.innerText = 'ESPECTAR';
+            actionIcon.className = 'fa-solid fa-eye text-xl sm:text-2xl mb-0.5';
+            return;
+        }
+
+        if (this.player.role === 'impostor') {
+            vent.classList.remove('hidden');
+            sabotage.classList.remove('hidden');
+            vent.innerHTML = this.player.inVent
+                ? '<i class="fa-solid fa-right-left text-lg sm:text-xl mb-0.5"></i><span>MOVER</span>'
+                : '<i class="fa-solid fa-wind text-lg sm:text-xl mb-0.5"></i><span>ESCOTILLA</span>';
+            sabotage.innerHTML = this.isSabotageActive
+                ? '<i class="fa-solid fa-triangle-exclamation text-lg sm:text-xl mb-0.5"></i><span>ACTIVO</span>'
+                : `<i class="fa-solid fa-bolt text-lg sm:text-xl mb-0.5"></i><span>${this.sabotageCooldown > 0 ? Math.ceil(this.sabotageCooldown) + 's' : 'SABOTAJE'}</span>`;
+            sabotage.classList.toggle('opacity-50', this.sabotageCooldown > 0 || this.isSabotageActive);
+
+            if (this.player.inVent) {
+                action.className = actionClass('green');
+                actionText.innerText = 'SALIR';
+                actionIcon.className = 'fa-solid fa-door-open text-xl sm:text-2xl mb-0.5';
+            } else if (killTarget && this.player.killCooldown <= 0) {
+                action.className = actionClass('red', true);
+                actionText.innerText = 'ASESINAR';
+                actionIcon.className = 'fa-solid fa-skull text-xl sm:text-2xl mb-0.5';
+            } else {
+                action.className = actionClass('disabled');
+                actionText.innerText = this.player.killCooldown > 0 ? `${Math.ceil(this.player.killCooldown)}s` : 'BUSCAR';
+                actionIcon.className = this.player.killCooldown > 0
+                    ? 'fa-solid fa-hourglass-half text-xl sm:text-2xl mb-0.5'
+                    : 'fa-solid fa-magnifying-glass text-xl sm:text-2xl mb-0.5';
+            }
+            return;
+        }
+
+        vent.classList.add('hidden');
+        sabotage.classList.add('hidden');
+        if (atReactor) {
+            action.className = actionClass('red', true);
+            actionText.innerText = 'REPARAR';
+            actionIcon.className = 'fa-solid fa-triangle-exclamation text-xl sm:text-2xl mb-0.5';
+        } else if (nearbyTask) {
+            action.className = actionClass('cyan');
+            actionText.innerText = 'USAR';
+            actionIcon.className = 'fa-solid fa-hand text-xl sm:text-2xl mb-0.5';
+        } else {
+            action.className = actionClass('disabled');
+            actionText.innerText = 'TAREA';
+            actionIcon.className = 'fa-solid fa-screwdriver-wrench text-xl sm:text-2xl mb-0.5';
+        }
+    };
+
+    GameEngine.prototype.handlePrimaryAction = function handlePrimaryActionV2() {
+        if (!this.player || this.isGameOver || this.isMeetingActive || this.player.isDead) return;
+        if (this.player.role === 'impostor') {
+            if (this.player.inVent) {
+                this.exitVent();
+                return;
+            }
+            const target = this.bots.find(bot => !bot.isDead && Math.hypot(bot.x - this.player.x, bot.y - this.player.y) < 52 && !this.isWallBetween(bot.x, bot.y, this.player.x, this.player.y));
+            if (target && this.player.killCooldown <= 0) {
+                target.isDead = true;
+                this.deadBodies.push({ id: target.id, x: target.x, y: target.y, color: target.color, name: target.name });
+                this.player.killCooldown = 12;
+                audio.playKillSound();
+                const livingCrew = this.bots.filter(bot => bot.role === 'crewmate' && !bot.isDead).length;
+                if (livingCrew === 0) this.triggerGameOver(true, '¡Has eliminado a toda la tripulación de la nave!');
+            }
+            return;
+        }
+
+        if (this.isSabotageActive && Math.hypot(this.player.x - REACTOR_POSITION.x, this.player.y - REACTOR_POSITION.y) < 62) {
+            window.openMinigameModal({ id: 99, name: 'CALIBRAR REACTOR (EMERGENCIA)', type: 'reactor' });
+            return;
+        }
+        const task = this.tasks.find(item => !item.completed && Math.hypot(item.x - this.player.x, item.y - this.player.y) < 55);
+        if (task) window.openMinigameModal(task);
+    };
+
+    GameEngine.prototype.useVent = function useVentV2() {
+        if (!this.player || this.player.role !== 'impostor' || this.player.isDead) return;
+        if (!this.player.inVent) {
+            const nearby = MAP_VENTS
+                .map(vent => ({ vent, distance: Math.hypot(vent.x - this.player.x, vent.y - this.player.y) }))
+                .sort((a, b) => a.distance - b.distance)[0];
+            if (nearby && nearby.distance < 68) {
+                this.player.inVent = true;
+                this.player.ventIdx = nearby.vent.id;
+                this.player.x = nearby.vent.x;
+                this.player.y = nearby.vent.y;
+                audio.playVentSwoosh();
+            }
+            return;
+        }
+
+        const current = MAP_VENTS.find(vent => vent.id === this.player.ventIdx);
+        if (!current) return;
+        const moveIndex = (this.player._ventMoveIndex || 0) % current.connectTo.length;
+        const destination = MAP_VENTS.find(vent => vent.id === current.connectTo[moveIndex]);
+        this.player._ventMoveIndex = moveIndex + 1;
+        if (destination) {
+            this.player.ventIdx = destination.id;
+            this.player.x = destination.x;
+            this.player.y = destination.y;
+            audio.playVentSwoosh();
+        }
+    };
+
+    GameEngine.prototype.exitVent = function exitVentV2() {
+        if (!this.player || !this.player.inVent) return;
+        this.player.inVent = false;
+        audio.playVentSwoosh();
+    };
+
+    GameEngine.prototype.triggerSabotage = function triggerSabotageV2() {
+        if (!this.player || this.player.role !== 'impostor' || this.isSabotageActive || this.sabotageCooldown > 0) return;
+        this.isSabotageActive = true;
+        this.sabotageTimer = 25;
+        this.sabotageCooldown = 35;
+        audio.playSabotageAlarm();
+        const alert = document.getElementById('sabotage-alert');
+        const text = document.getElementById('sabotage-text');
+        if (alert) alert.classList.remove('hidden');
+        if (text) text.innerText = `¡REACTOR EN CRISIS! (${this.sabotageTimer}s)`;
+        if (this.sabotageInterval) clearInterval(this.sabotageInterval);
+        this.sabotageInterval = setInterval(() => {
+            if (!this.gameStarted || this.isGameOver) return;
+            this.sabotageTimer--;
+            if (text) text.innerText = `¡REACTOR EN CRISIS! (${this.sabotageTimer}s)`;
+            if (this.sabotageTimer <= 0) {
+                clearInterval(this.sabotageInterval);
+                if (this.player.role === 'impostor') this.triggerGameOver(true, '¡El reactor explotó! El Impostor gana.');
+                else this.triggerGameOver(false, '¡No repararon el reactor a tiempo!');
+            }
+        }, 1000);
+    };
+
+    const originalResolveSabotage = GameEngine.prototype.resolveSabotage;
+    GameEngine.prototype.resolveSabotage = function resolveSabotageV2(message) {
+        originalResolveSabotage.call(this, message);
+        this.sabotageCooldown = Math.max(this.sabotageCooldown || 0, 12);
+    };
+
+    // -------------------------------------------------------------------------
+    // Rendering
+    // -------------------------------------------------------------------------
+    GameEngine.prototype.updateCamera = function updateCamera() {
+        const halfWidth = this.viewportWidth / (2 * this.zoom);
+        const halfHeight = this.viewportHeight / (2 * this.zoom);
+        const minX = halfWidth < WORLD.width / 2 ? halfWidth : WORLD.width / 2;
+        const maxX = halfWidth < WORLD.width / 2 ? WORLD.width - halfWidth : WORLD.width / 2;
+        const minY = halfHeight < WORLD.height / 2 ? halfHeight : WORLD.height / 2;
+        const maxY = halfHeight < WORLD.height / 2 ? WORLD.height - halfHeight : WORLD.height / 2;
+        this.camera.x = clamp(this.player.x, minX, maxX);
+        this.camera.y = clamp(this.player.y, minY, maxY);
+    };
+
+    GameEngine.prototype.drawMapFallback = function drawMapFallback(ctx) {
+        const background = ctx.createLinearGradient(0, 0, WORLD.width, WORLD.height);
+        background.addColorStop(0, '#08121f');
+        background.addColorStop(1, '#02060c');
+        ctx.fillStyle = background;
+        ctx.fillRect(0, 0, WORLD.width, WORLD.height);
+        ctx.strokeStyle = 'rgba(80, 200, 255, .16)';
+        ctx.lineWidth = 2;
+        for (const [x, y, width, height] of WALKABLE_RECTS) ctx.strokeRect(x, y, width, height);
+        ctx.fillStyle = '#a5f3fc';
+        ctx.font = '700 24px Orbitron, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('CARGANDO MAPA DE LA NAVE…', WORLD.width / 2, WORLD.height / 2);
+    };
+
+    GameEngine.prototype.drawVent = function drawVent(ctx, vent) {
+        ctx.save();
+        ctx.translate(vent.x, vent.y);
+        ctx.fillStyle = '#334155';
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 2.2;
+        traceRoundRect(ctx, -15, -10, 30, 20, 4);
+        ctx.fill();
+        ctx.stroke();
+        ctx.strokeStyle = '#0f172a';
+        ctx.lineWidth = 2;
+        for (let x = -9; x <= 9; x += 6) {
+            ctx.beginPath();
+            ctx.moveTo(x, -6);
+            ctx.lineTo(x, 6);
+            ctx.stroke();
+        }
+        ctx.restore();
+    };
+
+    GameEngine.prototype.drawTaskMarker = function drawTaskMarker(ctx, task, now) {
+        const pulse = 1 + Math.sin(now / 300 + task.id) * 0.12;
+        ctx.save();
+        ctx.translate(task.x, task.y);
+        ctx.scale(pulse, pulse);
+        ctx.fillStyle = task.completed ? '#10b981' : '#f59e0b';
+        ctx.shadowColor = task.completed ? '#34d399' : '#fbbf24';
+        ctx.shadowBlur = 13;
+        ctx.beginPath();
+        ctx.arc(0, 0, 13, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = '#f8fafc';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.fillStyle = '#0f172a';
+        ctx.font = '900 14px Orbitron, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(task.completed ? '✓' : '!', 0, 1);
+        ctx.restore();
+        if (this.player && Math.hypot(task.x - this.player.x, task.y - this.player.y) < 160 && !task.completed) {
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '700 11px Orbitron, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.shadowColor = '#020617';
+            ctx.shadowBlur = 4;
+            ctx.fillText(task.name, task.x, task.y - 23);
+            ctx.shadowBlur = 0;
+        }
+    };
+
+    GameEngine.prototype.drawDebugCollision = function drawDebugCollision(ctx) {
+        ctx.save();
+        if (this.collisionMaskReady && this.collisionMaskImage) {
+            ctx.globalAlpha = 0.24;
+            ctx.drawImage(this.collisionMaskImage, 0, 0, WORLD.width, WORLD.height);
+            ctx.globalAlpha = 1;
+        }
+        const nav = this.navigation;
+        ctx.fillStyle = 'rgba(56, 189, 248, .24)';
+        for (let row = 0; row < nav.rows; row++) {
+            for (let col = 0; col < nav.cols; col++) {
+                if (!nav.walkable[row * nav.cols + col]) continue;
+                ctx.fillRect(col * NAV_CELL + 7, row * NAV_CELL + 7, 6, 6);
+            }
+        }
+        ctx.restore();
+    };
+
+    GameEngine.prototype.renderFogOfWar = function renderFogOfWarV2() {
+        if (!this.player) return;
+        const radius = this.player.role === 'impostor' ? 285 : 220;
+        this.ctx.save();
+        this.ctx.fillStyle = 'rgba(2, 6, 14, .84)';
+        this.ctx.beginPath();
+        this.ctx.rect(-500, -500, WORLD.width + 1000, WORLD.height + 1000);
+        this.ctx.arc(this.player.x, this.player.y, radius, 0, Math.PI * 2);
+        try {
+            this.ctx.fill('evenodd');
+        } catch (error) {
+            this.ctx.fill();
+            this.ctx.globalCompositeOperation = 'destination-out';
+            this.ctx.beginPath();
+            this.ctx.arc(this.player.x, this.player.y, radius, 0, Math.PI * 2);
+            this.ctx.fill();
+        }
+        const gradient = this.ctx.createRadialGradient(this.player.x, this.player.y, Math.max(0, radius - 45), this.player.x, this.player.y, radius);
+        gradient.addColorStop(0, 'rgba(2, 6, 14, 0)');
+        gradient.addColorStop(1, 'rgba(2, 6, 14, .38)');
+        this.ctx.fillStyle = gradient;
+        this.ctx.beginPath();
+        this.ctx.arc(this.player.x, this.player.y, radius, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.restore();
+    };
+
+    GameEngine.prototype.render = function renderV2() {
+        if (!this.gameStarted || !this.player) return;
+        const ctx = this.ctx;
+        const viewportWidth = this.viewportWidth || window.innerWidth;
+        const viewportHeight = this.viewportHeight || window.innerHeight;
+        ctx.setTransform(this.pixelRatio || 1, 0, 0, this.pixelRatio || 1, 0, 0);
+        ctx.clearRect(0, 0, viewportWidth, viewportHeight);
+        ctx.fillStyle = '#020617';
+        ctx.fillRect(0, 0, viewportWidth, viewportHeight);
+
+        this.updateCamera();
+        ctx.save();
+        ctx.translate(viewportWidth / 2, viewportHeight / 2);
+        ctx.scale(this.zoom, this.zoom);
+        ctx.translate(-this.camera.x, -this.camera.y);
+
+        if (this.mapReady && this.mapImage.naturalWidth) {
+            ctx.drawImage(this.mapImage, 0, 0, WORLD.width, WORLD.height);
+        } else {
+            this.drawMapFallback(ctx);
+        }
+
+        const now = performance.now();
+        if (this.debugCollision) this.drawDebugCollision(ctx);
+
+        for (const vent of MAP_VENTS) this.drawVent(ctx, vent);
+        for (const task of this.tasks) this.drawTaskMarker(ctx, task, now);
+
+        if (this.isSabotageActive) {
+            const radius = 27 + Math.sin(now / 120) * 5;
+            ctx.strokeStyle = '#ef4444';
+            ctx.lineWidth = 4;
+            ctx.shadowColor = '#ef4444';
+            ctx.shadowBlur = 18;
+            ctx.beginPath();
+            ctx.arc(REACTOR_POSITION.x, REACTOR_POSITION.y, radius, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+        }
+
+        for (const body of this.deadBodies) drawDeadBody(ctx, body.x, body.y, body.color);
+
+        for (const bot of this.bots) {
+            if (bot.isDead) continue;
+            ctx.save();
+            ctx.fillStyle = 'rgba(0,0,0,.30)';
+            ctx.beginPath();
+            ctx.ellipse(bot.x, bot.y + bot.radius * 1.05, bot.radius * 0.95, bot.radius * 0.34, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+            drawCrewmateCharacter(ctx, bot.x, bot.y, bot.radius, bot.color, bot.hat, bot.isFacingLeft, bot.walkFrame);
+            if (bot.isPanicking) {
+                ctx.fillStyle = '#f87171';
+                ctx.font = '900 16px Orbitron, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('!', bot.x, bot.y - bot.radius - 14);
+            } else if (bot.workingTimer > 0) {
+                ctx.fillStyle = '#67e8f9';
+                ctx.font = '900 13px Orbitron, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('⚙', bot.x, bot.y - bot.radius - 13);
+            }
+        }
+
+        if (!this.player.inVent && !this.player.isDead) {
+            ctx.save();
+            ctx.fillStyle = 'rgba(0,0,0,.38)';
+            ctx.beginPath();
+            ctx.ellipse(this.player.x, this.player.y + this.player.radius * 1.08, this.player.radius, this.player.radius * 0.35, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+            drawCrewmateCharacter(ctx, this.player.x, this.player.y, this.player.radius, this.player.color, this.player.hat, this.player.isFacingLeft, this.player.walkFrame);
+        }
+
+        this.renderFogOfWar();
+        ctx.restore();
+    };
+
+    // -------------------------------------------------------------------------
+    // Robust task modal: clears every timer when closed/reopened.
+    // -------------------------------------------------------------------------
+    function closeTaskModal() {
+        if (window.__mafiaTaskCleanup) window.__mafiaTaskCleanup();
+        window.__mafiaTaskCleanup = null;
+        const modal = document.getElementById('minigame-modal');
+        if (modal) modal.classList.add('hidden');
+    }
+
+    window.openMinigameModal = function openMinigameModalV2(task) {
+        closeTaskModal();
+        const modal = document.getElementById('minigame-modal');
+        const title = document.getElementById('minigame-title');
+        const container = document.getElementById('minigame-container');
+        if (!modal || !title || !container || typeof game === 'undefined' || !game) return;
+        title.innerText = `TAREA: ${task.name}`;
+        container.innerHTML = '';
+        modal.classList.remove('hidden');
+        const finish = () => {
+            game.completeTask(task.id);
+            closeTaskModal();
+        };
+
+        if (task.type === 'wires') {
+            const colors = ['#ef4444', '#3b82f6', '#facc15'];
+            const order = [0, 1, 2].sort(() => Math.random() - 0.5);
+            let selected = null;
+            let linked = 0;
+            container.innerHTML = `
+                <div class="w-full h-full grid grid-cols-[auto_1fr_auto] items-center gap-5 px-6 sm:px-9">
+                    <div id="wire-left" class="flex flex-col gap-5"></div>
+                    <p class="text-[10px] sm:text-xs text-center text-slate-300 font-orbitron leading-relaxed">CONECTÁ CADA<br>CABLE CON SU COLOR</p>
+                    <div id="wire-right" class="flex flex-col gap-5"></div>
+                </div>`;
+            const left = container.querySelector('#wire-left');
+            const right = container.querySelector('#wire-right');
+            const updateWire = () => {
+                left.querySelectorAll('button').forEach(button => button.classList.toggle('ring-4', Number(button.dataset.color) === selected));
+            };
+            colors.forEach((color, index) => {
+                const button = document.createElement('button');
+                button.className = 'w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-white shadow-lg transition-transform';
+                button.style.background = color;
+                button.dataset.color = index;
+                button.onclick = () => { selected = index; updateWire(); };
+                left.appendChild(button);
+            });
+            order.forEach(index => {
+                const button = document.createElement('button');
+                button.className = 'w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-white shadow-lg transition-all';
+                button.style.background = colors[index];
+                button.dataset.color = index;
+                button.onclick = () => {
+                    if (selected === null) return;
+                    if (selected === index) {
+                        button.disabled = true;
+                        button.style.opacity = '.35';
+                        const source = left.querySelector(`button[data-color="${index}"]`);
+                        source.disabled = true;
+                        source.style.opacity = '.35';
+                        linked++;
+                        selected = null;
+                        updateWire();
+                        if (linked === colors.length) setTimeout(finish, 180);
+                    } else {
+                        selected = null;
+                        updateWire();
+                    }
+                };
+                right.appendChild(button);
+            });
+        } else if (task.type === 'reactor') {
+            container.innerHTML = `
+                <div class="flex flex-col items-center gap-4">
+                    <p class="text-xs text-slate-300 font-orbitron">DETENÉ EL INDICADOR EN LA ZONA VERDE</p>
+                    <div class="w-44 sm:w-56 h-7 bg-slate-800 rounded-full border-2 border-slate-600 relative overflow-hidden">
+                        <div class="absolute left-[40%] right-[40%] top-0 bottom-0 bg-emerald-500/55"></div>
+                        <div id="reactor-needle" class="absolute top-0 bottom-0 w-2 bg-white left-0 shadow-[0_0_8px_white]"></div>
+                    </div>
+                    <button id="stop-needle-btn" class="among-btn px-6 py-2.5 bg-cyan-500 text-slate-950 font-orbitron font-bold text-xs rounded-xl">CALIBRAR</button>
+                </div>`;
+            let position = 0;
+            let direction = 1;
+            const needle = container.querySelector('#reactor-needle');
+            const interval = setInterval(() => {
+                position += direction * 2.3;
+                if (position >= 98 || position <= 0) direction *= -1;
+                if (needle) needle.style.left = `${position}%`;
+            }, 20);
+            window.__mafiaTaskCleanup = () => clearInterval(interval);
+            container.querySelector('#stop-needle-btn').onclick = () => {
+                if (position >= 39 && position <= 61) finish();
+                else closeTaskModal();
+            };
+        } else {
+            container.innerHTML = `
+                <div class="flex flex-col items-center gap-4 w-52 sm:w-64">
+                    <p class="text-xs text-center text-slate-300 font-orbitron">MANTENÉ LA DESCARGA ACTIVA</p>
+                    <div class="w-full bg-slate-800 h-5 sm:h-6 rounded-full overflow-hidden border border-slate-700">
+                        <div id="download-progress" class="bg-cyan-400 h-full w-0% transition-[width] duration-100"></div>
+                    </div>
+                    <button id="download-btn" class="among-btn px-6 py-2.5 bg-emerald-500 text-slate-950 font-orbitron font-bold text-xs rounded-xl">DESCARGAR</button>
+                </div>`;
+            const button = container.querySelector('#download-btn');
+            const fill = container.querySelector('#download-progress');
+            button.onclick = () => {
+                button.disabled = true;
+                button.classList.add('opacity-60');
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 4;
+                    fill.style.width = `${progress}%`;
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        finish();
+                    }
+                }, 90);
+                window.__mafiaTaskCleanup = () => clearInterval(interval);
+            };
+        }
+    };
+
+    // -------------------------------------------------------------------------
+    // Input, control UI and lifecycle safety.
+    // -------------------------------------------------------------------------
+    function installEnhancedUI() {
+        if (!document.getElementById('location-chip')) {
+            const location = document.createElement('div');
+            location.id = 'location-chip';
+            location.className = 'hidden absolute top-20 sm:top-24 left-3 sm:left-4 z-20 pointer-events-none rounded-xl border border-cyan-400/30 bg-slate-950/85 px-2.5 py-1.5 text-[10px] sm:text-xs font-orbitron font-bold text-cyan-100 shadow-lg backdrop-blur-md';
+            document.body.appendChild(location);
+        }
+
+        const zoomIn = document.getElementById('zoom-in-btn');
+        const zoomOut = document.getElementById('zoom-out-btn');
+        const debug = document.getElementById('collision-debug-btn');
+        const controls = document.getElementById('camera-controls');
+        if (zoomIn) zoomIn.onclick = () => { if (typeof game !== 'undefined' && game) game.setZoom(0.12); };
+        if (zoomOut) zoomOut.onclick = () => { if (typeof game !== 'undefined' && game) game.setZoom(-0.12); };
+        if (debug) debug.onclick = () => {
+            if (typeof game === 'undefined' || !game) return;
+            game.debugCollision = !game.debugCollision;
+            debug.classList.toggle('bg-emerald-500', game.debugCollision);
+            debug.classList.toggle('text-slate-950', game.debugCollision);
+        };
+
+        const originalStart = document.getElementById('start-game-btn');
+        if (originalStart) originalStart.addEventListener('click', () => {
+            if (controls) controls.classList.remove('hidden');
+        });
+        const restart = document.getElementById('restart-btn');
+        if (restart) restart.addEventListener('click', () => {
+            if (controls) controls.classList.add('hidden');
+            const location = document.getElementById('location-chip');
+            if (location) location.classList.add('hidden');
+            closeTaskModal();
+        });
+        const closeTask = document.getElementById('close-minigame-btn');
+        if (closeTask) closeTask.onclick = closeTaskModal;
+    }
+
+    window.addEventListener('keydown', event => {
+        const navigationKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'];
+        if (navigationKeys.includes(event.code) && typeof game !== 'undefined' && game && game.gameStarted) event.preventDefault();
+        if (event.code === 'Equal' || event.code === 'NumpadAdd') {
+            if (typeof game !== 'undefined' && game && game.gameStarted) game.setZoom(0.12);
+        }
+        if (event.code === 'Minus' || event.code === 'NumpadSubtract') {
+            if (typeof game !== 'undefined' && game && game.gameStarted) game.setZoom(-0.12);
+        }
+        if (event.code === 'KeyM' && typeof game !== 'undefined' && game && game.gameStarted) {
+            game.debugCollision = !game.debugCollision;
+        }
+    }, { passive: false });
+
+    window.addEventListener('wheel', event => {
+        if (typeof game === 'undefined' || !game || !game.gameStarted || event.target.closest('#main-menu, #meeting-modal, #minigame-modal')) return;
+        event.preventDefault();
+        game.setZoom(event.deltaY > 0 ? -0.08 : 0.08);
+    }, { passive: false });
+
+    window.addEventListener('blur', () => {
+        if (typeof game !== 'undefined' && game) {
+            game.keys = {};
+            game.analogDir = { x: 0, y: 0 };
+        }
+    });
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden && typeof game !== 'undefined' && game) {
+            game.keys = {};
+            game.analogDir = { x: 0, y: 0 };
+            game._lastUpdateTime = performance.now();
+        }
+    });
+
+    window.addEventListener('load', () => {
+        // The original onload creates `game`; defer one frame so controls bind after it.
+        requestAnimationFrame(installEnhancedUI);
+    });
+})();
+
+    </script>
+</body>
 </html>
